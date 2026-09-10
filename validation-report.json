@@ -1,0 +1,631 @@
+{
+  "unresolvedWorksheetReferences": [
+    "KPI-ARR",
+    "KPI-C",
+    "KPI-L",
+    "KPI-M",
+    "KPI-NRR",
+    "KPI-R",
+    "OI-001",
+    "OI-002",
+    "SIG-001",
+    "SIG-002",
+    "SIG-003",
+    "SIG-004",
+    "SIG-005",
+    "SIG-006",
+    "SIG-007",
+    "SIG-008",
+    "SIG-009",
+    "SIG-010",
+    "SIG-011",
+    "SIG-09"
+  ],
+  "unresolvedReferenceCount": 114,
+  "generatedAt": "2026-09-10T20:48:07",
+  "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
+  "extractionChecks": [
+    {
+      "id": "V-01",
+      "check": "Every authorized worksheet read is listed",
+      "result": "PASS",
+      "detail": "31 of 31 authorized worksheets read: all"
+    },
+    {
+      "id": "V-02",
+      "check": "No unauthorized worksheet contributed data",
+      "result": "PASS",
+      "detail": "10 present-but-unread sheets: Executive View, Rule Registry Dashboard, Backtest Results, Home, Add Evidence, Guide, Reflexivity Evidence, Evidence Inventory, Metrics Register, _Rule Lists"
+    },
+    {
+      "id": "V-03",
+      "check": "October 2026 is the current period",
+      "result": "PASS",
+      "detail": "currentPeriod.label = October 2026 (R-025)"
+    },
+    {
+      "id": "V-04",
+      "check": "July 2026 is historical",
+      "result": "PASS",
+      "detail": "July 2026 present only in historicalPeriods and historical evidence"
+    },
+    {
+      "id": "V-05",
+      "check": "Net Score extraction matches the workbook",
+      "result": "PASS",
+      "detail": "Oct 37.14285714 / Jul 36.45621181 / Oct25 26.60714286"
+    },
+    {
+      "id": "V-06",
+      "check": "Pervasion extraction matches the workbook",
+      "result": "PASS",
+      "detail": "Oct 40.8997955 / Jul 38.3805668 / Oct25 38.48973607"
+    },
+    {
+      "id": "V-07",
+      "check": "Q/Q and Y/Y Z-Scores match the workbook",
+      "result": "PASS",
+      "detail": "metric 37.14285714; Q/Q Δ 0.68664533; Y/Y Δ 10.53571429; Q/Q Z 0.129243494; Y/Y Z 0.892193894; N 420.0"
+    },
+    {
+      "id": "V-08",
+      "check": "Every displayed evidence ID exists",
+      "result": "PASS",
+      "detail": "105 evidence objects"
+    },
+    {
+      "id": "V-09",
+      "check": "Every displayed signal ID exists",
+      "result": "PASS",
+      "detail": "7 signals, SIG-01..SIG-07"
+    },
+    {
+      "id": "V-10",
+      "check": "Every KPI ID exists",
+      "result": "PASS",
+      "detail": "9 KPI objects"
+    },
+    {
+      "id": "V-11",
+      "check": "Every rule ID exists",
+      "result": "PASS",
+      "detail": "26 rules, 13 context rules"
+    },
+    {
+      "id": "V-12",
+      "check": "Every relationship in the graph has valid nodes",
+      "result": "PASS",
+      "detail": "477 edges, all endpoints resolve. 114 worksheet references could not be resolved to an object and were excluded from the graph rather than rewritten: KPI-ARR, KPI-C, KPI-L, KPI-M, KPI-NRR, KPI-R, OI-001, OI-002, SIG-001, SIG-002 …"
+    },
+    {
+      "id": "V-13",
+      "check": "No causal language links ETR to company KPIs",
+      "result": "PASS",
+      "detail": "clean"
+    },
+    {
+      "id": "V-14",
+      "check": "No Z-Score strength band was invented",
+      "result": "PASS",
+      "detail": "bandStatus = Source Needed; no band language in extracted objects"
+    },
+    {
+      "id": "V-15",
+      "check": "Cohort and regional Ns remain Source Needed when absent",
+      "result": "PASS",
+      "detail": "5 current objects carry an unresolved N: ETR-OCT26-G2K, ETR-OCT26-F500, ETR-OCT26-LARGE, ETR-OCT26-REGION, ETR-OCT26-ADOPT"
+    },
+    {
+      "id": "V-30",
+      "check": "Source-label / export-timestamp issue is preserved",
+      "result": "PASS",
+      "detail": "OQ-015 present as an open question and as a data conflict"
+    },
+    {
+      "id": "V-31",
+      "check": "Data conflicts are preserved rather than averaged",
+      "result": "PASS",
+      "detail": "25 conflicts recorded, none averaged"
+    }
+  ],
+  "runtimeChecks": [
+    {
+      "id": "V-16",
+      "check": "Current-period filters affect evidence and lineage",
+      "result": "PASS",
+      "detail": "October-lane evidence 3 → 0; October-lane lineage nodes 3 → 0 (Z-Score, cohort, regional, adoption and composition are separate lanes and stay on)"
+    },
+    {
+      "id": "V-17",
+      "check": "The Current Call does not change when filters change",
+      "result": "PASS",
+      "detail": "Current Call is a reviewer decision held in CALL, not derived from filters: \"Source Needed\""
+    },
+    {
+      "id": "V-18",
+      "check": "Global search works",
+      "result": "PASS",
+      "detail": "\"retention\" → 16 results in 7 groups; \"Z-Score\" → 20 results in 11 groups"
+    },
+    {
+      "id": "V-19",
+      "check": "Deep links work",
+      "result": "PASS",
+      "detail": "19 routes resolve to a view"
+    },
+    {
+      "id": "V-20",
+      "check": "Drawers work",
+      "result": "PASS",
+      "detail": "10 drawer targets resolve"
+    },
+    {
+      "id": "V-21",
+      "check": "Lineage traversal works forward and backward",
+      "result": "PASS",
+      "detail": "forward Source→Evidence→Signal→Bridge→KPI→Output reachable (56 nodes); reverse from OUT-BRIEF reaches 104 nodes"
+    },
+    {
+      "id": "V-22",
+      "check": "Sunday Signal Generator works",
+      "result": "PASS",
+      "detail": "13 sections, 18 claims"
+    },
+    {
+      "id": "V-23",
+      "check": "Update Email Generator works",
+      "result": "PASS",
+      "detail": "subject \"CrowdStrike Signal Update — October 2026 TSIS\"; 11 sections, 13 claims"
+    },
+    {
+      "id": "V-24",
+      "check": "Generated claims include manifests",
+      "result": "PASS",
+      "detail": "31 claims, each with id, classification and at least one source or rule reference"
+    },
+    {
+      "id": "V-25",
+      "check": "Copy and download actions work",
+      "result": "PASS",
+      "detail": "Blob/URL available; CSV 38818 bytes, Markdown 5197 bytes generated locally"
+    },
+    {
+      "id": "V-26",
+      "check": "Print Brief works",
+      "result": "PASS",
+      "detail": "brief view rendered (81397 chars) and marked as the print target"
+    },
+    {
+      "id": "V-27",
+      "check": "App works under file://",
+      "result": "PASS",
+      "detail": "protocol file:; no fetch() and no module loading is used"
+    },
+    {
+      "id": "V-28",
+      "check": "No external dependency is loaded",
+      "result": "PASS",
+      "detail": "0 external scripts, stylesheets, fonts, images or iframes"
+    },
+    {
+      "id": "V-29",
+      "check": "Human Review Required is persistently visible",
+      "result": "PASS",
+      "detail": "top-bar badge is rendered on every view and never dismissible"
+    }
+  ],
+  "targets": {
+    "netScoreOct2026": 37.14285714,
+    "netScoreJul2026": 36.45621181,
+    "netScoreOct2025": 26.60714286,
+    "pervasionOct2026": 40.8997955,
+    "pervasionJul2026": 38.3805668,
+    "pervasionOct2025": 38.48973607,
+    "zMetricValue": 37.14285714,
+    "zQQChange": 0.68664533,
+    "zYYChange": 10.53571429,
+    "zQQ": 0.129243494,
+    "zYY": 0.892193894,
+    "zN": 420
+  },
+  "conflicts": [
+    {
+      "id": "CONF-001",
+      "objectId": "ETR-OCT26-NS",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 95,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 10,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-002",
+      "objectId": "ETR-OCT26-PV",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 96,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 11,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-003",
+      "objectId": "ETR-OCT26-INTENT",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 97,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 12,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-004",
+      "objectId": "ETR-OCT26-G2K",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 98,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 13,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-005",
+      "objectId": "ETR-OCT26-F500",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 99,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 14,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-006",
+      "objectId": "ETR-OCT26-LARGE",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 100,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 15,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-007",
+      "objectId": "ETR-OCT26-REGION",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 101,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 16,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-008",
+      "objectId": "ETR-OCT26-ADOPT",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 102,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 17,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-009",
+      "objectId": "ETR-OCT26-JOBS",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 103,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 18,
+      "periodA": "Oct 2026 export context",
+      "periodB": "Oct 2026 export context",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-010",
+      "objectId": "ETR-OCT26-ZS",
+      "field": "classification",
+      "valueA": "ETR evidence",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 104,
+      "valueB": "Client-provided fact",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 19,
+      "periodA": "Oct 2026 associated current export",
+      "periodB": "Oct 2026 associated current export",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-011",
+      "objectId": "ETR-OCT26-ZS",
+      "field": "sourceLane",
+      "valueA": "zscore",
+      "sheetA": "Combined Evidence Library",
+      "rowA": 104,
+      "valueB": "oct26",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 19,
+      "periodA": "Oct 2026 associated current export",
+      "periodB": "Oct 2026 associated current export",
+      "roundingCouldExplain": null,
+      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
+    },
+    {
+      "id": "CONF-012",
+      "objectId": "ETR-CUR-001",
+      "field": "caveat",
+      "valueA": "Current-period corroboration for demand-recovery review; does not establish causation with company KPIs. | Historical comparison in V3.5; not current.",
+      "sheetA": "Current ETR Addendum",
+      "rowA": 5,
+      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 5,
+      "periodA": "JUL26",
+      "periodB": "Oct 2026 is current (R-025)",
+      "roundingCouldExplain": false,
+      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
+    },
+    {
+      "id": "CONF-013",
+      "objectId": "ETR-CUR-002",
+      "field": "caveat",
+      "valueA": "Resolves the current Pervasion source gap in the supplied master package. | Historical comparison in V3.5; not current.",
+      "sheetA": "Current ETR Addendum",
+      "rowA": 6,
+      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 6,
+      "periodA": "JUL26",
+      "periodB": "Oct 2026 is current (R-025)",
+      "roundingCouldExplain": false,
+      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
+    },
+    {
+      "id": "CONF-014",
+      "objectId": "ETR-CUR-005",
+      "field": "caveat",
+      "valueA": "Resolves the current-outlook question in the supplied package. | Historical comparison in V3.5; not current.",
+      "sheetA": "Current ETR Addendum",
+      "rowA": 9,
+      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
+      "sheetB": "Current ETR Addendum",
+      "rowB": 9,
+      "periodA": "JUL26",
+      "periodB": "Oct 2026 is current (R-025)",
+      "roundingCouldExplain": false,
+      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
+    },
+    {
+      "id": "CONF-015",
+      "objectId": "R-014",
+      "field": "Permitted / Prohibited",
+      "valueA": "Link broad company-level TSIS data to a narrow product KPI without a mapping note.",
+      "sheetA": "Interpretation Rules",
+      "rowA": 19,
+      "valueB": "Poor segment fit lowers confidence or blocks proof-case use.",
+      "sheetB": "Interpretation Rules",
+      "rowB": 19,
+      "periodA": null,
+      "periodB": null,
+      "roundingCouldExplain": false,
+      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
+    },
+    {
+      "id": "CONF-016",
+      "objectId": "R-017",
+      "field": "Permitted / Prohibited",
+      "valueA": "Treat forecast as fact or substitute it for actual KPI results.",
+      "sheetA": "Interpretation Rules",
+      "rowA": 22,
+      "valueB": "Confidence depends on historical backtest and target definition.",
+      "sheetB": "Interpretation Rules",
+      "rowB": 22,
+      "periodA": null,
+      "periodB": null,
+      "roundingCouldExplain": false,
+      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
+    },
+    {
+      "id": "CONF-017",
+      "objectId": "R-021",
+      "field": "Permitted / Prohibited",
+      "valueA": "Claim current ETR recovery caused the 51% YoY Net New ARR result.",
+      "sheetA": "Interpretation Rules",
+      "rowA": 26,
+      "valueB": "Flex, CCP, renewal timing, new logos, and expansion are material confounders.",
+      "sheetB": "Interpretation Rules",
+      "rowB": 26,
+      "periodA": null,
+      "periodB": null,
+      "roundingCouldExplain": false,
+      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
+    },
+    {
+      "id": "CONF-018",
+      "objectId": "R-022",
+      "field": "Permitted / Prohibited",
+      "valueA": "Claim Flex caused overall module adoption from aggregate timing alone.",
+      "sheetA": "Interpretation Rules",
+      "rowA": 27,
+      "valueB": "Selection effects, product improvement, reclassification, and contract restructuring.",
+      "sheetB": "Interpretation Rules",
+      "rowB": 27,
+      "periodA": null,
+      "periodB": null,
+      "roundingCouldExplain": false,
+      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
+    },
+    {
+      "id": "CONF-019",
+      "objectId": "R-023",
+      "field": "Permitted / Prohibited",
+      "valueA": "Infer material ARR contribution from nearly tripled growth on an undisclosed base.",
+      "sheetA": "Interpretation Rules",
+      "rowA": 28,
+      "valueB": "Bundling, Flex allocation, denominator effects, and budget reallocation.",
+      "sheetB": "Interpretation Rules",
+      "rowB": 28,
+      "periodA": null,
+      "periodB": null,
+      "roundingCouldExplain": false,
+      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
+    },
+    {
+      "id": "CONF-020",
+      "objectId": "ETR-OCT26-G2K",
+      "field": "nBase",
+      "valueA": "Source file does not include cohort N",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": 9,
+      "valueB": "R-009 requires N with every ETR percentage",
+      "sheetB": "Interpretation Rules",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": false,
+      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
+    },
+    {
+      "id": "CONF-021",
+      "objectId": "ETR-OCT26-F500",
+      "field": "nBase",
+      "valueA": "Source file does not include cohort N",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": 10,
+      "valueB": "R-009 requires N with every ETR percentage",
+      "sheetB": "Interpretation Rules",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": false,
+      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
+    },
+    {
+      "id": "CONF-022",
+      "objectId": "ETR-OCT26-LARGE",
+      "field": "nBase",
+      "valueA": "Source file does not include cohort N",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": 11,
+      "valueB": "R-009 requires N with every ETR percentage",
+      "sheetB": "Interpretation Rules",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": false,
+      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
+    },
+    {
+      "id": "CONF-023",
+      "objectId": "ETR-OCT26-REGION",
+      "field": "nBase",
+      "valueA": "Regional N not supplied",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": 12,
+      "valueB": "R-009 requires N with every ETR percentage",
+      "sheetB": "Interpretation Rules",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": false,
+      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
+    },
+    {
+      "id": "CONF-024",
+      "objectId": "ETR-OCT26-ADOPT",
+      "field": "nBase",
+      "valueA": "Reason-response N not supplied",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": 13,
+      "valueB": "R-009 requires N with every ETR percentage",
+      "sheetB": "Interpretation Rules",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "Oct 2026",
+      "roundingCouldExplain": false,
+      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
+    },
+    {
+      "id": "CONF-025",
+      "objectId": "OQ-015",
+      "field": "period label",
+      "valueA": "Survey labels read October 2026",
+      "sheetA": "OCT26 Current TSIS",
+      "rowA": null,
+      "valueB": "Source export filenames are dated 2026-09-10",
+      "sheetB": "Source Register",
+      "rowB": null,
+      "periodA": "Oct 2026",
+      "periodB": "2026-09-10 export",
+      "roundingCouldExplain": false,
+      "resolution": "Both preserved. OQ-015 is open; this application does not reconcile them."
+    }
+  ],
+  "counts": {
+    "evidence": 105,
+    "signals": 7,
+    "kpis": 9,
+    "bridges": 15,
+    "risks": 10,
+    "openQuestions": 15,
+    "rules": 26,
+    "contextRules": 13,
+    "sources": 41,
+    "relationships": 477,
+    "crossLaneLinks": 7,
+    "backtests": 6,
+    "calibrationCases": 9,
+    "reviewItems": 27,
+    "interpretations": 7,
+    "rawTables": 8,
+    "rawNodes": 8,
+    "conflicts": 25
+  },
+  "sourceNeededCount": 64,
+  "humanReviewRequired": true,
+  "runtimeCheckedAt": "2026-09-10T21:20:25.764Z"
+}

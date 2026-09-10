@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CrowdStrike REVEAL Company Explorer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="sr" href="#main">Skip to main content</a>
+
+<div class="app">
+
+  <div class="brandbox">
+    <span class="bm">CrowdStrike</span><span class="bt">CRWD</span>
+  </div>
+
+  <header class="topbar" role="banner">
+    <div class="tb-stat"><span class="k">Current call</span><span class="v pos" id="tbCall">—</span></div>
+    <div class="tb-stat"><span class="k">Current TSIS</span><span class="v" id="tbPeriod">—</span></div>
+    <div class="tb-stat tb-grow"><span class="k">Primary signal</span><span class="v" id="tbSignal">—</span></div>
+    <div class="search-wrap">
+      <label class="sr" for="globalSearch">Global search</label>
+      <input id="globalSearch" type="search" placeholder="Search IDs, evidence, rules…  ( / )"
+             autocomplete="off" aria-controls="searchPanel">
+    </div>
+    <button class="tb-btn" id="btnSources" aria-expanded="false" aria-controls="sourcePane">
+      Source controls<span class="badge-count" id="filterCount">0</span></button>
+    <button class="tb-btn" id="btnGenerate">Generate output</button>
+    <button class="tb-btn" id="btnPrint" aria-haspopup="true" aria-expanded="false">Print / export</button>
+    <span class="hrr" title="R-020: analyst approval is a precondition of external distribution">
+      Human review required</span>
+  </header>
+
+  <nav class="sidebar" role="navigation" aria-label="Application views">
+    <div class="grp">Start here</div>
+    <a href="#brief" data-view="brief"><span class="ico" aria-hidden="true">▤</span>Vendor Signal Brief</a>
+    <a href="#index" data-view="index"><span class="ico" aria-hidden="true">◧</span>Company Overview</a>
+    <div class="grp">The evidence behind it</div>
+    <a href="#signals" data-view="signals"><span class="ico" aria-hidden="true">◆</span>Signals<span class="n" id="nSignals"></span></a>
+    <a href="#evidence" data-view="evidence"><span class="ico" aria-hidden="true">▪</span>Evidence<span class="n" id="nEvidence"></span></a>
+    <a href="#lineage" data-view="lineage"><span class="ico" aria-hidden="true">⌗</span>Lineage<span class="n" id="nRels"></span></a>
+    <a href="#kpis" data-view="kpis"><span class="ico" aria-hidden="true">⬡</span>KPI Bridges<span class="n" id="nBridges"></span></a>
+    <a href="#cohorts" data-view="cohorts"><span class="ico" aria-hidden="true">▦</span>Cohorts &amp; Regions</a>
+    <div class="grp">How it is governed</div>
+    <a href="#rules" data-view="rules"><span class="ico" aria-hidden="true">▬</span>Rules<span class="n" id="nRules"></span></a>
+    <a href="#risks" data-view="risks"><span class="ico" aria-hidden="true">◇</span>Risks &amp; Questions<span class="n" id="nRisks"></span></a>
+    <a href="#sources" data-view="sources"><span class="ico" aria-hidden="true">▤</span>Sources<span class="n" id="nSources"></span></a>
+    <div class="grp">What it produces</div>
+    <a href="#audience" data-view="audience"><span class="ico" aria-hidden="true">◑</span>Audience Translator</a>
+    <a href="#generator/sunday-signal" data-view="gen-sunday"><span class="ico" aria-hidden="true">✎</span>Sunday Signal</a>
+    <a href="#generator/update-email" data-view="gen-email"><span class="ico" aria-hidden="true">✉</span>Update Email</a>
+    <a href="#methodology" data-view="methodology"><span class="ico" aria-hidden="true">✓</span>Methodology &amp; Validation</a>
+  </nav>
+
+  <main id="main" role="main">
+    <div class="srcstrip" id="srcStrip" aria-label="Evidence lanes in view"></div>
+    <div id="filteredWarn" class="filtered-warn" hidden></div>
+
+    <section class="view" id="view-brief"       aria-label="Vendor Signal Brief"></section>
+    <section class="view" id="view-index"       aria-label="Company Overview"></section>
+    <section class="view" id="view-signals"     aria-label="Signal Explorer"></section>
+    <section class="view" id="view-evidence"    aria-label="Evidence Explorer"></section>
+    <section class="view" id="view-lineage"     aria-label="Lineage Explorer"></section>
+    <section class="view" id="view-kpis"        aria-label="KPI Bridge Explorer"></section>
+    <section class="view" id="view-cohorts"     aria-label="Cohorts, Regions and Adoption"></section>
+    <section class="view" id="view-rules"       aria-label="Rule Explorer"></section>
+    <section class="view" id="view-risks"       aria-label="Risks and Open Questions"></section>
+    <section class="view" id="view-sources"     aria-label="Source Register"></section>
+    <section class="view" id="view-audience"    aria-label="Audience Translator"></section>
+    <section class="view" id="view-gen-sunday"  aria-label="Sunday Signal Generator"></section>
+    <section class="view" id="view-gen-email"   aria-label="Update Email Generator"></section>
+    <section class="view" id="view-methodology" aria-label="Methodology and Validation"></section>
+  </main>
+</div>
+
+<!-- Source control pane -->
+<aside class="scp" id="sourcePane" hidden aria-label="Source controls">
+  <div class="row" style="justify-content:space-between">
+    <h3>Source controls</h3>
+    <button class="btn" id="scpClose" aria-label="Close source controls">Close</button>
+  </div>
+  <p class="note">Controls change what the application shows. They never change the approved
+     Current Call — that is a reviewer decision recorded in the workbook.</p>
+  <div id="scpBody"></div>
+</aside>
+
+<!-- Object drawer -->
+<div class="drawer-scrim" id="drawerScrim" hidden>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerId">
+    <div class="drawer-head">
+      <div>
+        <div class="did" id="drawerId">—</div>
+        <div class="dsub" id="drawerType">—</div>
+      </div>
+      <button class="btn" id="drawerClose" style="margin-left:auto" aria-label="Close object drawer">Close</button>
+    </div>
+    <div class="drawer-tabs" id="drawerTabs" role="tablist"></div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+</div>
+
+<!-- Global search results -->
+<div class="sr-panel" id="searchPanel" hidden>
+  <div class="sr-inner">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <h3 id="searchHeading">Search results</h3>
+      <button class="btn" id="searchClose">Close</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<script src="reveal-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
