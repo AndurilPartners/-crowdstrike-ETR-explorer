@@ -1,0 +1,117 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   print.css — dedicated print styling for the six named surfaces.
+
+   Loaded with media="print", so it never affects the screen. Everything the
+   reader interacts with is dropped; everything they would want on paper —
+   title, period, narrative, the visible chart, selected footnotes and the
+   Human Review status — is kept.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@page{ margin:14mm 13mm 15mm }
+
+html,body{background:#fff !important}
+body{font:10.5pt/1.55 Georgia,"Times New Roman",serif;color:#16181C;
+  word-break:normal;overflow-wrap:normal;hyphens:none}
+
+/* the application chrome does not print */
+.app{display:block !important;height:auto !important;overflow:visible !important}
+.brandbox,.sidebar,.topbar,.navtoggle,.modeswitch,.srcstrip,.scp,.sr-panel,.drawer-scrim,
+.printmenu,.actbar,.filters,.lin-toolbar,.gen-controls,.tabs,.nbar,.chero-acts,.lead-acts,
+.move-acts,.fx-head,.no-print,.filtered-warn{display:none !important}
+main{grid-area:auto !important;overflow:visible !important;padding:0 !important;height:auto !important}
+
+/* print scoping: only the chosen surface prints */
+body.print-scope .view{display:none !important}
+body.print-scope .view.print-target{display:block !important}
+.view[hidden]{display:none !important}
+
+/* progressive-disclosure panels print open, so nothing is silently dropped */
+.xpanel[hidden]{display:block !important}
+
+/* ── shared typography ──────────────────────────────────────────────────── */
+h1,h2,h3,h4{color:#0F243E;break-after:avoid;page-break-after:avoid;font-family:Georgia,serif}
+p{orphans:3;widows:3}
+a[href]:after{content:""}
+.note{font-size:8.6pt;color:#5B6068}
+.sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ── Company profile ────────────────────────────────────────────────────── */
+.chero{border-bottom:1pt solid #C9C2B6;padding-bottom:12pt;margin-bottom:16pt}
+.chero-eyebrow{font-size:7.6pt;letter-spacing:.14em}
+.chero-id h1{font-size:28pt}
+.chero-head{font-size:15pt;line-height:1.3;max-width:none}
+.chero-deck{font-size:10.5pt;max-width:none}
+.chips{gap:6pt}
+.schip{border:.6pt solid #C9C2B6;padding:3pt 9pt;font-size:8.4pt;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.snap{grid-template-columns:repeat(3,1fr) !important;break-inside:avoid;margin:16pt 0}
+.snapcol{padding:10pt 12pt 10pt 0}
+.snapcol p{font-size:9.4pt;line-height:1.5}
+.mrail{display:grid !important;grid-template-columns:repeat(7,1fr) !important;
+  overflow:visible !important;break-inside:avoid}
+.mtile{padding:7pt 8pt}
+.mtile .v{font-size:13pt}
+.mtile .s{font-size:7.6pt}
+.moves{grid-template-columns:repeat(3,1fr) !important;gap:10pt}
+.move,.watch li,.lead,.snapcol,.counterbody,.fxgrid{break-inside:avoid;page-break-inside:avoid}
+.move p{font-size:9.4pt}
+.counterband{background:#FAF5EC !important;margin:0 0 16pt;padding:14pt 16pt;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.watch{grid-template-columns:repeat(3,1fr) !important;gap:10pt}
+.foundation{border-top:.6pt solid #C9C2B6;padding-top:10pt}
+
+/* ── the lead chart: it is the point of the page, so it keeps its colour ── */
+.lead-plot{border:.6pt solid #C9C2B6;box-shadow:none;padding:6pt;break-inside:avoid}
+.leadsvg{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.charttip{display:none !important}
+.lead-take{font-size:10pt;border-left:2pt solid #F16A20}
+
+/* ── Narrative brief ────────────────────────────────────────────────────── */
+.reader{max-width:none}
+.reader p{font-size:10.4pt;line-height:1.62}
+.n-question{font-size:19pt;max-width:none}
+.n-answer p{font-size:12pt}
+.nsec{margin:16pt 0 8pt;break-after:avoid}
+.nsec h2{font-size:14pt}
+.sec-lab{font-size:7.4pt;letter-spacing:.12em}
+.reader .pull{font-size:12.5pt;margin:12pt 0;border-left:2pt solid #F16A20}
+.ncall{grid-template-columns:repeat(3,1fr) !important;break-inside:avoid}
+.scope{font-size:8.6pt}
+
+/* ── Sunday Signal and Update Email ─────────────────────────────────────── */
+.gen{display:block !important}
+.gen-out{border:none !important;padding:0 !important;background:none !important}
+.email-canvas,.essay{max-width:none;box-shadow:none;border:none;padding:0}
+.email-head{border-bottom:.6pt solid #C9C2B6;padding-bottom:8pt;margin-bottom:12pt}
+.email-body p,.essay p{font-size:10.6pt;line-height:1.66;orphans:3;widows:3}
+.essay-title{font-size:18pt}
+.essay-deck{font-size:11.5pt}
+.essay h3{font-size:12.5pt;margin-top:14pt}
+.claim{border:none !important;background:none !important;padding:0 !important}
+.claim-ids{display:none}
+body.inspect-print .claim-ids{display:block;font-size:7.4pt;color:#5B6068}
+.footnotes{border-top:.6pt solid #C9C2B6;margin-top:14pt;padding-top:10pt;font-size:8.8pt}
+
+/* ── Lineage ────────────────────────────────────────────────────────────── */
+.lin-wrap{break-inside:avoid;border:.6pt solid #C9C2B6}
+.lin-wrap svg{-webkit-print-color-adjust:exact;print-color-adjust:exact;max-width:100%;height:auto}
+.lin-legend{font-size:8pt}
+.pathtell{break-inside:avoid}
+
+/* ── Evidence comparison ────────────────────────────────────────────────── */
+.tw{overflow:visible !important}
+table{font-size:8.2pt;table-layout:fixed;width:100%;border-collapse:collapse}
+thead{display:table-header-group}
+tr{break-inside:avoid}
+th{position:static !important;background:#EFECE5 !important;color:#3D4149 !important;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;text-align:left}
+th,td{padding:3pt 4pt;overflow-wrap:break-word;border-bottom:.4pt solid #DFD9CF}
+
+/* ── status chips keep their colour, because the colour is the meaning ──── */
+.tag,.lane,.oid,.needed,.hyp-bar,.word,.pill,.nc,.fxcell,.move-mini>div,.move-counter{
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* ── the human-review status prints, always ─────────────────────────────── */
+.print-only{display:block !important}
+.hrr.print-only{display:inline-block !important;border:.6pt solid #B3261E;color:#B3261E;
+  padding:2pt 6pt;font-size:8pt;letter-spacing:.08em}

@@ -8,7 +8,7 @@ window.REVEAL_DATA = {
   "application": "CrowdStrike REVEAL Company Explorer",
   "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
   "workbookVersion": "V3.5",
-  "generatedAt": "2026-09-10T20:48:07",
+  "generatedAt": "2026-09-11T11:27:58",
   "authorizedWorksheets": [
    "V3.5 Update Summary",
    "OCT26 Current TSIS",
@@ -22168,7 +22168,7 @@ window.REVEAL_DATA = {
    "SIG-09"
   ],
   "unresolvedReferenceCount": 114,
-  "generatedAt": "2026-09-10T20:48:07",
+  "generatedAt": "2026-09-11T11:27:58",
   "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
   "extractionChecks": [
    {
@@ -22772,6 +22772,590 @@ window.REVEAL_DATA = {
    "conflicts": 25
   },
   "sourceNeededCount": 64,
-  "humanReviewRequired": true
+  "humanReviewRequired": true,
+  "uxChecks": [
+   {
+    "id": "UX-01",
+    "check": "a cold start lands on Company",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-02",
+    "check": "Company is the visible view",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-03",
+    "check": "Narrative Mode is the default mode",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-04",
+    "check": "the sidebar opens with the Primary group",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-05",
+    "check": "the company name leads the page",
+    "result": "PASS",
+    "detail": "CrowdStrike"
+   },
+   {
+    "id": "UX-06",
+    "check": "the hero carries the primary signal",
+    "result": "PASS",
+    "detail": "Post-Outage Spending Recovery in ETR TSIS Data"
+   },
+   {
+    "id": "UX-07",
+    "check": "the hero carries one narrative headline and a deck",
+    "result": "PASS",
+    "detail": "397 chars of deck"
+   },
+   {
+    "id": "UX-08",
+    "check": "the first viewport is signal-led, not methodology-led",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-09",
+    "check": "one lead chart appears near the top",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-10",
+    "check": "the lead chart precedes the first data table",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-11",
+    "check": "Research Foundation sits below the main narrative",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-12",
+    "check": "the Current Call is a restrained status chip, not a panel",
+    "result": "PASS",
+    "detail": "9988px²"
+   },
+   {
+    "id": "UX-13",
+    "check": "Source Needed offers a route to the question behind it",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-14",
+    "check": "the lead chart uses only supplied observations",
+    "result": "PASS",
+    "detail": "intent 3/12, breadth polyline 12 points"
+   },
+   {
+    "id": "UX-15",
+    "check": "missing Net Score periods are not interpolated",
+    "result": "PASS",
+    "detail": "1 solid intent segment (only the one adjacent pair), gap named in the chart"
+   },
+   {
+    "id": "UX-16",
+    "check": "the chart has a title, a description and a data-table toggle",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-17",
+    "check": "every chart point is keyboard-reachable and opens an object",
+    "result": "PASS",
+    "detail": "15 points"
+   },
+   {
+    "id": "UX-18",
+    "check": "the current period and the historical comparison are both identified",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-19",
+    "check": "the data table shows unsupplied periods as not supplied",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-20",
+    "check": "clicking a chart point opens the correct evidence object",
+    "result": "PASS",
+    "detail": "ETR-OCT26-NS"
+   },
+   {
+    "id": "UX-21",
+    "check": "the research question is prominent and reads as a question",
+    "result": "PASS",
+    "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
+   },
+   {
+    "id": "UX-22",
+    "check": "the short answer is cohesive prose and follows the question",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-23",
+    "check": "the narrative runs the full ten-part flow",
+    "result": "PASS",
+    "detail": "10 sections"
+   },
+   {
+    "id": "UX-24",
+    "check": "Research Foundation is below the narrative, not in the opening viewport",
+    "result": "PASS",
+    "detail": "foundation at 4717px"
+   },
+   {
+    "id": "UX-25",
+    "check": "the narrative keeps a reading width",
+    "result": "PASS",
+    "detail": "545px"
+   },
+   {
+    "id": "UX-26",
+    "check": "switching to Research Mode preserves the current route",
+    "result": "PASS",
+    "detail": "#signals"
+   },
+   {
+    "id": "UX-27",
+    "check": "Research Mode changes nothing in the data",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-28",
+    "check": "Research Mode reveals the source strip that Narrative Mode hides",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-29",
+    "check": "the mode is persisted for the next session",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-30",
+    "check": "Clean email is the default format",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-31",
+    "check": "Clean email is cohesive prose, four to six paragraphs plus greeting and close",
+    "result": "PASS",
+    "detail": "7 paragraphs"
+   },
+   {
+    "id": "UX-32",
+    "check": "Clean email shows no section headings",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-33",
+    "check": "Clean email carries no inline claim, evidence or rule IDs in the body",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-34",
+    "check": "all four footnote toggles default to off",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-35",
+    "check": "the subject line is built from the reading",
+    "result": "PASS",
+    "detail": "CrowdStrike signal update — October 2026 TSIS"
+   },
+   {
+    "id": "UX-36",
+    "check": "the copied body contains only email content, with no manifest metadata",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-37",
+    "check": "the copied body carries no Human Review line by default",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-38",
+    "check": "the Human Review status still shows in the application chrome",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-39",
+    "check": "every generated paragraph still carries a complete claim manifest",
+    "result": "PASS",
+    "detail": "5 manifests"
+   },
+   {
+    "id": "UX-40",
+    "check": "Inspect claims reveals paragraph manifests",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-41",
+    "check": "Inspect claims changes neither the rendered prose nor what is copied",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-42",
+    "check": "switching format keeps every selection",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-43",
+    "check": "the executive note is three paragraphs plus greeting and close",
+    "result": "PASS",
+    "detail": "5"
+   },
+   {
+    "id": "UX-44",
+    "check": "Sunday Signal defaults to Cohesive Signal at Standard length",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-45",
+    "check": "it reads as one piece: a title, a deck and connected paragraphs",
+    "result": "PASS",
+    "detail": "8 paragraphs"
+   },
+   {
+    "id": "UX-46",
+    "check": "Standard length uses no more than three visible subheads",
+    "result": "PASS",
+    "detail": "3 subheads"
+   },
+   {
+    "id": "UX-47",
+    "check": "the prose carries no inline IDs",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-48",
+    "check": "every Sunday Signal paragraph still carries a claim manifest",
+    "result": "PASS",
+    "detail": "8 manifests"
+   },
+   {
+    "id": "UX-49",
+    "check": "copied prose excludes footnotes unless asked for",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-50",
+    "check": "Brief length shortens the piece and drops every subhead",
+    "result": "PASS",
+    "detail": "6 paragraphs, 0 subheads"
+   },
+   {
+    "id": "UX-51",
+    "check": "the translator is a three-column split screen",
+    "result": "PASS",
+    "detail": "3 columns"
+   },
+   {
+    "id": "UX-52",
+    "check": "changing audience changes the translation",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-53",
+    "check": "changing audience changes no fact and nothing in the fixed panel",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-54",
+    "check": "the translator can feed both generators",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-55",
+    "check": "the handoff opens the Sunday Signal with that audience selected",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-56",
+    "check": "signals are grouped and the recorded primary signal leads",
+    "result": "PASS",
+    "detail": "#signal/SIG-02"
+   },
+   {
+    "id": "UX-57",
+    "check": "every signal row carries its principal caveat",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-58",
+    "check": "Evidence defaults to a concise list and expands to a table",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-59",
+    "check": "the table view still works",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-60",
+    "check": "the lineage narrative path offers a plain-language explanation",
+    "result": "PASS",
+    "detail": "7 steps"
+   },
+   {
+    "id": "UX-61",
+    "check": "the explanation introduces no causal language",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62",
+    "check": "Sources leads with source-family summary cards",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-63",
+    "check": "Rules defaults to the rules affecting the current narrative",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-64",
+    "check": "View all rules restores the full registry",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-65",
+    "check": "Risks defaults to a Most important now view built from recorded priority",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-66",
+    "check": "a source control changes what is shown",
+    "result": "PASS",
+    "detail": "105 → 102"
+   },
+   {
+    "id": "UX-67",
+    "check": "the Current Call remains reviewer-controlled and does not move",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-68",
+    "check": "switching the lane back on restores the evidence",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-69",
+    "check": "no causal wording links ETR evidence to company results",
+    "result": "PASS",
+    "detail": "223 sentences scanned"
+   },
+   {
+    "id": "UX-70",
+    "check": "no prohibited Z-Score language appears",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-71",
+    "check": "no investment recommendation, rating or price target",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-72",
+    "check": "July 2026 is never presented as the current period",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-73",
+    "check": "Source Needed is shown rather than filled",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-74",
+    "check": "no unsupported company profile data is introduced",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-75",
+    "check": "every prior route still works",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-76",
+    "check": "the print menu offers every named surface",
+    "result": "PASS",
+    "detail": "pmCompany, pmNarrative, pmSunday, pmEmail, pmLineage, pmEvidence, pmCurrent"
+   },
+   {
+    "id": "UX-77",
+    "check": "the Print Brief validation check passes",
+    "result": "PASS",
+    "detail": "narrative brief rendered (18854 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
+   },
+   {
+    "id": "UX-78",
+    "check": "print scoping isolates a single surface",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-79",
+    "check": "a dedicated print stylesheet is loaded",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-80",
+    "check": "every extraction check still passes",
+    "result": "PASS",
+    "detail": "17 checks; failing: "
+   },
+   {
+    "id": "UX-81",
+    "check": "every runtime check still passes",
+    "result": "PASS",
+    "detail": "14 checks; failing: "
+   },
+   {
+    "id": "UX-82.1500#company",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.1500#narrative",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.1500#generator/update-email",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.1024#company",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.1024#narrative",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.1024#generator/update-email",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.834#company",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.834#narrative",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.834#generator/update-email",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.390#company",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.390#narrative",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-82.390#generator/update-email",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-83",
+    "check": "the phone layout collapses the menu behind a toggle and scrolls the metric rail",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-84",
+    "check": "no external asset is requested",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-85",
+    "check": "the application runs under file://",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-86",
+    "check": "the page ran clean, with no console or page errors",
+    "result": "PASS",
+    "detail": ""
+   }
+  ]
  }
 };

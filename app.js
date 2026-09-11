@@ -66,8 +66,12 @@ var EDGE_COLOR = {SUPPORTS:'#70AD47', CONTRADICTS:'#C00000', BLOCKS:'#C00000',
 
 /* ─────────────────────────────────────────────────────────────── state ── */
 var DEFAULT_STATE = {
-  view:'brief', lanes:null, classes:null, states:null, confs:null,
-  audience:'investor', evidenceMode:'card', graphOrientation:'horizontal',
+  view:'company', mode:'narrative',
+  emailFormat:'clean', sundayStyle:'cohesive', sundayLength:'standard',
+  emailNotes:{method:false, appendix:false, review:false, ids:false},
+  sundayNotes:{method:false, ids:false, review:false},
+  lanes:null, classes:null, states:null, confs:null,
+  audience:'investor', evidenceMode:'list', graphOrientation:'horizontal',
   graphDepth:'2', nodeTypes:null, edgeTypes:null,
   genEvidence:['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-ZS'],
   genCounter:['CE-002'], genQuestion:['OQ-014'], drafts:{}, dismissedTips:[],
@@ -87,6 +91,9 @@ function load(){
   if (!s.states)  s.states  = STATES.slice();
   if (!s.confs)   s.confs   = CONFS.slice();
   if (!s.nodeTypes) s.nodeTypes = Object.keys(NODE_STYLE);
+  if (s.mode !== 'research') s.mode = 'narrative';
+  if (!s.emailNotes) s.emailNotes = {method:false, appendix:false, review:false, ids:false};
+  if (!s.sundayNotes) s.sundayNotes = {method:false, ids:false, review:false};
   if (!s.edgeTypes) s.edgeTypes = EDGE_TYPES.slice();
   return s;
 }
@@ -95,8 +102,8 @@ function save(){
 }
 function resetState(){
   try { localStorage.removeItem('reveal.crwd.state'); } catch(e){}
-  state = load(); state.view='brief';
-  location.hash = '#brief'; render(); renderSourcePane();
+  state = load(); state.view='company';
+  location.hash = '#company'; render(); renderSourcePane();
 }
 
 
@@ -131,6 +138,39 @@ function renderSourceStrip(){
   if (!complete) h.push('<span class="stripnote">Readings below are drawn from the lanes still on. '+
     'The approved Current Call does not move.</span>');
   host.innerHTML = h.join('');
+}
+
+/* ─────────────────────────────────────────────────────────────── modes ──
+   Two reading modes over one dataset. Narrative hides the machinery; Research
+   shows it. Neither changes a value, a filter, a call or a claim manifest —
+   the mode is a presentation state and nothing else. */
+function applyMode(){
+  var b = document.body;
+  b.classList.toggle('mode-narrative', state.mode !== 'research');
+  b.classList.toggle('mode-research',  state.mode === 'research');
+  $$('.modebtn').forEach(function(x){
+    var on = x.getAttribute('data-mode') === state.mode;
+    x.classList.toggle('on', on);
+    x.setAttribute('aria-pressed', on);
+  });
+}
+function setMode(m){
+  if (m !== 'narrative' && m !== 'research') return;
+  if (state.mode === m) return;
+  state.mode = m; save(); applyMode();
+  /* the route is preserved: only the current view repaints */
+  var fn = RENDER[state.view]; if (fn) fn(parseHash());
+  updateChrome();
+  announce('Switched to ' + (m === 'research' ? 'Research' : 'Narrative') + ' mode.');
+}
+function narrativeMode(){ return state.mode !== 'research'; }
+
+/* A polite live region, so mode and copy actions are announced rather than
+   only shown. */
+function announce(msg){
+  var r = el('liveRegion'); if (!r) return;
+  r.textContent = '';
+  setTimeout(function(){ r.textContent = msg; }, 30);
 }
 
 /* ─────────────────────────────────────────────────────────── utilities ── */
@@ -311,18 +351,20 @@ var CALL = {
 };
 
 /* ───────────────────────────────────────────────────────────── routing ── */
-var VIEWS = ['index','brief','signals','evidence','lineage','kpis','cohorts','rules',
+var VIEWS = ['company','narrative','signals','evidence','lineage','kpis','cohorts','rules',
              'risks','sources','audience','gen-sunday','gen-email','methodology'];
 var pendingFocus = null;
 
 function parseHash(){
-  var h = (location.hash||'#brief').replace(/^#/,'');
+  var h = (location.hash||'#company').replace(/^#/,'');
   var p = h.split('/');
-  var r = {view:'brief', arg:null, arg2:null};
+  var r = {view:'company', arg:null, arg2:null};
   switch(p[0]){
-    case '': r.view='brief'; break;
-    case 'index': r.view='index'; break;
-    case 'brief': r.view='brief'; break;
+    case '': r.view='company'; break;
+    case 'company': r.view='company'; break;
+    case 'index': r.view='company'; break;          /* legacy route, preserved */
+    case 'narrative': r.view='narrative'; break;
+    case 'brief': r.view='narrative'; break;        /* legacy route, preserved */
     case 'signals': r.view='signals'; break;
     case 'signal': r.view='signals'; r.arg=p[1]; break;
     case 'evidence': r.view='evidence'; r.arg=p[1]; break;
@@ -341,7 +383,7 @@ function parseHash(){
     case 'audience': r.view='audience'; r.arg=p[1]; break;
     case 'generator': r.view = (p[1]==='update-email') ? 'gen-email' : 'gen-sunday'; break;
     case 'methodology': r.view='methodology'; break;
-    default: r.view='brief';
+    default: r.view='company';
   }
   return r;
 }
@@ -370,8 +412,6 @@ function render(){
 
 function updateChrome(){
   renderSourceStrip();
-  el('tbCall').textContent = CALL.current.value;
-  el('tbCall').className = 'v ' + (CALL.current.value==='Source Needed' ? 'warn' : 'pos');
   el('tbPeriod').textContent = CP.label;
   el('tbSignal').textContent = CALL.primarySignalId + ' · ' + (OBJ[CALL.primarySignalId]||{}).title;
   el('filterCount').textContent = activeFilterCount();
@@ -396,111 +436,345 @@ function updateChrome(){
 /* ════════════════════════════════════════════════════ VIEW: Company ═════ */
 var RENDER = {};
 
-RENDER.index = function(){
-  var ns = CP.netScore, pv = CP.pervasion, z = CP.zScore, it = CP.intent;
-  var vis = visibleEvidence();
-  var cur = vis.filter(function(e){return e.currentOrHistorical==='current';});
-  var hist = vis.filter(function(e){return e.currentOrHistorical!=='current';});
-  var contra = vis.filter(function(e){
-    return (OUT_BY[e.id]||[]).some(function(x){return x.type==='CONTRADICTS';});});
-  var ctx = vis.filter(function(e){return /context|composition|dispersion/i.test(e.theme||'');});
-  var sn  = vis.filter(function(e){return e.sourceNeededFields && e.sourceNeededFields.length;});
-  var supp = vis.filter(function(e){
-    return (OUT_BY[e.id]||[]).some(function(x){return x.type==='SUPPORTS';});});
+/* ═══════════════════════════════════════════════ VIEW: Company (landing) ═
+   The company comes first, then the question, then one chart, then the story.
+   The governed machinery is all still here — it sits below the narrative and
+   surfaces on demand rather than competing with it.
+   ══════════════════════════════════════════════════════════════════════════ */
 
+/** The supplied observations for the lead chart. Nothing is interpolated: the
+    Pervasion series is supplied for every period on the axis, and Net Score is
+    supplied for three of them, so Net Score is drawn as points with a segment
+    only where two consecutive periods are both supplied. */
+function recoverySeries(){
+  var rows = D.rawTables.pervasionTrend.rows;
+  var axis = rows.map(function(r){ return r.Category; });
+  var perv = rows.map(function(r){ return {label:r.Category, value:Number(r.Pervasion)}; });
+  /* The trend axis is labelled in short form ("Oct 2026") while the period
+     objects carry both spellings. Key on the short label, and keep the long one
+     as an alias so neither naming convention silently drops a point. */
+  var nsBy = {};
+  function putNs(o, value, role){
+    if (value == null) return;
+    if (o.shortLabel) nsBy[o.shortLabel] = {value:value, role:role};
+    if (o.label)      nsBy[o.label]      = {value:value, role:role};
+  }
+  putNs(CP, CP.netScore.value, 'current period');
+  (D.historicalPeriods||[]).forEach(function(hp){
+    putNs(hp, hp.netScore, hp.role || 'historical comparison');
+  });
+  var ns = axis.map(function(lab){
+    return nsBy[lab] ? {label:lab, value:nsBy[lab].value, role:nsBy[lab].role} : null;
+  });
+  return {axis:axis, pervasion:perv, netScore:ns,
+          suppliedNs: ns.filter(function(x){return !!x;}).length, total: axis.length};
+}
+
+/** The lead chart. One frame, two series, direct labels, no invented points. */
+function recoveryChart(opts){
+  opts = opts || {};
+  var uid = opts.id || 'lead';
+  var S = recoverySeries();
+  var W = 880, H = 322, L = 46, R = 96, T = 26, B = 44;
+  var all = S.pervasion.map(function(p){return p.value;})
+    .concat(S.netScore.filter(function(x){return !!x;}).map(function(p){return p.value;}));
+  var lo = Math.floor(Math.min.apply(null, all) - 4), hi = Math.ceil(Math.max.apply(null, all) + 4);
+  var X = function(i){ return L + i * (W - L - R) / (S.axis.length - 1); };
+  var Y = function(v){ return T + (hi - v) / (hi - lo) * (H - T - B); };
+  var curI = S.axis.length - 1;
+  var julI = S.axis.indexOf('Jul 2026');
+
+  var g = ['<svg viewBox="0 0 ' + W + ' ' + H + '" class="leadsvg" role="img" ' +
+    'aria-labelledby="' + uid + 'Title ' + uid + 'Desc"><title id="' + uid +
+    'Title">The recovery profile</title>' +
+    '<desc id="' + uid + 'Desc">Deployment breadth is supplied for all ' + S.total + ' survey periods from ' +
+    S.axis[0] + ' to ' + S.axis[curI] + ' and rises to ' + n2(S.pervasion[curI].value) +
+    '. Spending intent is supplied for ' + S.suppliedNs + ' of those periods only and reads ' +
+    n2(CP.netScore.value) + ' in the current period. Unsupplied periods are left blank.</desc>'];
+
+  g.push('<rect x="' + (X(curI) - 17).toFixed(1) + '" y="' + T + '" width="34" height="' +
+    (H - T - B) + '" fill="#F16A20" opacity=".07"/>');
+
+  for (var k = 0; k <= 3; k++){
+    var gv = lo + (hi - lo) * k / 3;
+    g.push('<line x1="' + L + '" y1="' + Y(gv).toFixed(1) + '" x2="' + (W - R) + '" y2="' +
+      Y(gv).toFixed(1) + '" stroke="#E7E2D9"/>');
+    g.push('<text x="' + (L - 9) + '" y="' + (Y(gv) + 3.5).toFixed(1) + '" font-size="10.5" ' +
+      'text-anchor="end" fill="#8A8478">' + gv.toFixed(0) + '</text>');
+  }
+
+  /* breadth — supplied for every period, so a continuous line is honest */
+  g.push('<polyline fill="none" stroke="#0F6E66" stroke-width="2.4" ' +
+    'stroke-linejoin="round" points="' + S.pervasion.map(function(p, i){
+      return X(i).toFixed(1) + ',' + Y(p.value).toFixed(1); }).join(' ') + '"/>');
+
+  /* intent — a segment only between two consecutive supplied periods */
+  S.netScore.forEach(function(p, i){
+    if (!p || !S.netScore[i + 1]) return;
+    g.push('<line x1="' + X(i).toFixed(1) + '" y1="' + Y(p.value).toFixed(1) +
+      '" x2="' + X(i + 1).toFixed(1) + '" y2="' + Y(S.netScore[i + 1].value).toFixed(1) +
+      '" stroke="#17365D" stroke-width="2.4"/>');
+  });
+
+  /* the gap, named rather than bridged */
+  var first = -1, gapEnd = -1;
+  S.netScore.forEach(function(p, i){
+    if (!p) return;
+    if (first < 0) first = i; else if (gapEnd < 0) gapEnd = i;
+  });
+  if (first >= 0 && gapEnd > first + 1){
+    var mid = (X(first) + X(gapEnd)) / 2;
+    var midY = Y((S.netScore[first].value + S.netScore[gapEnd].value) / 2);
+    g.push('<line x1="' + (X(first) + 8).toFixed(1) + '" y1="' + Y(S.netScore[first].value).toFixed(1) +
+      '" x2="' + (X(gapEnd) - 8).toFixed(1) + '" y2="' + Y(S.netScore[gapEnd].value).toFixed(1) +
+      '" stroke="#B8AFA1" stroke-width="1" stroke-dasharray="2 5"/>');
+    g.push('<text x="' + mid.toFixed(1) + '" y="' + (midY - 10).toFixed(1) +
+      '" font-size="10" text-anchor="middle" fill="#8A8478" font-style="italic">' +
+      'no intervening periods supplied</text>');
+  }
+
+  /* points — focusable, hoverable, and each opens its evidence object */
+  S.pervasion.forEach(function(p, i){
+    var cur = (i === curI);
+    g.push('<circle class="pt" data-oid="ETR-OCT26-PV" tabindex="0" role="button" ' +
+      'aria-label="Deployment breadth, ' + esc(p.label) + ': ' + n2(p.value) + '" ' +
+      'data-tip="' + esc(p.label) + ' · breadth ' + n2(p.value) + '" cx="' + X(i).toFixed(1) +
+      '" cy="' + Y(p.value).toFixed(1) + '" r="' + (cur ? 5 : 3.4) + '" fill="#0F6E66"/>');
+  });
+  S.netScore.forEach(function(p, i){
+    if (!p) return;
+    var cur = (i === curI);
+    g.push('<circle class="pt" data-oid="ETR-OCT26-NS" tabindex="0" role="button" ' +
+      'aria-label="Spending intent, ' + esc(p.label) + ': ' + n2(p.value) + ', ' + esc(p.role) + '" ' +
+      'data-tip="' + esc(p.label) + ' · intent ' + n2(p.value) + ' · ' + esc(p.role) + '" cx="' +
+      X(i).toFixed(1) + '" cy="' + Y(p.value).toFixed(1) + '" r="' + (cur ? 5.6 : 4) +
+      '" fill="' + (cur ? '#F16A20' : '#17365D') + '"/>');
+  });
+
+  /* direct labels at the latest values */
+  g.push('<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.netScore.value) + 1).toFixed(1) +
+    '" font-size="12.5" font-weight="700" fill="#17365D">' + n2(CP.netScore.value) + '</text>' +
+    '<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.netScore.value) + 15).toFixed(1) +
+    '" font-size="10" fill="#8A8478">intent</text>');
+  g.push('<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.pervasion.value) + 1).toFixed(1) +
+    '" font-size="12.5" font-weight="700" fill="#0F6E66">' + n2(CP.pervasion.value) + '</text>' +
+    '<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.pervasion.value) + 15).toFixed(1) +
+    '" font-size="10" fill="#8A8478">breadth</text>');
+
+  S.axis.forEach(function(lab, i){
+    if (i % 2 !== 0 && i !== curI && i !== julI) return;
+    g.push('<text x="' + X(i).toFixed(1) + '" y="' + (H - 24) + '" font-size="10" ' +
+      'text-anchor="middle" fill="' + (i === curI ? '#B4470F' : '#8A8478') + '"' +
+      (i === curI ? ' font-weight="700"' : '') + '>' + esc(lab.replace(' 20', ' ’')) + '</text>');
+  });
+  /* the two period roles, named under their own ticks and kept short enough
+     that adjacent quarters do not collide */
+  if (julI >= 0) g.push('<text x="' + X(julI).toFixed(1) + '" y="' + (H - 10) +
+    '" font-size="9" text-anchor="middle" fill="#8A8478" font-style="italic">historical</text>');
+  g.push('<text x="' + X(curI).toFixed(1) + '" y="' + (H - 10) +
+    '" font-size="9" text-anchor="middle" fill="#B4470F" font-weight="700">current</text>');
+  g.push('</svg>');
+
+  /* the same numbers as a table, for anyone who would rather read them */
+  var tbl = ['<div class="tw"><table><caption class="sr">The recovery profile, as supplied</caption>' +
+    '<thead><tr><th>Survey period</th><th>Deployment breadth</th><th>Spending intent</th></tr></thead><tbody>'];
+  S.axis.forEach(function(lab, i){
+    tbl.push('<tr><td>' + esc(lab) + '</td><td>' + n2(S.pervasion[i].value) + '</td><td>' +
+      (S.netScore[i] ? n2(S.netScore[i].value) : '<span class="note">not supplied</span>') +
+      '</td></tr>');
+  });
+  tbl.push('</tbody></table></div>');
+
+  return '<figure class="lead">' +
+    '<figcaption><div class="lead-head">The recovery profile</div>' +
+    '<p class="lead-sub">Spending intent and deployment breadth, displayed only for supplied periods.</p>' +
+    '</figcaption>' +
+    '<div class="lead-legend"><span class="lg"><i class="sw sw-ns"></i>Spending intent · Net Score · ' +
+      S.suppliedNs + ' of ' + S.total + ' periods supplied</span>' +
+    '<span class="lg"><i class="sw sw-pv"></i>Deployment breadth · Pervasion · all ' + S.total +
+      ' periods supplied</span></div>' +
+    '<div class="lead-plot" data-plot="1" id="' + uid + 'Plot">' + g.join('') +
+      '<div class="charttip" hidden></div></div>' +
+    '<p class="lead-take">Breadth moved more than intent did in the latest period: ' +
+      sign(CP.pervasion.qqDelta) + ' on deployment breadth against ' + sign(CP.netScore.qqDelta) +
+      ' on spending intent.</p>' +
+    '<div class="lead-acts no-print"><button type="button" class="btn" data-expand="' + uid +
+      'Table" aria-expanded="false" aria-controls="' + uid + 'Table">Show the numbers</button>' +
+      (opts.bare ? '' :
+        '<button type="button" class="btn" data-oid="ETR-OCT26-NS">Inspect spending intent</button>' +
+        '<button type="button" class="btn" data-oid="ETR-OCT26-PV">Inspect breadth</button>') +
+      '</div>' +
+    '<div class="xpanel" id="' + uid + 'Table" hidden>' + tbl.join('') +
+      '<p class="note">Unsupplied Net Score periods are left blank and are never interpolated. ' +
+      'Values are as extracted; nothing on this chart comes from outside the workbook.</p></div>' +
+    '</figure>';
+}
+
+/** Tooltips for the lead chart, on hover and on keyboard focus alike. */
+function wireChart(){
+  $$('.lead-plot[data-plot]').forEach(wireOnePlot);
+}
+function wireOnePlot(plot){
+  var tip = $('.charttip', plot);
+  if (!plot || !tip) return;
+  function show(pt){
+    tip.textContent = pt.getAttribute('data-tip');
+    var pb = plot.getBoundingClientRect(), b = pt.getBoundingClientRect();
+    tip.style.left = (b.left - pb.left + b.width / 2) + 'px';
+    tip.style.top  = (b.top  - pb.top  - 12) + 'px';
+    tip.hidden = false;
+  }
+  function hide(){ tip.hidden = true; }
+  $$('.pt', plot).forEach(function(pt){
+    pt.addEventListener('mouseenter', function(){ show(pt); });
+    pt.addEventListener('mouseleave', hide);
+    pt.addEventListener('focus', function(){ show(pt); });
+    pt.addEventListener('blur', hide);
+    pt.addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault(); openDrawer(pt.getAttribute('data-oid'));
+      }
+    });
+  });
+  plot.addEventListener('mouseleave', hide);
+}
+
+RENDER.company = function(){
+  var v = { ns:CP.netScore, pv:CP.pervasion, z:CP.zScore, it:CP.intent };
   var h = [];
-  h.push('<div class="hero">');
-  h.push('<div class="eyebrow" style="color:var(--orange);font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:700">Anduril Partners · REVEAL Company Explorer</div>');
-  h.push('<h1>CrowdStrike <span style="font-family:var(--mono);font-size:16px;color:var(--orange)">CRWD</span></h1>');
-  h.push('<div class="callrow">');
-  h.push(cell('Current call', CALL.current.value==='Source Needed'
-      ? needed() : esc(CALL.current.value), CALL.current.detail));
-  h.push(cell('Prior call', esc(CALL.prior.value), CALL.prior.detail));
-  h.push(cell('Primary signal', oid('SIG-02')+' '+esc((OBJ['SIG-02']||{}).title),
-      'Signal Canvas reviewer decision: ' + esc((OBJ['SIG-02']||{}).workflowStatus)));
-  h.push(cell('Direction', '<span class="up">'+esc(CALL.direction)+'</span>',
-      'Net Score '+n2(ns.value)+' · '+sign(ns.qqDelta)+' vs Jul 2026 · '+sign(ns.yyDelta)+' vs Oct 2025'));
-  h.push(cell('Conviction', esc(CALL.conviction), 'Signal Canvas confidence for SIG-02'));
-  h.push(cell('Evidence confidence', '<span class="mix">Mixed</span>', CALL.evidenceConfidence));
-  h.push(cell('Current period', esc(CP.label), 'N = '+n2(CP.nBase,0)+' citations (R-009)'));
-  h.push(cell('Q/Q Z-Score', n2(z.qqZ,6), 'Positive. Approved bands Source Needed.'));
-  h.push(cell('Y/Y Z-Score', n2(z.yyZ,6), 'Positive and higher than Q/Q.'));
-  h.push(cell('Human review', '<span class="dn">REQUIRED</span>', 'R-020 — working draft, not externally eligible'));
-  h.push('</div>');
+  CLAIM_SEQ = 0;   /* company claim ids are stable across repaints */
 
-  h.push('<h4>Primary signal</h4>');
-  h.push('<p class="primary-signal">'+tag('Anduril interpretation')+' '+
-    'In '+esc(CP.label)+' the CrowdStrike Net Score is <strong>'+n2(ns.value)+'</strong> on '+
-    n2(CP.nBase,0)+' citations '+oid('ETR-OCT26-NS')+', '+sign(ns.qqDelta)+' against July 2026 — '+
-    moveWord(ns.qqDelta)+' under R-005 — and '+sign(ns.yyDelta)+' against October 2025, '+
-    moveWord(ns.yyDelta)+'. Breadth moved with it: Pervasion is <strong>'+n2(pv.value)+'</strong> '+
-    oid('ETR-OCT26-PV')+', '+sign(pv.qqDelta)+' sequentially. The workbook states the reading as: '+
-    '<em>“'+esc(CALL.primarySignalText)+'”</em> The Q/Q Z-Score is '+n2(z.qqZ,6)+' and the Y/Y Z-Score '+
-    n2(z.yyZ,6)+' '+oid('ETR-OCT26-ZS')+' — both positive, with Y/Y higher than Q/Q, which is consistent '+
-    'with the larger Y/Y base-metric change. What remains unvalidated is every link from this demand '+
-    'reading to a company outcome: the SIG-02 → KPI-003 bridge carries no established lag and is '+
-    'Backtest Required '+oid('R-021')+'.</p>');
-  h.push('<div class="row no-print">'+
-    btn('Explore signal','#signal/SIG-02')+btn('View lineage','#lineage/SIG-02')+
-    btn('View current evidence','#evidence')+btn('Open KPI bridge','#bridge/SIG-02/KPI-003')+
-    btn('Generate brief','#brief','pri')+'</div>');
-  h.push('</div>');
+  /* ── hero ───────────────────────────────────────────────────────────── */
+  h.push('<header class="chero">');
+  h.push('<div class="chero-eyebrow">REVEAL Company Explorer · ' + esc(CP.label) + '</div>');
+  h.push('<div class="chero-id"><h1>CrowdStrike</h1><span class="tick">CRWD</span>' +
+    '<button type="button" class="sigchip" data-goto="#signal/' + esc(CALL.primarySignalId) + '">' +
+    esc((OBJ[CALL.primarySignalId] || {}).title || 'Primary signal') + '</button></div>');
+  h.push('<h2 class="chero-head">' + esc(NARRATIVE.companyHeadline()) + '</h2>');
+  var deck = NARRATIVE.companyDeck();
+  h.push('<p class="chero-deck">' + esc(deck.text) + '</p>');
+  h.push('<div class="chips">' +
+    statusChip('Current call', CALL.current.value,
+      CALL.current.value === 'Source Needed' ? 'need' : 'pos', 'OQ-002',
+      CALL.current.value === 'Source Needed' ? 'Why Source Needed?' : 'OQ-002') +
+    statusChip('Direction', CALL.direction, 'pos', 'SIG-02', 'SIG-02') +
+    statusChip('Conviction', CALL.conviction, 'neu', 'SIG-02', 'SIG-02') +
+    statusChip('Human review', 'Required', 'warn', 'R-020', 'R-020') +
+    '</div>');
+  h.push('<div class="chero-acts no-print">' +
+    btn('Read the narrative', '#narrative', 'pri') +
+    btn('Explore the signal', '#signal/SIG-02') +
+    btn('Open lineage', '#lineage/SIG-02') + '</div>');
+  h.push('</header>');
 
-  /* metric strip */
-  h.push('<h4 style="margin-bottom:6px">Current metric strip — '+esc(CP.label)+
-    ' <span class="note" style="text-transform:none;letter-spacing:0">every tile opens its evidence object</span></h4>');
-  h.push('<div class="strip">');
-  h.push(metric('Net Score', n2(ns.value), CP.label, 'ETR-OCT26-NS'));
-  h.push(metric('Sequential change', sign(ns.qqDelta), 'vs Jul 2026 · '+moveWord(ns.qqDelta), 'ETR-OCT26-NS'));
-  h.push(metric('Year-over-year change', sign(ns.yyDelta), 'vs Oct 2025 · '+moveWord(ns.yyDelta), 'ETR-OCT26-NS'));
-  h.push(metric('Pervasion', n2(pv.value), sign(pv.qqDelta)+' vs Jul 2026', 'ETR-OCT26-PV'));
-  h.push(metric('Positive intent', n2(it.adoption+it.increase)+'%', 'Adoption '+n2(it.adoption)+
-    '% + Increase '+n2(it.increase)+'%', 'ETR-OCT26-INTENT'));
-  h.push(metric('Negative intent', n2(it.decrease+it.replacing)+'%', 'Decrease '+n2(it.decrease)+
-    '% + Replacing '+n2(it.replacing)+'%', 'ETR-OCT26-INTENT'));
-  h.push(metric('Q/Q Z-Score', n2(z.qqZ,6), 'Bands Source Needed', 'ETR-OCT26-ZS'));
-  h.push(metric('Y/Y Z-Score', n2(z.yyZ,6), 'Higher than Q/Q', 'ETR-OCT26-ZS'));
-  h.push(metric('N', n2(CP.nBase,0), 'Citations, not people (R-009)', 'ETR-OCT26-ZS'));
-  h.push('</div>');
-  h.push('<div class="zbox">'+tag('Open question')+' <strong>'+esc(z.bandNote)+'</strong> '+
-    'The base metric determines direction; Z-Score supplies unusualness context only. '+
-    oids(['R-006','R-007','R-026','OQ-005'])+'</div>');
+  /* ── lead chart ─────────────────────────────────────────────────────── */
+  h.push(recoveryChart());
 
-  /* three drivers */
-  h.push('<h4 style="margin:16px 0 6px">Three signal drivers</h4>');
-  h.push('<div class="grid g3">');
-  DRIVERS.forEach(function(d){ h.push(driverCard(d)); });
-  h.push('</div>');
+  /* ── narrative snapshot ─────────────────────────────────────────────── */
+  h.push('<div class="snap">' + NARRATIVE.snapshot().map(function(b){
+    return '<div class="snapcol"><div class="snap-k">' + esc(b.label) + '</div>' +
+      '<p>' + esc(b.c.text) + '</p>' +
+      '<div class="snap-foot">' + tag(b.cls) +
+      '<button type="button" class="lnk no-print" data-claim="' + esc(b.c.claimId) +
+        '">Inspect evidence</button></div></div>';
+  }).join('') + '</div>');
+  h.push('<div id="snapManifest" class="no-print"></div>');
 
-  /* evidence balance */
-  h.push('<h4 style="margin:16px 0 6px">Evidence balance — counted from the objects in view</h4>');
-  h.push('<div class="balance">');
-  h.push(bcount(supp.length,'supporting evidence','#evidence'));
-  h.push(bcount(contra.length,'contradictory evidence','#evidence'));
-  h.push(bcount(ctx.length,'contextual evidence','#evidence'));
-  h.push(bcount(sn.length,'objects with a Source Needed field','#evidence'));
-  h.push(bcount(cur.length,'current (Oct 2026) evidence','#evidence'));
-  h.push(bcount(hist.length,'historical evidence','#evidence'));
-  h.push('</div>');
-  h.push('<p class="note" style="margin-top:6px">Counts are of objects, not a score. The workbook '+
-    'supplies no weighting scheme, so no composite is computed here.</p>');
+  /* ── metric rail ────────────────────────────────────────────────────── */
+  h.push('<div class="railhead"><h3>Key metrics</h3><p class="note">' + esc(CP.label) +
+    ' · N ' + n2(CP.nBase, 0) + ' citations. Every tile opens its evidence object.</p></div>');
+  h.push('<div class="mrail">' +
+    mtile('Net Score', n2(v.ns.value), 'spending intent', 'ETR-OCT26-NS') +
+    mtile('Q/Q change', sign(v.ns.qqDelta), moveWord(v.ns.qqDelta), 'ETR-OCT26-NS') +
+    mtile('Y/Y change', sign(v.ns.yyDelta), moveWord(v.ns.yyDelta), 'ETR-OCT26-NS') +
+    mtile('Pervasion', n2(v.pv.value), 'deployment breadth', 'ETR-OCT26-PV') +
+    mtile('Q/Q Z', n2(v.z.qqZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
+    mtile('Y/Y Z', n2(v.z.yyZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
+    mtile('N', n2(CP.nBase, 0), 'citations, not people', 'ETR-OCT26-ZS') +
+    '</div>');
 
-  el('view-index').innerHTML = h.join('');
+  /* ── the company story ──────────────────────────────────────────────── */
+  h.push('<section class="band"><div class="band-head"><div class="eyebrow">The company story</div>' +
+    '<h2>In three moves</h2><p class="lede">The package supports more topics than this. Three are ' +
+    'carried, because three are what the evidence holds at usable confidence.</p></div>');
+  h.push('<div class="moves">' + NARRATIVE.moves().map(function(m){
+    return '<article class="move">' +
+      '<div class="move-k">' + esc(m.kicker) + '</div>' +
+      '<h3>' + esc(m.title) + '</h3>' +
+      '<p>' + esc(m.c.text) + '</p>' +
+      '<div class="move-mini"><div><span class="k">' + esc(m.metricA.k) + '</span>' +
+        '<span class="v">' + esc(m.metricA.v) + '</span></div>' +
+        '<div><span class="k">' + esc(m.metricB.k) + '</span><span class="v">' +
+        esc(m.metricB.v) + '</span></div></div>' +
+      '<div class="move-meta">' + tag(m.classification) +
+        '<span class="pill">' + esc(m.direction) + '</span>' +
+        '<span class="pill">' + esc(m.confidence) + '</span></div>' +
+      '<div class="move-counter"><span class="k">Counterpoint</span>' + esc(m.counter) + '</div>' +
+      '<div class="move-acts no-print"><span class="evn">' + m.evidence.length +
+        ' evidence objects</span>' +
+        '<button type="button" class="lnk" data-oid="' + esc(m.focus) + '">Explore evidence</button>' +
+        '</div></article>';
+  }).join('') + '</div></section>');
 
-  function cell(k,v,s){
-    return '<div><div class="k">'+esc(k)+'</div><div class="v">'+v+'</div>'+
-      (s?'<div class="note" style="margin-top:2px">'+esc(s)+'</div>':'')+'</div>';
+  /* ── counterpoint ───────────────────────────────────────────────────── */
+  h.push('<section class="counterband"><div class="band-head"><div class="eyebrow">The counterpoint</div>' +
+    '<h2>What argues against it</h2></div><div class="counterbody">' +
+    NARRATIVE.counterpoint().map(function(c){
+      return '<p>' + esc(c.text) + '</p>'; }).join('') +
+    '<div class="no-print" style="margin-top:15px">' +
+      btn('View all counter-evidence', '#risks/counter') +
+      btn('Open the risk register', '#risks') + '</div></div></section>');
+
+  /* ── what to watch ──────────────────────────────────────────────────── */
+  h.push('<section class="band"><div class="band-head"><div class="eyebrow">Next period</div>' +
+    '<h2>What to watch next</h2></div>');
+  h.push('<ol class="watch">' + NARRATIVE.watch().map(function(w){
+    return '<li><div class="w-top"><h4>' + esc(w.title) + '</h4>' +
+      '<span class="w-st">' + esc(w.status) + '</span></div>' +
+      '<p class="w-why">' + esc(w.why) + '</p>' +
+      '<dl class="w-kv"><dt>What would resolve it</dt><dd>' + esc(w.resolve) + '</dd>' +
+      '<dt>Related signal</dt><dd>' + oid(w.signal) + '</dd></dl>' +
+      '<div class="no-print"><button type="button" class="lnk" data-goto="#question/' + esc(w.id) +
+      '">Open ' + esc(w.id) + '</button></div></li>';
+  }).join('') + '</ol>');
+  h.push('<div class="no-print" style="margin-top:13px">' +
+    btn('Generate update', '#generator/update-email', 'pri') +
+    btn('Open Risks and Questions', '#risks') + '</div></section>');
+
+  /* ── research foundation, below the narrative ───────────────────────── */
+  h.push('<section class="foundation"><button type="button" class="fx-head" data-expand="fxBody" ' +
+    'aria-expanded="false" aria-controls="fxBody"><span class="eyebrow">Research foundation</span>' +
+    '<span class="fx-sum">' + (D.evidence || []).length + ' evidence objects · ' +
+    (D.sources || []).length + ' sources · ' + (D.rules || []).length + ' rules · ' +
+    EDGES.length + ' relationships</span><span class="fx-caret" aria-hidden="true">▾</span></button>');
+  h.push('<div class="xpanel" id="fxBody" hidden><div class="fxgrid">' +
+    NARRATIVE.foundation().map(function(f){
+      return '<button type="button" class="fxcell" data-goto="' + esc(f.go) + '">' +
+        '<span class="n">' + f.v + '</span><span class="k">' + esc(f.k) + '</span>' +
+        '<span class="s">' + esc(f.s) + '</span></button>';
+    }).join('') + '</div>' +
+    '<p class="note">These are counts of objects, not scores. The workbook supplies no weighting ' +
+    'scheme, so no composite is computed anywhere in this application.</p>' +
+    '<div class="no-print">' + btn('View evidence', '#evidence') + btn('View lineage', '#lineage') +
+    btn('View sources', '#sources') + btn('View methodology', '#methodology') +
+    btn('Explore the research foundation', '#evidence', 'pri') + '</div></div></section>');
+
+  el('view-company').innerHTML = h.join('');
+  wireChart();
+
+  function statusChip(k, val, kind, id, linkLabel){
+    return '<span class="schip s-' + kind + '"><span class="k">' + esc(k) + '</span>' +
+      '<span class="v">' + esc(val) + '</span>' +
+      (id ? '<button type="button" class="q no-print" data-oid="' + esc(id) + '">' +
+        esc(linkLabel || id) + '</button>' : '') + '</span>';
   }
-  function metric(k,v,s,id){
-    return '<button type="button" class="metric" data-oid="'+esc(id)+'">'+
-      '<span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span>'+
-      '<span class="s">'+esc(s)+'</span></button>';
-  }
-  function bcount(n,l,href){
-    return '<button type="button" class="bcount" data-goto="'+esc(href)+'">'+
-      '<span class="n">'+n+'</span><br><span class="l">'+esc(l)+'</span></button>';
+  function mtile(k, val, s, id){
+    return '<button type="button" class="mtile" data-oid="' + esc(id) + '">' +
+      '<span class="k">' + esc(k) + '</span><span class="v">' + esc(val) + '</span>' +
+      '<span class="s">' + esc(s) + '</span></button>';
   }
 };
+
 function btn(label,href,cls){
   return '<button type="button" class="btn '+(cls||'')+'" data-goto="'+esc(href)+'">'+esc(label)+'</button>';
 }
@@ -610,257 +884,205 @@ function lineChart(points, opts){
   return s.join('');
 }
 
-/* ═════════════════════════════════════════════ VIEW: Vendor Signal Brief ═
-   The landing view. The story arc comes first — the question, the answer, why it
-   matters now, and what the answer is built from. Every number and every object ID
-   is still here; it simply follows the narrative instead of leading it.
+/* ═══════════════════════════════════════════════════ VIEW: Narrative ═════
+   A digital research brief. Question, answer, signal, evidence, counter-case,
+   hypothesis, what to watch, method — in that order, at a reading width, with
+   every number still one click from the object it came from.
    ══════════════════════════════════════════════════════════════════════════ */
 
-var BRIEF_SECTIONS = [
-  ['scorecard', '01', 'Signal scorecard',        'all seven signals, with both confidences'],
-  ['changed',   '02', 'What changed',            'October against July and October last year'],
-  ['demand',    '03', 'Demand and breadth',      'what the two headline measures each carry'],
-  ['cohorts',   '04', 'Enterprise and geography','where the reading is strong, and where it thins'],
-  ['drivers',   '05', 'Three drivers',           'the story compressed to what it rests on'],
-  ['bridge',    '06', 'Signal to KPI',           'the one relationship worth testing'],
-  ['counter',   '07', 'What argues against it',  'counter-evidence and the Z-Score gap'],
-  ['open',      '08', 'What would change it',    'open questions and the next step']
-];
+RENDER.narrative = function(){
+  var ns = CP.netScore, pv = CP.pervasion, z = CP.zScore, it = CP.intent;
+  var cuts = (D.rawTables.subsampleCuts || {rows:[]}).rows;
+  var h = [];
+  CLAIM_SEQ = 200;   /* narrative claim ids sit in their own band */
 
-RENDER.brief = function(){
-  var ns=CP.netScore, pv=CP.pervasion, z=CP.zScore, it=CP.intent;
-  var region = D.rawTables.region.rows;
-  var adopt  = D.rawTables.adoptionReasons.rows;
-  var cuts   = D.rawTables.subsampleCuts.rows;
-  var pick   = function(cat){ return cuts.filter(function(r){return r.Category===cat;})[0]||{}; };
-  var h=[];
+  /* ── contents ────────────────────────────────────────────────────────── */
+  h.push('<div class="nbar no-print"><div class="nbar-t">Contents</div>' +
+    NARRATIVE.SECTIONS.map(function(s){
+      return '<button type="button" data-scroll="nar-' + s[0] + '"><span class="num">' + s[1] +
+        '</span>' + esc(s[2]) + '</button>';
+    }).join('') + '</div>');
 
-  /* ── the answer ───────────────────────────────────────────────────────── */
-  h.push('<div class="answer">');
-  h.push('<div class="answer-main">');
-  h.push('<div class="q-eyebrow">The research question</div>');
-  h.push('<h1 class="q-head">Is CrowdStrike’s post-outage recovery still building, '+
-         'or has it flattened out a year on?</h1>');
-  h.push('<div class="short"><div class="lab">Short answer</div>'+
-    '<p>It is still building, but it has slowed sharply. Spending intent rose again in '+
-    esc(CP.label)+' and deployment breadth rose faster, so the recovery is real — yet almost '+
-    'all of the improvement is year-over-year rather than in the last quarter.</p>'+
-    '<p class="why"><b>Why now</b> The sequential move is '+sign(ns.qqDelta)+' points, which the '+
-    'workbook’s own wording convention calls '+moveWord(ns.qqDelta)+', against '+sign(ns.yyDelta)+
-    ' points year over year, which it calls '+moveWord(ns.yyDelta)+'. Breadth moved more than intent '+
-    'did, and the enterprise picture is uneven rather than uniformly strong.</p></div>');
-  h.push('<p class="scope">ETR measures respondent spending intent and deployment breadth. It does not '+
-    'measure revenue, ARR, market share, financial performance or share price, and nothing in this '+
-    'experience should be read as doing so. October 2026 is the current survey period; July 2026 is '+
-    'historical comparison.</p>');
-  h.push('<div class="toc"><div class="toc-lab">How this answer is built</div>'+
-    BRIEF_SECTIONS.map(function(sx){
-      return '<a href="#brief" data-scroll="brief-'+sx[0]+'"><span class="num">'+sx[1]+'</span>'+
-        '<span class="t">'+esc(sx[2])+'</span><span class="d">'+esc(sx[3])+'</span></a>';
-    }).join('')+'</div>');
-  h.push('</div>');
+  h.push('<article class="reader">');
 
-  /* ── the call rail ────────────────────────────────────────────────────── */
-  h.push('<div class="answer-rail">');
-  h.push('<div class="call-pills">'+
-    '<span class="cpill"><span class="k">Prior call</span><span class="v">'+esc(CALL.prior.value)+
-      ' · JUL26</span></span>'+
-    '<span class="cpill arrow">→</span>'+
-    '<span class="cpill hot"><span class="k">Current call</span><span class="v">Source Needed · '+
-      esc(CP.shortLabel)+'</span></span>'+
-    '<span class="cpill"><span class="k">Evidence confidence</span><span class="v">High</span></span>'+
-    '<span class="cpill"><span class="k">Outcome linkage</span><span class="v">Low</span></span>'+
-    '</div>');
-  h.push('<div class="rail-head">Spending intent is recovering. Enterprise strength is selective, '+
-    'and no October outlook has been issued.</div>');
-  h.push('<p class="rail-lede">Net Score and Pervasion both rose. The largest indexed cohorts read '+
-    'above the overall number while Large Organizations read below it, and the workbook records no '+
-    esc(CP.label)+' ETR data outlook at all — which is why the current call reads Source Needed '+
-    'rather than Positive.</p>');
-  h.push('<div class="rail-grid">'+
-    railM('Net Score', n2(ns.value), 'up', sign(ns.qqDelta)+' vs Jul 2026 · '+sign(ns.yyDelta)+
-      ' vs Oct 2025 · N='+n2(CP.nBase,0), 'ETR-OCT26-NS')+
-    railM('Pervasion', n2(pv.value)+'%', 'up', sign(pv.qqDelta)+' sequentially · breadth, not revenue',
-      'ETR-OCT26-PV')+
-    railM('Q/Q Z-Score', n2(z.qqZ,3), 'mid', 'positive · approved bands Source Needed', 'ETR-OCT26-ZS')+
-    railM('Y/Y Z-Score', n2(z.yyZ,3), 'mid', 'positive and higher than Q/Q', 'ETR-OCT26-ZS')+
-    railM('Enterprise spread', '42.7 / 35.8', 'mid', 'Fortune 500 above, Large Orgs below overall',
-      'ETR-OCT26-LARGE', true)+
-    railM('Cohort base', 'Source Needed', 'dn', 'no October cut carries an N', 'OQ-014', true)+
-    '</div>');
-  h.push('<div class="rail-foot"><div class="k">Monitor next</div><p>Whether the sequential move '+
-    'clears the stated-change band in the next survey, whether cut-level bases arrive for the cohort '+
-    'and regional readings, and whether an October data outlook is recorded at all.</p></div>');
-  h.push('</div></div>');
+  /* ── 01 the research question ───────────────────────────────────────── */
+  h.push(nsec('question', '01', 'The research question'));
+  h.push('<h1 class="n-question">' + esc(NARRATIVE.QUESTION) + '</h1>');
+  h.push('<p class="note" style="margin-top:10px">Everything below is assembled to answer it, ' +
+    'in the order a reader would want it.</p>');
 
-  /* ── 01 scorecard ─────────────────────────────────────────────────────── */
-  h.push(sec('scorecard','01','Signal scorecard',
-    'Seven signals, each with its reading, direction, both confidences, the sources behind it and '+
-    'the caveat that bounds it. Direction and confidence stay in separate columns: a large move on a '+
-    'thin or dated sample does not become a confident one.'));
-  h.push('<div class="tw"><table><thead><tr>'+
-    '<th style="width:16%">Signal</th><th style="width:14%">Current reading</th>'+
-    '<th style="width:11%">Direction</th><th style="width:8%">Evidence</th>'+
-    '<th style="width:8%">Outcome</th><th style="width:23%">What it means</th>'+
-    '<th style="width:9%">Status</th><th style="width:11%">Evidence</th></tr></thead><tbody>');
-  SCORECARD.forEach(function(r){
-    var sg = OBJ[r.id]||{};
-    h.push('<tr class="click" data-goto="#signal/'+esc(r.id)+'">'+
-      '<td><strong>'+esc(sg.title)+'</strong><br>'+oid(r.id)+'</td>'+
-      '<td>'+esc(r.reading())+'<br><span class="note">'+esc(r.unit)+'</span></td>'+
-      '<td><span class="word '+r.word+'">'+esc(r.direction)+'</span></td>'+
-      '<td><strong class="'+(/High/.test(r.confidence)?'up':(/Low/.test(r.confidence)?'dn':'mix'))+
-        '">'+esc(r.confidence.split(' ')[0])+'</strong></td>'+
-      '<td><strong class="dn">Low</strong></td>'+
-      '<td>'+esc(r.implication)+'</td>'+
-      '<td><span class="note">'+esc(sg.workflowStatus||'')+'</span></td>'+
-      '<td>'+oids(r.ids)+'</td></tr>');
+  /* ── 02 short answer ────────────────────────────────────────────────── */
+  h.push(nsec('answer', '02', 'The short answer'));
+  h.push('<div class="n-answer"><p>' + esc(NARRATIVE.shortAnswer()) + '</p></div>');
+  h.push('<p class="scope">ETR measures respondent spending intent and deployment breadth. It does not ' +
+    'measure revenue, ARR, market share, financial performance or share price, and nothing here should ' +
+    'be read as doing so. ' + esc(CP.label) + ' is the current survey period; July 2026 is historical ' +
+    'comparison.</p>');
+
+  /* ── 03 the signal ──────────────────────────────────────────────────── */
+  h.push(nsec('signal', '03', 'The signal'));
+  var sig = OBJ[CALL.primarySignalId] || {};
+  h.push('<p>' + esc(sig.statement || CALL.primarySignalText) + ' That is the recorded reading for ' +
+    oid(CALL.primarySignalId) + ', whose reviewer status is <strong>' +
+    esc(sig.workflowStatus || 'Source Needed') + '</strong>. The prior call was ' +
+    esc(CALL.prior.value) + ' in July 2026; under R-025 that reading is now historical, and no ' +
+    esc(CP.label) + ' data outlook is recorded anywhere in the package, which is why the current call ' +
+    'reads ' + needed() + ' rather than carrying the earlier one forward ' + oid('OQ-002') + '.</p>');
+  h.push(callouts([
+    ['Current call', CALL.current.value, 'need'],
+    ['Prior call', CALL.prior.value + ' · Jul 2026', 'neu'],
+    ['Direction', CALL.direction, 'pos'],
+    ['Conviction', CALL.conviction, 'neu'],
+    ['Evidence confidence', 'Mixed', 'neu'],
+    ['Outcome linkage', 'Low', 'need']
+  ]));
+
+  /* ── 04 what changed ────────────────────────────────────────────────── */
+  h.push(nsec('changed', '04', 'What changed'));
+  h.push('<p>Net Score reads <strong>' + n2(ns.value) + '</strong> on ' + n2(CP.nBase, 0) +
+    ' citations ' + oid('ETR-OCT26-NS') + '. Against July 2026 that is ' + sign(ns.qqDelta) +
+    ', which the workbook’s own wording convention calls <em>' + moveWord(ns.qqDelta) +
+    '</em>. Against October 2025 it is ' + sign(ns.yyDelta) + ', <em>' + moveWord(ns.yyDelta) +
+    '</em>. Read those two numbers together and the shape of the year is plain: nearly all of the ' +
+    'distance was covered before this quarter.</p>');
+  h.push(pull(NARRATIVE.pull('changed')));
+  h.push('<p>Three survey periods are supplied for Net Score and twelve for Pervasion. Nothing between ' +
+    'them is interpolated, and the chart on the Company page leaves the unsupplied Net Score periods ' +
+    'blank rather than drawing through them ' + oids(['R-003', 'R-005']) + '.</p>');
+
+  /* ── 05 demand and breadth ──────────────────────────────────────────── */
+  h.push(nsec('breadth', '05', 'Demand and breadth'));
+  h.push('<p>The two headline measures carry different things. Net Score is a spending-intent balance: ' +
+    n2(it.adoption) + '% adopting and ' + n2(it.increase) + '% increasing against ' + n2(it.decrease) +
+    '% decreasing and ' + n2(it.replacing) + '% replacing, with ' + n2(it.flat) + '% flat ' +
+    oid('ETR-OCT26-INTENT') + '. Pervasion is deployment breadth — the share of respondents reporting ' +
+    'the platform in use at all — and it rose to <strong>' + n2(pv.value) + '</strong>, ' +
+    sign(pv.qqDelta) + ' on the quarter ' + oid('ETR-OCT26-PV') + '. Breadth moved further than intent ' +
+    'did over the same period.</p>');
+  h.push(pull(NARRATIVE.pull('breadth')));
+  h.push('<p class="note">Pervasion is breadth, not revenue and not market share. A rise in it says ' +
+    'more respondents report the platform in use; it says nothing about what they spend ' +
+    oids(['R-008', 'R-009']) + '.</p>');
+
+  /* ── 06 enterprise and geography ────────────────────────────────────── */
+  h.push(nsec('cohorts', '06', 'Enterprise and geography'));
+  h.push('<p>The enterprise picture is selective rather than uniform, and the honest caveat is larger ' +
+    'than the finding: no October cut carries a citation base ' + oid('OQ-014') + '. The cohorts below ' +
+    'sit inside different definitions, so the spread between them describes the sample rather than ' +
+    'ranking the segments.</p>');
+  /* the named enterprise cohorts, in the order the story uses them, plus the
+     all-respondent row so the comparison has something to be a comparison to */
+  var WANT = ['All Respondents','Global 2000','Fortune 500','Large Organizations',
+              'Midsize Organizations','Small Organizations'];
+  var picked = WANT.map(function(name){
+    return cuts.filter(function(r){ return r.Category === name; })[0];
+  }).filter(Boolean);
+  if (picked.length) h.push(miniTable(
+    ['Cut', 'Net Score', 'Pervasion', 'Citation base'],
+    picked.map(function(r){
+      return [r.Category, n2(Number(r['Net Score'])), r.Pervasion ? n2(Number(r.Pervasion)) : '—',
+              '<span class="needed">SOURCE NEEDED</span>'];
+    })));
+  var regions = NREGION();
+  if (regions.length) h.push('<p>Geographically the October cuts run wide — from ' +
+    esc(regions[0].k + ' at ' + n2(regions[0].v)) + ' down to ' +
+    esc(regions[regions.length-1].k + ' at ' + n2(regions[regions.length-1].v)) + ' ' +
+    oid('ETR-OCT26-REGION') + '. A regional survey cut is not regional revenue, and with no base ' +
+    'supplied the spread cannot be weighed ' + oids(['R-011', 'R-024']) + '.</p>');
+
+  /* ── 07 what argues against it ──────────────────────────────────────── */
+  h.push(nsec('counter', '07', 'What argues against it'));
+  NARRATIVE.counterpoint().forEach(function(c, i){
+    h.push('<p>' + esc(c.text) + ' <button type="button" class="lnk no-print" data-claim="' +
+      esc(c.claimId) + '">Inspect</button></p>');
+    if (i === 0) h.push(pull(NARRATIVE.pull('counter')));
   });
-  h.push('</tbody></table></div>');
-  h.push('<p class="note" style="margin-top:9px">Outcome linkage is Low on every row for one reason: '+
-    'no validated signal-to-KPI relationship exists in this package, and the Forecaster output that '+
-    'would supply one is not present '+oids(['OQ-004','R-018'])+'.</p>');
+  h.push('<p>Separately, the deviation figures cannot be read. Q/Q Z is ' + n2(z.qqZ, 6) +
+    ' and Y/Y Z is ' + n2(z.yyZ, 6) + ' on N ' + n2(z.citations, 0) + ' ' + oid('ETR-OCT26-ZS') +
+    ' — both positive, with the annual figure higher, consistent with the larger annual change in the ' +
+    'base metric. The approved bands that would say whether a move of this size is ordinary are ' +
+    needed() + ' ' + oids(['OQ-005', 'R-006', 'R-007']) + '. The Z-Score supplies deviation context ' +
+    'only and never creates or changes the call.</p>');
 
-  /* ── 02 what changed ──────────────────────────────────────────────────── */
-  h.push(sec('changed','02','What changed',
-    'Three survey periods are supplied for Net Score and twelve for Pervasion. Nothing between them '+
-    'is interpolated.'));
-  h.push('<div class="grid g2"><div class="card"><h4>Net Score — supplied periods</h4>'+
-    lineChart([{label:'Oct 2025',value:OCT25.netScore},{label:'Jul 2026',value:JUL.netScore},
-               {label:'Oct 2026',value:ns.value}], {label:'Net Score by period'})+
-    '<p class="note">Most of the recovery is in the year-over-year leg. '+oid('ETR-OCT26-NS')+'</p></div>');
-  h.push('<div class="card"><h4>Pervasion — full supplied series</h4>'+
-    lineChart(D.rawTables.pervasionTrend.rows.map(function(r){
-      return {label:r.Category.replace(' 20',' ’'), value:Number(r.Pervasion)};}),
-      {label:'Pervasion series', color:'#0F6E66'})+
-    '<p class="note">Breadth has climbed steadily since the Oct 2024 trough. '+oid('ETR-OCT26-PV')+'</p></div></div>');
-  h.push('<div class="pull">Breadth moved more than intent did. That is the shape of a recovery that '+
-    'is widening its footprint faster than it is deepening its budget.</div>');
-  h.push('<div class="tw"><table><thead><tr><th>Measure</th><th class="num">Oct 2025</th>'+
-    '<th class="num">Jul 2026</th><th class="num">Oct 2026</th><th class="num">Q/Q</th>'+
-    '<th class="num">Y/Y</th><th>How the workbook words it</th><th>Evidence</th></tr></thead><tbody>'+
-    '<tr><td><strong>Net Score</strong></td><td class="num">'+n2(OCT25.netScore)+'</td>'+
-      '<td class="num">'+n2(JUL.netScore)+'</td><td class="num"><strong>'+n2(ns.value)+'</strong></td>'+
-      '<td class="num up">'+sign(ns.qqDelta)+'</td><td class="num up">'+sign(ns.yyDelta)+'</td>'+
-      '<td>Q/Q '+moveWord(ns.qqDelta)+'; Y/Y '+moveWord(ns.yyDelta)+'</td>'+
-      '<td>'+oid('ETR-OCT26-NS')+'</td></tr>'+
-    '<tr><td><strong>Pervasion</strong></td><td class="num">'+n2(OCT25.pervasion)+'</td>'+
-      '<td class="num">'+n2(JUL.pervasion)+'</td><td class="num"><strong>'+n2(pv.value)+'</strong></td>'+
-      '<td class="num up">'+sign(pv.qqDelta)+'</td><td class="num up">'+sign(pv.yyDelta)+'</td>'+
-      '<td>Q/Q '+moveWord(pv.qqDelta)+'; Y/Y '+moveWord(pv.yyDelta)+'</td>'+
-      '<td>'+oid('ETR-OCT26-PV')+'</td></tr></tbody></table></div>');
-  h.push('<div class="callout" style="margin-top:14px"><strong>One thing the survey label does not '+
-    'settle.</strong> '+esc(CP.exportTimestampNote)+' '+oid('OQ-015')+'</div>');
+  /* ── 08 the hypothesis ──────────────────────────────────────────────── */
+  h.push(nsec('bridge', '08', 'The signal-to-KPI hypothesis'));
+  h.push('<div class="hyp-bar">Hypothesis — Backtest Required</div>');
+  h.push('<p>One relationship in this package is worth formal testing, and it is stated here in full so ' +
+    'that it can be attacked. ' + oid('SIG-02') + ' to ' + oid('KPI-003') + ' Net New ARR: the demand ' +
+    'reading and the reported series move the same way over the same window, and ' + oid('XL-01') +
+    ' records that as parallel evidence. ' + oid('R-021') + ' holds the pairing at Backtest Required. ' +
+    'No lag is established. Flex, CCP, renewal timing, new logos and expansion are named as ' +
+    'confounders. The protocol is ' + oid('BT-CRWD-OCT26') + ', and its expected lag and tolerance are ' +
+    needed() + '.</p>');
+  h.push(pull(NARRATIVE.pull('bridge')));
+  h.push('<p class="note">' + oid('R-015') + ' permits a statement of directional consistency between ' +
+    'the two lanes and prohibits any causal assertion between them. Nothing in this application ' +
+    'asserts one.</p>');
 
-  /* ── 03 demand and breadth ────────────────────────────────────────────── */
-  h.push(sec('demand','03','Demand and breadth',
-    'Net Score answers whether spending intent is expanding. Pervasion answers how broadly the vendor '+
-    'is deployed. They are shown together and never substituted for one another.'));
-  h.push('<div class="grid g2"><div class="card"><h4>Where the '+esc(CP.label)+' intent sits</h4>'+
-    barChart([
-      {label:'Adoption', value:it.adoption, color:'#4E8A3C'},
-      {label:'Increase', value:it.increase, color:'#4E8A3C'},
-      {label:'Flat', value:it.flat, color:'#9A9187'},
-      {label:'Decrease', value:it.decrease, color:'#B3261E'},
-      {label:'Replacing', value:it.replacing, color:'#B3261E'}
-    ], {label:'Spending intent components', labelWidth:88})+
-    '<p class="note">Just under half the base plans to adopt or increase; about one in nine plans to '+
-    'cut or replace. All Respondents cut, N='+n2(CP.nBase,0)+' citations. '+oid('ETR-OCT26-INTENT')+'</p></div>');
-  h.push('<div class="card"><h4>What each measure can and cannot carry</h4><dl class="kv">'+
-    D.metricContext.filter(function(m){return /Net Score|Pervasion|Z-Score/.test(m.metric);})
-      .map(function(m){ return '<dt>'+esc(m.metric)+'</dt><dd>'+esc(m.canSupport)+
-        '<br><span class="note"><strong>Cannot prove:</strong> '+esc(m.cannotProve)+'</span></dd>'; }).join('')+
-    '</dl></div></div>');
+  /* ── 09 what to watch ───────────────────────────────────────────────── */
+  h.push(nsec('watch', '09', 'What to watch'));
+  h.push('<ol class="watch narrow">' + NARRATIVE.watch().map(function(w){
+    return '<li><div class="w-top"><h4>' + esc(w.title) + '</h4><span class="w-st">' +
+      esc(w.status) + '</span></div><p class="w-why">' + esc(w.why) + '</p>' +
+      '<dl class="w-kv"><dt>What would resolve it</dt><dd>' + esc(w.resolve) + '</dd></dl>' +
+      '<div class="no-print"><button type="button" class="lnk" data-goto="#question/' + esc(w.id) +
+      '">Open ' + esc(w.id) + '</button></div></li>';
+  }).join('') + '</ol>');
 
-  /* ── 04 cohorts and geography ─────────────────────────────────────────── */
-  h.push(sec('cohorts','04','Enterprise and geography',
-    'This is where the reading is strongest and where it is thinnest at the same time. The cohort '+
-    'values are current; none of them carries a base.'));
-  h.push('<div class="grid g2"><div class="card"><h4>Net Score by cohort — '+esc(CP.label)+'</h4>'+
-    barChart([
-      {label:'Fortune 500', value:Number(pick('Fortune 500')['Net Score'])},
-      {label:'Global 2000', value:Number(pick('Global 2000')['Net Score'])},
-      {label:'Fortune 1000', value:Number(pick('Fortune 1000')['Net Score'])},
-      {label:'All Respondents', value:ns.value, color:'#F16A20'},
-      {label:'Large Organizations', value:Number(pick('Large Organizations')['Net Score'])},
-      {label:'Midsize', value:Number(pick('Midsize Organizations')['Net Score'])},
-      {label:'Small', value:Number(pick('Small Organizations')['Net Score'])}
-    ], {label:'Net Score by cohort'})+
-    '<p class="note">Sorted by displayed Net Score — application view. '+
-    oids(['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'])+'</p></div>');
-  h.push('<div class="card"><h4>Net Score by region — '+esc(CP.label)+'</h4>'+
-    barChart(region.map(function(r){ return {label:r.Category, value:Number(r['Oct 2026'])}; }),
-      {label:'Regional Net Score'})+
-    '<p class="note">The spread runs from APAC to EMEA. Regional N is not supplied for any cut. '+
-    oids(['ETR-OCT26-REGION','SIG-07'])+'</p></div></div>');
-  h.push('<div class="pull">The indexed cohorts read above the overall number while Large '+
-    'Organizations read below it. The enterprise evidence is selective, not uniform — and without a '+
-    'base under any of it, that is as far as it can be taken.</div>');
+  /* ── 10 methodology note ────────────────────────────────────────────── */
+  h.push(nsec('method', '10', 'Methodology note'));
+  h.push('<p>The sole factual source is the authorized worksheets of ' + esc(D.metadata.workbook) +
+    '. ' + esc(CP.label) + ' is the current TSIS period and July 2026 is historical comparison under ' +
+    oid('R-025') + '. N counts citations, not people ' + oid('R-009') + '. Prose in the generators is ' +
+    'assembled by template from these objects; no model is called and no network request is made. ' +
+    'Every generated paragraph carries a claim manifest naming its evidence, objects, worksheets, ' +
+    'rules, confidence and caveats.</p>');
+  h.push('<p>Three things are Source Needed and are shown as such rather than filled: the current ' +
+    'period data outlook ' + oid('OQ-002') + ', cut-level citation bases ' + oid('OQ-014') + ', and ' +
+    'the approved Z-Score bands ' + oid('OQ-005') + '. ' + oid('R-020') + ' makes analyst approval a ' +
+    'precondition of external distribution, so every output here is a working draft.</p>');
 
-  /* ── 05 three drivers ─────────────────────────────────────────────────── */
-  h.push(sec('drivers','05','Three drivers',
-    'The package supports more topics than this. Three are carried because three are what the evidence '+
-    'can hold at usable confidence.'));
-  h.push('<div class="grid g3">'+DRIVERS.map(driverCard).join('')+'</div>');
+  h.push('</article>');
 
-  /* ── 06 bridge ────────────────────────────────────────────────────────── */
-  h.push(sec('bridge','06','Signal to KPI',
-    'One relationship is worth formal testing. It is stated in full here so it can be attacked.'));
-  h.push(bridgePanel('SIG-02','KPI-003'));
+  /* ── research foundation, at the foot ───────────────────────────────── */
+  h.push('<section class="foundation"><button type="button" class="fx-head" data-expand="narFx" ' +
+    'aria-expanded="false" aria-controls="narFx"><span class="eyebrow">Research foundation</span>' +
+    '<span class="fx-sum">What makes this up — ' + (D.evidence || []).length + ' evidence objects, ' +
+    EDGES.length + ' relationships</span><span class="fx-caret" aria-hidden="true">▾</span></button>' +
+    '<div class="xpanel" id="narFx" hidden><div class="fxgrid">' +
+    NARRATIVE.foundation().map(function(f){
+      return '<button type="button" class="fxcell" data-goto="' + esc(f.go) + '">' +
+        '<span class="n">' + f.v + '</span><span class="k">' + esc(f.k) + '</span>' +
+        '<span class="s">' + esc(f.s) + '</span></button>';
+    }).join('') + '</div><p class="note">Object counts, not scores. No composite is computed.</p>' +
+    '<div class="no-print">' +
+    '<button type="button" class="btn pri" data-mode="research">Explore the research foundation</button>' +
+    btn('View evidence', '#evidence') + btn('View lineage', '#lineage') +
+    btn('View methodology', '#methodology') + '</div></div></section>');
 
-  /* ── 07 counter-evidence ──────────────────────────────────────────────── */
-  h.push(sec('counter','07','What argues against it',
-    'Ten counter-evidence objects and one methodology gap. A counter-signal filtered out for tidiness '+
-    'is a counter-signal suppressed.'));
-  h.push('<div class="tw"><table><thead><tr><th style="width:9%">ID</th><th style="width:22%">Risk</th>'+
-    '<th style="width:9%">Period</th><th style="width:9%">Confidence</th>'+
-    '<th style="width:29%">What it says</th><th style="width:22%">Why it matters here</th>'+
-    '</tr></thead><tbody>');
-  (D.risks||[]).forEach(function(r){
-    h.push('<tr class="click" data-oid="'+esc(r.id)+'"><td>'+oid(r.id)+'</td>'+
-      '<td><strong>'+esc(r.title)+'</strong></td><td>'+orNeeded(r.period)+'</td>'+
-      '<td>'+orNeeded(r.confidence)+'</td><td class="note">'+esc(r.statement)+'</td>'+
-      '<td class="note">'+orNeeded(r.caveat,'—')+'</td></tr>');
-  });
-  h.push('</tbody></table></div>');
-  h.push('<h4 style="margin:22px 0 9px">The Z-Score gap</h4>');
-  h.push(zPanel());
+  h.push('<div id="narManifest" class="no-print"></div>');
 
-  /* ── 08 open questions and action ─────────────────────────────────────── */
-  h.push(sec('open','08','What would change it',
-    'Ranked by what would move the call, not by what is easiest to obtain.'));
-  h.push(oqTable((D.openQuestions||[]).filter(function(q){
-    return /critical|high/i.test(q.importance||'');}).slice(0,6)));
-  h.push('<div class="grid g2" style="margin-top:18px">'+
-    nblock('b-act','Recommended action','Immediate research',
-      '<p>Retrieve the October cut-level bases '+oid('OQ-014')+' and the October ETR data outlook '+
-      oid('OQ-002')+'. Those two retrievals unlock the cohort narrative and the current call '+
-      'respectively — and they are the only two gaps that would change what this brief can say.</p>')+
-    nblock('b-act','Recommended action','Validation',
-      '<p>Pre-register '+oid('BT-CRWD-OCT26')+' with an agreed lag and tolerance before any outcome is '+
-      'reviewed, and decompose Flex and CCP out of Net New ARR first '+oids(['OQ-007','R-021'])+'.</p>')+
-    '</div>');
-  h.push('<div class="callout" style="margin-top:18px"><strong>Human review required.</strong> '+
-    esc(D.metadata.humanReviewStatement)+' Every reviewer decision on the Signal Canvas reads '+
-    '<em>Pending Review</em>, and this brief contains no rating, price target, valuation opinion or '+
-    'forecast.</div>');
+  el('view-narrative').innerHTML = h.join('');
 
-  h.push('<div class="actbar no-print" style="margin-top:22px">'+
-    '<button class="btn pri" id="printBrief">Print this brief</button>'+
-    btn('Open the lineage','#lineage/SIG-02')+btn('Explore the evidence','#evidence')+
-    btn('Draft the Sunday Signal','#generator/sunday-signal')+'</div>');
-
-  el('view-brief').innerHTML = h.join('');
-  el('view-brief').classList.add('print-target');
-
-  function sec(id,num,title,lede){
-    return '<section class="sec" id="brief-'+id+'"><div class="sec-lab">'+num+' · '+esc(title)+
-      '</div><h2>'+esc(title)+'</h2><p class="lede">'+esc(lede)+'</p></section>';
+  function nsec(id, num, title){
+    return '<section class="sec nsec" id="nar-' + id + '"><div class="sec-lab">' + num +
+      '</div><h2>' + esc(title) + '</h2></section>';
   }
-  function railM(k,v,cls,sub,id,small){
-    return '<button type="button" data-oid="'+esc(id)+'"><span class="k">'+esc(k)+'</span>'+
-      '<span class="v '+cls+(small?' sm':'')+'">'+esc(v)+'</span>'+
-      '<span class="s">'+esc(sub)+'</span></button>';
+  function pull(text){
+    return text ? '<blockquote class="pull">' + esc(text) + '</blockquote>' : '';
+  }
+  function callouts(rows){
+    return '<div class="ncall">' + rows.map(function(r){
+      return '<div class="nc nc-' + r[2] + '"><span class="k">' + esc(r[0]) + '</span>' +
+        '<span class="v">' + esc(r[1]) + '</span></div>';
+    }).join('') + '</div>';
+  }
+  function miniTable(head, rows){
+    return '<div class="tw"><table><thead><tr>' + head.map(function(x){
+      return '<th>' + esc(x) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      rows.map(function(r){ return '<tr>' + r.map(function(c, i){
+        return '<td>' + (i === 3 ? c : esc(c)) + '</td>'; }).join('') + '</tr>'; }).join('') +
+      '</tbody></table></div>';
   }
 };
 
@@ -1054,45 +1276,110 @@ var signalFilter = {q:'', theme:'', direction:'', confidence:'', period:'', revi
 
 RENDER.signals = function(route){
   if (route && route.arg && OBJ[route.arg]) { renderSignalWorkspace(route.arg); return; }
-  var h=['<div class="vhead"><div class="eyebrow">Signal Explorer</div><h2>Signals</h2>'+
-    '<p>Every Signal Canvas and Signal Inventory object. Counts respond to the source controls; '+
-    'reviewer decisions do not.</p></div>'];
-  h.push('<div class="filters"><div class="fgrp">'+
-    '<label class="mini" for="sigQ">Search</label>'+
-    '<input id="sigQ" type="search" value="'+esc(signalFilter.q)+'" placeholder="signal name, statement, gap…" '+
-    'style="flex:1;min-width:170px;padding:4px 8px;border:1px solid var(--line);border-radius:3px">'+
-    sel('sigDir','Direction',['','Improving','Mixed','Watch'],signalFilter.direction)+
-    sel('sigConf','Confidence',['','High','Medium-High','Medium','Low'],signalFilter.confidence)+
-    sel('sigPeriod','Evidence',['','Has current evidence','Historical only'],signalFilter.period)+
-    sel('sigReview','Review',['','Pending Review'],signalFilter.review)+
+
+  /* Presentation groups only. The workbook records no ranking, so the grouping
+     is derived from fields that do exist: the recorded primary signal, whether
+     a signal carries current-period evidence, and whether its reading is held
+     at Source Needed. Nothing about the signal objects themselves changes. */
+  function groupOf(s, m){
+    if (s.id === CALL.primarySignalId) return 'primary';
+    var row = SCORECARD.filter(function(r){ return r.id === s.id; })[0];
+    if (row && row.reading() === 'Source Needed') return 'gap';
+    return m.current > 0 ? 'supporting' : 'watch';
+  }
+  var GROUPS = [
+    ['primary',    'Primary signal',  'the reading the current call is built on'],
+    ['supporting', 'Supporting',      'carries current-period evidence'],
+    ['watch',      'Watch',           'evidence is historical or thin for this period'],
+    ['gap',        'Research gap',    'the reading itself is Source Needed']
+  ];
+
+  var h = ['<div class="vhead"><div class="eyebrow">Signals</div>' +
+    '<h2>Seven readings, and what each one can carry</h2>' +
+    '<p>Grouped by the role each signal plays in the current call. The grouping is a display ' +
+    'choice derived from existing fields — the workbook records no ranking and none is invented ' +
+    'here. Counts respond to the source controls; reviewer decisions do not.</p></div>'];
+
+  h.push('<div class="filters research-only"><div class="fgrp">' +
+    '<label class="mini" for="sigQ">Search</label>' +
+    '<input id="sigQ" type="search" value="' + esc(signalFilter.q) + '" ' +
+    'placeholder="signal name, statement, gap…" ' +
+    'style="flex:1;min-width:170px;padding:4px 8px;border:1px solid var(--line);border-radius:3px">' +
+    sel('sigDir','Direction',['','Improving','Mixed','Watch'],signalFilter.direction) +
+    sel('sigConf','Confidence',['','High','Medium-High','Medium','Low'],signalFilter.confidence) +
+    sel('sigPeriod','Evidence',['','Has current evidence','Historical only'],signalFilter.period) +
+    sel('sigReview','Review',['','Pending Review'],signalFilter.review) +
     '<button class="btn" id="sigClear">Clear</button></div></div>');
-  h.push('<div class="grid g2" id="sigCards">');
+
+  var buckets = {primary:[], supporting:[], watch:[], gap:[]};
   var shown = 0;
-  (D.signals||[]).forEach(function(s){
+  (D.signals || []).forEach(function(s){
     var m = signalMetrics(s);
     if (signalFilter.q){
-      var hay = (s.id+' '+s.title+' '+s.statement+' '+(s.caveat||'')).toLowerCase();
-      if (hay.indexOf(signalFilter.q.toLowerCase())<0) return;
+      var hay = (s.id + ' ' + s.title + ' ' + s.statement + ' ' + (s.caveat || '')).toLowerCase();
+      if (hay.indexOf(signalFilter.q.toLowerCase()) < 0) return;
     }
-    if (signalFilter.direction && m.direction!==signalFilter.direction) return;
-    if (signalFilter.confidence && (s.confidence||'')!==signalFilter.confidence) return;
-    if (signalFilter.period==='Has current evidence' && m.current===0) return;
-    if (signalFilter.period==='Historical only' && m.current>0) return;
-    if (signalFilter.review && (s.workflowStatus||'')!==signalFilter.review) return;
+    if (signalFilter.direction && m.direction !== signalFilter.direction) return;
+    if (signalFilter.confidence && (s.confidence || '') !== signalFilter.confidence) return;
+    if (signalFilter.period === 'Has current evidence' && m.current === 0) return;
+    if (signalFilter.period === 'Historical only' && m.current > 0) return;
+    if (signalFilter.review && (s.workflowStatus || '') !== signalFilter.review) return;
     shown++;
-    h.push(signalCard(s,m));
+    buckets[groupOf(s, m)].push({s:s, m:m});
   });
-  h.push('</div>');
-  if (!shown) h.push('<div class="callout">No signal matches these controls. Nothing is hidden by '+
+
+  GROUPS.forEach(function(gp){
+    var list = buckets[gp[0]];
+    if (!list.length) return;
+    h.push('<div class="siggroup"><div class="sg-head"><h3>' + esc(gp[1]) + '</h3>' +
+      '<span class="sg-d">' + esc(gp[2]) + '</span><span class="sg-n">' + list.length + '</span></div>');
+    list.forEach(function(x){ h.push(signalRow(x.s, x.m, gp[0] === 'primary')); });
+    h.push('</div>');
+  });
+
+  if (!shown) h.push('<div class="callout">No signal matches these controls. Nothing is hidden by ' +
     'design — clear a filter to widen the set.</div>');
   el('view-signals').innerHTML = h.join('');
 
-  function sel(id,label,opts,val){
-    return '<label class="mini" for="'+id+'">'+esc(label)+'</label><select id="'+id+'">'+
-      opts.map(function(o){return '<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+
-        esc(o||'all')+'</option>';}).join('')+'</select>';
+  function sel(id, label, opts, val){
+    return '<label class="mini" for="' + id + '">' + esc(label) + '</label><select id="' + id + '">' +
+      opts.map(function(o){ return '<option value="' + esc(o) + '"' + (o === val ? ' selected' : '') +
+        '>' + esc(o || 'all') + '</option>'; }).join('') + '</select>';
   }
 };
+
+/** One signal as an editorial row: name, a sentence, direction, confidence,
+    current evidence and the caveat that bounds it. Everything else moves into
+    the workspace behind it. */
+function signalRow(s, m, primary){
+  var row = SCORECARD.filter(function(r){ return r.id === s.id; })[0];
+  var reading = row ? row.reading() : null;
+  var word = row ? row.word : 'w-flat';
+  var dir = row ? row.direction : (m.direction || 'Source Needed');
+  var line = row ? row.implication : (s.statement || '');
+  var caveat = s.caveat || (row && reading === 'Source Needed' ?
+    'The reading itself is Source Needed.' : 'No caveat is recorded against this signal.');
+  return '<article class="sigrow' + (primary ? ' is-primary' : '') + '" data-goto="#signal/' +
+    esc(s.id) + '" tabindex="0" role="button" aria-label="Open the workspace for ' + esc(s.id) + '">' +
+    '<div class="sr-main">' +
+      (primary ? '<div class="sr-badge">Recorded primary signal</div>' : '') +
+      '<h4>' + esc(s.title) + '</h4>' +
+      '<p>' + esc(line) + '</p>' +
+      '<p class="sr-cav"><span class="k">Principal caveat</span>' + esc(caveat) + '</p>' +
+    '</div>' +
+    '<div class="sr-side">' +
+      '<div class="sr-read"><span class="k">Reading</span><span class="v">' +
+        esc(reading || '—') + '</span>' +
+        (row ? '<span class="u">' + esc(row.unit) + '</span>' : '') + '</div>' +
+      '<div class="sr-chips"><span class="word ' + word + '">' + esc(dir) + '</span>' +
+        '<span class="pill">' + esc(s.confidence || 'Source Needed') + '</span></div>' +
+      '<div class="sr-ev"><span class="n">' + m.current + '</span> current evidence · ' +
+        '<span class="n">' + m.supporting.length + '</span> supporting · ' +
+        '<span class="n">' + m.contradicting.length + '</span> counter</div>' +
+      '<div class="sr-id research-only">' + oid(s.id) + '<span class="note">' +
+        esc(s.workflowStatus || '') + '</span></div>' +
+    '</div></article>';
+}
 
 function signalMetrics(s){
   var sup = (IN_BY[s.id]||[]).filter(function(e){return e.type==='SUPPORTS';}).map(function(e){return e.from;});
@@ -1261,7 +1548,7 @@ function ruleCard(r){
 }
 
 /* ═══════════════════════════════════════════ VIEW: Evidence Explorer ════ */
-var evFilter = {q:'', quick:[], mode:null};
+var evFilter = {q:'', quick:[], mode:'list'};   /* list first; cards and table on request */
 var EV_QUICK = [
   ['cur','Current October 2026', function(e){return e.currentOrHistorical==='current';}],
   ['jul','Historical July 2026', function(e){return /JUL26|Jul 2026/i.test(e.period||'');}],
@@ -1306,10 +1593,13 @@ RENDER.evidence = function(route){
     '<p>'+rows.length+' of '+(D.evidence||[]).length+' objects pass the current source controls and '+
     'filters. Select 2–4 objects to compare them side by side; the application never synthesizes a '+
     'conclusion from a selection.</p></div>'];
+  h.push('<p class="note" style="margin:-6px 0 12px">The list shows statement, period, lane, ' +
+    'confidence and related signal. Cards add every field; the table adds sorting and CSV.</p>');
   h.push('<div class="filters"><div class="fgrp">'+
     '<input id="evQ" type="search" value="'+esc(evFilter.q)+'" placeholder="ID, statement, theme, metric, source, caveat…" '+
     'style="flex:1;min-width:220px;padding:5px 9px;border:1px solid var(--line);border-radius:3px">'+
-    '<button class="btn'+(evFilter.mode!=='table'?' on':'')+'" data-evmode="card">Cards</button>'+
+    '<button class="btn'+(evFilter.mode==='list'?' on':'')+'" data-evmode="list">List</button>'+
+    '<button class="btn'+(evFilter.mode==='card'?' on':'')+'" data-evmode="card">Cards</button>'+
     '<button class="btn'+(evFilter.mode==='table'?' on':'')+'" data-evmode="table">Table</button>'+
     '<button class="btn" id="evCsv">Download CSV</button>'+
     '<button class="btn" id="evClear">Clear filters</button></div><div class="fgrp">'+
@@ -1327,6 +1617,25 @@ RENDER.evidence = function(route){
 
   if (evFilter.mode==='table'){
     h.push(evidenceTable(rows));
+  } else if (evFilter.mode!=='card'){
+    /* The default. Statement first, then the five fields a reader needs to weigh
+       it; everything else is one click away in the object drawer. */
+    h.push('<div class="evlist">');
+    rows.forEach(function(e){
+      var sig = (OUT_BY[e.id]||[]).filter(function(x){return x.type==='SUPPORTS'||x.type==='CONTRADICTS';})
+        .map(function(x){return x.to;}).filter(function(i){return /^SIG-/.test(i);})[0];
+      h.push('<button type="button" class="evrow'+(state.compare.indexOf(e.id)>=0?' picked':'')+
+        '" data-oid="'+esc(e.id)+'">'+
+        '<span class="ev-st">'+esc(e.statement||e.title||'')+'</span>'+
+        '<span class="ev-meta">'+
+          '<span class="ev-f"><i>Period</i>'+esc(e.period||'—')+'</span>'+
+          '<span class="ev-f"><i>Lane</i>'+esc((LANES.filter(function(l){return l[0]===laneOf(e);})[0]||['','—'])[1])+'</span>'+
+          '<span class="ev-f"><i>Confidence</i>'+esc(e.confidence||'Source Needed')+'</span>'+
+          '<span class="ev-f"><i>Signal</i>'+esc(sig||'—')+'</span>'+
+          '<span class="ev-f research-only"><i>ID</i>'+esc(e.id)+'</span>'+
+        '</span></button>');
+    });
+    h.push('</div>');
   } else {
     h.push('<div class="grid g3">');
     rows.forEach(function(e){
@@ -1469,6 +1778,13 @@ RENDER.lineage = function(route){
       LIN.depth+'-hop neighbourhood')+' around '+esc(LIN.focus)+'. Nodes hidden by the source '+
       'controls are excluded, so a filtered lane removes its nodes and their edges.')+'</div>');
   h.push('<div class="lin-wrap" id="linWrap"><div class="ltip" id="linTip" hidden></div></div>');
+  if (LIN.mode==='path'){
+    h.push('<div class="pathtell"><button type="button" class="pt-head" data-expand="pathTell" '+
+      'aria-expanded="false" aria-controls="pathTell"><span class="eyebrow">Tell me this path</span>'+
+      '<span class="fx-sum">The same chain, in plain language</span>'+
+      '<span class="fx-caret" aria-hidden="true">▾</span></button>'+
+      '<div class="xpanel" id="pathTell" hidden>'+tellPath()+'</div></div>');
+  }
   h.push('<div class="legend">'+
     Object.keys(NODE_STYLE).slice(0,12).map(function(t){
       var s=NODE_STYLE[t];
@@ -1717,6 +2033,45 @@ function showNodeDetail(id){
 }
 
 /* ═══════════════════════════════════════ VIEW: KPI Bridge Explorer ══════ */
+/** The proof-case path narrated. Every sentence is built from a relationship
+    that exists in the graph — the edge type supplies the verb, so nothing is
+    inferred and no causal language is introduced by the retelling. */
+var EDGE_VERB = {
+  SOURCE_OF:'is the source of', NORMALIZES_TO:'is normalized into',
+  SUPPORTS:'supports', CONTRADICTS:'contradicts', INFORMS:'informs',
+  CONTEXTUALIZES:'supplies context for', GOVERNED_BY:'is governed by',
+  BLOCKS:'blocks', RELATES_TO:'relates to', COMMUNICATES:'is communicated in',
+  GENERATED_FROM:'was generated from', HISTORICAL_COMPARISON:'is the historical comparison for',
+  IMPACTS:'bears on'
+};
+function tellPath(){
+  var nodes = PROOF_PATH.filter(function(id){ return !!OBJ[id]; });
+  var lines = [];
+  for (var i = 0; i < nodes.length - 1; i++){
+    var from = nodes[i], to = nodes[i + 1];
+    var fwd = (OUT_BY[from] || []).filter(function(e){ return e.to === to; })[0];
+    var back = fwd ? null : (IN_BY[from] || []).filter(function(e){ return e.from === to; })[0];
+    var edge = fwd || back;
+    if (!edge) continue;
+    var a = fwd ? from : to, b = fwd ? to : from;
+    lines.push({a:a, b:b, verb:(EDGE_VERB[edge.type] || 'relates to'), type:edge.type,
+                note:edge.note || null,
+                dashed: edge.type === 'INFORMS' || /hypoth/i.test(edge.note || '')});
+  }
+  if (!lines.length) return '<p class="note">No path edges are present under the current source ' +
+    'controls, so there is nothing to narrate. Switch a lane back on to restore it.</p>';
+  return '<ol class="telllist">' + lines.map(function(l){
+    return '<li><span class="tl-t">' + esc(l.type) + '</span>' +
+      '<p>' + oid(l.a) + ' <strong>' + esc(l.verb) + '</strong> ' + oid(l.b) +
+      (l.note ? ' — ' + esc(l.note) : '') + '</p>' +
+      (l.dashed ? '<p class="note">This link is drawn dashed: it is a recorded hypothesis, not a ' +
+        'validated relationship, and nothing in the chain asserts that one object caused another.</p>'
+                : '') + '</li>';
+  }).join('') + '</ol>' +
+  '<p class="note">Each sentence uses the relationship type recorded in the workbook as its verb. ' +
+  'No edge is inferred and no causal claim is introduced by the retelling.</p>';
+}
+
 RENDER.kpis = function(route){
   var sid = route && route.arg, kid = route && route.arg2;
   var h=['<div class="vhead"><div class="eyebrow">KPI Bridge Explorer</div><h2>Signal × KPI matrix</h2>'+
@@ -1892,15 +2247,38 @@ RENDER.cohorts = function(){
 };
 
 /* ═══════════════════════════════════════════════ VIEW: Rule Explorer ════ */
-var ruleFilter = {status:'', family:'', enforcement:'', q:''};
+var ruleFilter = {status:'', family:'', enforcement:'', q:'', scope:'narrative'};
+/* The rules the current narrative actually applied. Collected from the claim
+   manifests the Company page and the two generators have just produced — so it
+   is an observation of what ran, not a curated list. */
+function narrativeRuleIds(){
+  var ids = {};
+  function take(cs){ cs.forEach(function(c){ (c.ruleIds||[]).forEach(function(r){ ids[r]=1; }); }); }
+  try { take([NARRATIVE.companyDeck()]); } catch(e){}
+  try { take(NARRATIVE.snapshot().map(function(b){return b.c;})); } catch(e){}
+  try { take(NARRATIVE.moves().map(function(m){return m.c;})); } catch(e){}
+  try { take(NARRATIVE.counterpoint()); } catch(e){}
+  try { take(NARRATIVE.sunday('cohesive','standard',{}).map(function(b){return b.c;})); } catch(e){}
+  ids['R-020'] = 1;   /* human review governs every output */
+  ids['R-025'] = 1;   /* the period convention governs every reading */
+  return Object.keys(ids);
+}
+
 RENDER.rules = function(route){
   var all = (D.rules||[]);
+  var narrow = (ruleFilter.scope !== 'all');
+  var narrativeIds = narrativeRuleIds();
   var fams = unique(all.map(function(r){return r.ruleFamily;}).filter(Boolean));
   var enfs = unique(all.map(function(r){return r.enforcement;}).filter(Boolean));
   var h=['<div class="vhead"><div class="eyebrow">Rule Explorer</div><h2>Interpretation rules and MCP context</h2>'+
     '<p>'+all.length+' interpretation rules and '+(D.contextRules||[]).length+' MCP context objects. '+
     '<strong>Rules are human-maintained in the workbook. This prototype does not edit rule status.</strong></p></div>'];
-  h.push('<div class="filters"><div class="fgrp">'+
+  h.push('<div class="scopebar"><button type="button" class="seg'+(narrow?' on':'')+
+    '" data-rscope="narrative" aria-pressed="'+narrow+'">Rules affecting the current narrative'+
+    '<span class="c">'+narrativeIds.filter(function(i){return OBJ[i];}).length+'</span></button>'+
+    '<button type="button" class="seg'+(narrow?'':' on')+'" data-rscope="all" aria-pressed="'+
+    (!narrow)+'">View all rules<span class="c">'+all.length+'</span></button></div>');
+  h.push('<div class="filters research-only"><div class="fgrp">'+
     '<input id="ruleQ" type="search" value="'+esc(ruleFilter.q)+'" placeholder="rule name, trigger, language…" '+
     'style="flex:1;min-width:200px;padding:4px 8px;border:1px solid var(--line);border-radius:3px">'+
     '</div><div class="fgrp"><span class="mini">Status</span>'+
@@ -1917,6 +2295,7 @@ RENDER.rules = function(route){
     '<button class="btn" id="ruleClear">Clear</button></div></div>');
 
   var rows = all.filter(function(r){
+    if (narrow && narrativeIds.indexOf(r.id)<0) return false;
     if (ruleFilter.status && r.ruleStatus!==ruleFilter.status) return false;
     if (ruleFilter.family && r.ruleFamily!==ruleFilter.family) return false;
     if (ruleFilter.enforcement && r.enforcement!==ruleFilter.enforcement) return false;
@@ -1928,6 +2307,9 @@ RENDER.rules = function(route){
   });
   h.push('<div class="grid g2">'+rows.map(function(r){ return ruleDetail(r); }).join('')+'</div>');
   if (!rows.length) h.push('<div class="callout">No rule matches these filters.</div>');
+  if (narrow) h.push('<p class="note" style="margin-top:9px">These are the rules named in the claim '+
+    'manifests the current narrative produced, plus the two that govern every output. '+
+    'Switch to <em>View all rules</em> for the full registry.</p>');
 
   h.push('<h4 style="margin:18px 0 7px">MCP context export</h4><div class="grid g2">'+
     (D.contextRules||[]).map(function(c){
@@ -1952,7 +2334,7 @@ function ruleDetail(r){
     ? '<span class="needed">'+esc(st.toUpperCase())+'</span>'
     : '<span class="pill">'+esc(st)+'</span>';
   var applied = appliedObjects(r.id);
-  return '<div class="card" style="border-left:4px solid '+
+  return '<div class="card rulecard" style="border-left:4px solid '+
     (/canonical/i.test(st)?'var(--graphite)':(/source needed/i.test(st)?'var(--red)':
      (/backtest/i.test(st)?'var(--amber)':'var(--blue)')))+'">'+
     '<div class="row">'+oid(r.id)+stx+tag(r.classification)+
@@ -1991,18 +2373,81 @@ function appliedObjects(rid){
 
 /* ═════════════════════════════════════ VIEW: Risks and Open Questions ═══ */
 var riskTab = 0;
+var riskView = 'now';
 RENDER.risks = function(route){
-  if (route && route.arg && OBJ[route.arg]) { /* drawer opens via render() */ }
+  if (route && route.arg === 'counter'){ riskView = 'all'; riskTab = 1; }
   var tabs = ['Risks','Counter-Evidence','Open Questions','Source Needed','Data Conflicts','Output Blockers'];
   var h=['<div class="vhead"><div class="eyebrow">Risks and open questions</div>'+
     '<h2>What is unresolved, and what it blocks</h2>'+
     '<p>Clicking any item highlights its lineage. Nothing here is repaired in the workbook.</p></div>'];
+  h.push('<div class="scopebar"><button type="button" class="seg'+(riskView==='now'?' on':'')+
+    '" data-rkview="now" aria-pressed="'+(riskView==='now')+'">Most important now</button>'+
+    '<button type="button" class="seg'+(riskView==='now'?'':' on')+'" data-rkview="all" aria-pressed="'+
+    (riskView!=='now')+'">Everything recorded</button></div>');
+  if (riskView === 'now'){
+    h.push(mostImportantNow());
+    el('view-risks').innerHTML = h.join('');
+    return;
+  }
   h.push('<div class="tabs" id="riskTabs">'+tabs.map(function(t,i){
     return '<button data-rtab="'+i+'"'+(i===riskTab?' class="on"':'')+'>'+esc(t)+'</button>';}).join('')+'</div>');
   h.push('<div id="riskBody"></div>');
   el('view-risks').innerHTML = h.join('');
   paintRisk();
 };
+
+/* "Most important now" is assembled from the priority and blocking fields the
+   workbook already records — the importance a question carries, and whether it
+   blocks an object through a BLOCKS relationship. No proprietary importance
+   score is computed, and nothing is ranked against anything the workbook does
+   not rank itself. */
+function mostImportantNow(){
+  var qs = (D.openQuestions||[]).filter(function(q){ return /critical|high/i.test(q.importance||''); });
+  var order = {critical:0, high:1};
+  qs = qs.slice().sort(function(a,b){
+    var ka = order[(a.importance||'').toLowerCase()], kb = order[(b.importance||'').toLowerCase()];
+    if (ka !== kb) return (ka==null?9:ka) - (kb==null?9:kb);
+    var ba = (OUT_BY[a.id]||[]).filter(function(e){return e.type==='BLOCKS';}).length;
+    var bb = (OUT_BY[b.id]||[]).filter(function(e){return e.type==='BLOCKS';}).length;
+    return bb - ba;
+  });
+  var h = ['<p class="note" style="margin-bottom:14px">Ordered by the importance each question '+
+    'records, then by how many objects it blocks through a recorded BLOCKS relationship. '+
+    'Both fields come from the workbook; no composite score is computed.</p>'];
+  h.push('<div class="nowlist">');
+  qs.forEach(function(q){
+    var blocks = (OUT_BY[q.id]||[]).filter(function(e){return e.type==='BLOCKS';}).map(function(e){return e.to;});
+    h.push('<article class="nowrow"><div class="nr-l">'+
+      '<span class="nr-imp imp-'+esc((q.importance||'').toLowerCase())+'">'+esc(q.importance||'—')+'</span>'+
+      '<span class="nr-id research-only">'+oid(q.id)+'</span></div>'+
+      '<div class="nr-m"><h4>'+esc(q.title||q.id)+'</h4>'+
+      '<p>'+esc(q.statement||'')+'</p>'+
+      '<p class="nr-src"><span class="k">Expected source</span>'+
+        esc(q.sourceName||'Source Needed')+'</p></div>'+
+      '<div class="nr-r"><div class="k">Blocks</div>'+
+        (blocks.length ? oids(blocks) + '<div class="note" style="margin-top:6px">'+blocks.length+
+          (blocks.length===1?' object':' objects')+'</div>'
+                       : '<span class="note">No blocking relationship recorded.</span>')+
+      '<div class="no-print" style="margin-top:9px">'+
+        '<button type="button" class="lnk" data-oid="'+esc(q.id)+'">Open</button> · '+
+        '<button type="button" class="lnk" data-goto="#lineage/'+esc(q.id)+'">Lineage</button>'+
+      '</div></div></article>');
+  });
+  h.push('</div>');
+  var ce = (D.risks||[]).filter(function(r){ return /high/i.test(r.confidence||''); });
+  h.push('<h3 style="margin:26px 0 10px;font:400 20px/1.2 var(--serif);color:var(--deep)">'+
+    'Counter-evidence recorded at high confidence</h3>');
+  h.push('<div class="nowlist">'+ce.map(function(r){
+    return '<article class="nowrow"><div class="nr-l">'+
+      '<span class="nr-imp imp-counter">'+esc(r.confidence||'')+'</span>'+
+      '<span class="nr-id research-only">'+oid(r.id)+'</span></div>'+
+      '<div class="nr-m"><h4>'+esc(r.title||'')+'</h4><p>'+esc(r.statement||'')+'</p></div>'+
+      '<div class="nr-r"><div class="k">Period</div><span class="note">'+esc(r.period||'—')+'</span>'+
+      '<div class="no-print" style="margin-top:9px">'+
+        '<button type="button" class="lnk" data-oid="'+esc(r.id)+'">Open</button></div></div></article>';
+  }).join('')+'</div>');
+  return h.join('');
+}
 function paintRisk(){
   var body = el('riskBody'); if(!body) return;
   var h=[];
@@ -2086,11 +2531,46 @@ function paintRisk(){
 }
 
 /* ═════════════════════════════════════════════════ VIEW: Source Register ═ */
+/* Source families. Each family is a test against fields the register already
+   carries — the period a source belongs to and its recorded type. Assignment is
+   in priority order and exclusive, so every source is counted exactly once and
+   none is reclassified. */
+var SOURCE_FAMILIES = [
+  ['current',    'Current October exports', function(s){
+     return s.currentOrHistorical === 'current'; }],
+  ['etr',        'Historical ETR', function(s){
+     return /ETR|TSIS|Observatory/i.test(s.sourceName || '') ||
+            /flash survey|research report/i.test(s.sourceType || ''); }],
+  ['company',    'Company evidence', function(s){
+     return /earnings|sec filing|press release/i.test(s.sourceType || ''); }],
+  ['external',   'External research', function(s){
+     return /article|market|competitive|interview|analysis/i.test(s.sourceType || ''); }],
+  ['analyst',    'Analyst layer', function(){ return true; }]
+];
+function sourceFamily(s){
+  for (var i = 0; i < SOURCE_FAMILIES.length; i++){
+    try { if (SOURCE_FAMILIES[i][2](s)) return SOURCE_FAMILIES[i]; } catch(e){}
+  }
+  return SOURCE_FAMILIES[SOURCE_FAMILIES.length - 1];
+}
+function sourceFamilyCards(){
+  var all = D.sources || [];
+  var counts = {};
+  all.forEach(function(s){ var f = sourceFamily(s); counts[f[0]] = (counts[f[0]] || 0) + 1; });
+  return '<div class="famgrid">' + SOURCE_FAMILIES.filter(function(f){ return counts[f[0]]; })
+    .map(function(f){
+      return '<button type="button" class="famcard" data-expand="srcAll">' +
+        '<span class="n">' + counts[f[0]] + '</span>' +
+        '<span class="k">' + esc(f[1]) + '</span></button>';
+    }).join('') + '</div>';
+}
+
 RENDER.sources = function(){
   var h=['<div class="vhead"><div class="eyebrow">Sources</div><h2>Source register</h2>'+
     '<p>'+(D.sources||[]).length+' source objects. The eight October CSV exports are the current '+
     'primary layer; their filenames are dated 2026-09-10 while the survey labels read October 2026 '+
     oid('OQ-015')+'.</p></div>'];
+  h.push(sourceFamilyCards());
   var cur = (D.sources||[]).filter(function(s){return s.currentOrHistorical==='current';});
   var hist = (D.sources||[]).filter(function(s){return s.currentOrHistorical!=='current';});
   h.push('<h4>October 2026 current exports ('+cur.length+')</h4>');
@@ -2177,64 +2657,144 @@ var AUDIENCES = [
    action:'Ship the readings with their bases visible; hold the cohort narrative until N is supplied.',
    tone:'concise'}
 ];
-function audienceCard(a){
-  return '<div class="card" style="border-top:3px solid var(--navy)"><h4>'+esc(a.label)+'</h4>'+
-    '<h3 style="margin:5px 0 6px">'+esc(a.q)+'</h3>'+
-    '<p style="font-size:12.5px">'+esc(a.t)+'</p>'+
-    '<div class="mini">Best evidence</div>'+oids(a.emph)+
-    '<div class="mini" style="margin-top:5px">Counter-evidence (fixed)</div>'+oids(['CE-002','CE-003'])+
-    '<div class="mini" style="margin-top:5px">Principal caveat (fixed)</div>'+
-    '<p class="note">Cohort and regional N absent '+oid('OQ-014')+'; Z-Score bands Source Needed '+
-      oid('OQ-005')+'; no October data outlook recorded '+oid('OQ-002')+'.</p>'+
-    '<div class="mini">Recommended action</div><p class="note">'+esc(a.action)+'</p></div>';
-}
 RENDER.audience = function(route){
-  if (route && route.arg && AUDIENCES.some(function(a){return a.id===route.arg;}))
+  if (route && route.arg && AUDIENCES.some(function(a){ return a.id === route.arg; }))
     { state.audience = route.arg; save(); }
-  var a = AUDIENCES.filter(function(x){return x.id===state.audience;})[0] || AUDIENCES[4];
-  var ns=CP.netScore;
-  var h=['<div class="vhead"><div class="eyebrow">Audience Translator</div>'+
-    '<h2>Same evidence-backed signal. Different decision context.</h2>'+
-    '<p>Changing audience changes only the decision question, translation, emphasis, implication, '+
-    'recommended action and tone. Facts, metric values, source IDs, the signal statement, confidence, '+
-    'the current period, the rules and the caveats never change.</p></div>'];
-  h.push('<div class="fgrp" style="margin-bottom:11px">'+AUDIENCES.map(function(x){
-    return '<button class="fbtn'+(x.id===a.id?' on':'')+'" data-aud="'+esc(x.id)+
-      '" aria-pressed="'+(x.id===a.id)+'">'+esc(x.label)+'</button>';}).join('')+'</div>');
-  h.push('<div class="okbox"><strong>Fixed in every card:</strong> '+esc(CP.label)+' Net Score '+
-    n2(ns.value)+' ('+sign(ns.qqDelta)+' Q/Q, '+sign(ns.yyDelta)+' Y/Y, N '+n2(CP.nBase,0)+') '+
-    oid('ETR-OCT26-NS')+' · Pervasion '+n2(CP.pervasion.value)+' '+oid('ETR-OCT26-PV')+' · '+
-    'Q/Q Z '+n2(CP.zScore.qqZ,6)+', Y/Y Z '+n2(CP.zScore.yyZ,6)+' '+oid('ETR-OCT26-ZS')+' · '+
-    'primary signal '+oid('SIG-02')+' · conviction '+esc(CALL.conviction)+' · '+
-    'Current Call '+needed()+' '+oid('OQ-002')+' · human review required '+oid('R-020')+'.</div>');
-  h.push('<div class="grid g2" style="margin-bottom:12px">'+audienceCard(a)+
-    '<div class="card"><h4>What did not change</h4>'+
-    '<div class="tw" style="margin-top:6px"><table><thead><tr><th>Field</th><th>Value across all '+
-    AUDIENCES.length+' audiences</th></tr></thead><tbody>'+
-    [['Signal statement',(OBJ['SIG-02']||{}).statement],
-     ['Net Score', n2(ns.value)+' ('+CP.label+')'],
-     ['Pervasion', n2(CP.pervasion.value)],
-     ['Q/Q Z-Score', n2(CP.zScore.qqZ,9)],
-     ['Y/Y Z-Score', n2(CP.zScore.yyZ,9)],
-     ['N', n2(CP.nBase,0)+' citations'],
-     ['Confidence', CALL.conviction],
-     ['Current period', CP.label],
-     ['Caveats', 'Cohort/regional N absent; Z bands Source Needed; no October outlook recorded']]
-      .map(function(r){return '<tr><td><strong>'+esc(r[0])+'</strong></td><td>'+esc(r[1])+'</td></tr>';}).join('')+
-    '</tbody></table></div>'+
-    '<p class="note" style="margin-top:7px">No personalized investment advice, price target or rating '+
-    'is produced for any audience.</p></div></div>');
-  h.push('<h4 style="margin-bottom:7px">All audiences side by side</h4>');
-  h.push('<div class="grid g3">'+AUDIENCES.map(audienceCard).join('')+'</div>');
+  var a = AUDIENCES.filter(function(x){ return x.id === state.audience; })[0] || AUDIENCES[4];
+  var ns = CP.netScore;
+  var h = ['<div class="vhead"><div class="eyebrow">Audience Translator</div>' +
+    '<h2>Same evidence. Different decision.</h2>' +
+    '<p>Changing audience changes the decision question, the translation, the emphasis and the ' +
+    'recommended action. It never changes a fact, a metric value, a source ID, the signal statement, ' +
+    'the confidence, the current period, the rules or the caveats.</p></div>'];
+
+  h.push('<div class="aud3">');
+
+  /* ── left: who is reading ───────────────────────────────────────────── */
+  h.push('<nav class="aud-pick" aria-label="Audience">' +
+    '<div class="ap-lab">Reading this</div>' +
+    AUDIENCES.map(function(x){
+      return '<button type="button" class="apbtn' + (x.id === a.id ? ' on' : '') + '" data-aud="' +
+        esc(x.id) + '" aria-pressed="' + (x.id === a.id) + '">' + esc(x.label) + '</button>';
+    }).join('') + '</nav>');
+
+  /* ── centre: the translated decision narrative ──────────────────────── */
+  h.push('<div class="aud-mid">');
+  h.push('<div class="am-eyebrow">The decision in front of them</div>');
+  h.push('<h3 class="am-q">' + esc(a.q) + '</h3>');
+  h.push('<p class="am-t">' + esc(a.t) + '</p>');
+
+  h.push('<div class="am-block"><div class="am-k">Why it matters to them</div><p>' +
+    esc(audienceWhy(a)) + '</p></div>');
+
+  /* Statements are separate readings, so they are listed separately rather than
+     run together into a paragraph that would read as one claim. */
+  h.push('<div class="am-block"><div class="am-k">Best supporting evidence</div><ul class="am-list">' +
+    a.emph.filter(function(id){ return OBJ[id]; }).map(function(id){
+      var o = OBJ[id];
+      return '<li>' + esc(o.statement || o.title || id) +
+        '<span class="research-only"> ' + oid(id) + '</span></li>';
+    }).join('') + '</ul></div>');
+
+  h.push('<div class="am-block am-counter"><div class="am-k">Counterpoint</div><ul class="am-list">' +
+    ['CE-002','CE-003'].filter(function(id){ return OBJ[id]; }).map(function(id){
+      var o = OBJ[id];
+      return '<li><strong>' + esc(o.title || id) + '.</strong> ' + esc(o.statement || '') +
+        '<span class="research-only"> ' + oid(id) + '</span></li>';
+    }).join('') + '</ul>' +
+    '<p class="note">Both readings are historical and neither is refreshed in the October set. ' +
+    'They are carried unchanged for every audience.</p></div>');
+
+  h.push('<div class="am-block am-action"><div class="am-k">Recommended action</div><p>' +
+    esc(a.action) + '</p></div>');
+
+  h.push('<div class="am-acts no-print">' +
+    '<button type="button" class="btn pri" data-handoff="sunday|' + esc(a.id) +
+      '">Use this audience in Sunday Signal</button>' +
+    '<button type="button" class="btn" data-handoff="email|' + esc(a.id) +
+      '">Use this audience in Update Email</button>' +
+    btn('Open the signal', '#signal/SIG-02') + '</div>');
+  h.push('</div>');
+
+  /* ── right: what did not move ───────────────────────────────────────── */
+  h.push('<aside class="aud-fixed" aria-label="What stays fixed">' +
+    '<button type="button" class="af-head" data-expand="audFixed" aria-expanded="true" ' +
+    'aria-controls="audFixed"><span class="ap-lab">What stayed fixed</span>' +
+    '<span class="fx-caret" aria-hidden="true">▾</span></button>' +
+    '<div id="audFixed">' +
+    '<p class="af-note">Identical across all ' + AUDIENCES.length + ' audiences.</p>' +
+    fixedRows([
+      ['Signal statement', (OBJ['SIG-02'] || {}).statement],
+      ['Net Score', n2(ns.value) + ' (' + CP.label + ')'],
+      ['Sequential change', sign(ns.qqDelta)],
+      ['Year-over-year change', sign(ns.yyDelta)],
+      ['Pervasion', n2(CP.pervasion.value)],
+      ['Q/Q Z-Score', n2(CP.zScore.qqZ, 9)],
+      ['Y/Y Z-Score', n2(CP.zScore.yyZ, 9)],
+      ['N', n2(CP.nBase, 0) + ' citations'],
+      ['Conviction', CALL.conviction],
+      ['Current period', CP.label],
+      ['Current call', CALL.current.value],
+      ['Human review', 'Required (R-020)']
+    ]) +
+    '<p class="af-note">Caveats carried unchanged: cohort and regional N absent (OQ-014); Z-Score ' +
+    'bands Source Needed (OQ-005); no current-period data outlook recorded (OQ-002).</p>' +
+    '<p class="af-note">No personalized investment advice, price target or rating is produced for ' +
+    'any audience.</p></div></aside>');
+
+  h.push('</div>');
   el('view-audience').innerHTML = h.join('');
+
+  function fixedRows(rows){
+    return '<dl class="af-kv">' + rows.map(function(r){
+      return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1] == null ? 'Source Needed' : r[1]) + '</dd>';
+    }).join('') + '</dl>';
+  }
 };
+
+/** Why the reading matters to this particular reader. Assembled from their own
+    recorded decision question and action, never from anything invented about
+    their business. */
+function audienceWhy(a){
+  var map = {
+    cio: 'The consolidation case rests on whether peers are still committing budget. They are, and ' +
+         'more of them report the platform in use than a quarter ago — but the cohort figures that ' +
+         'would tell you about your own segment arrive without a base.',
+    product: 'Reason mix moves slowly, and this period supplies the stated reasons without the ' +
+         'response counts behind them. Treat the shifts as directions to investigate rather than ' +
+         'findings to act on.',
+    ar: 'A briefing can defend the October readings and their period labels exactly as stated. It ' +
+         'cannot defend a cohort-dominance framing, because the cuts are selective and none carries ' +
+         'a base.',
+    sellside: 'Nothing here is a model input on its own. The demand series corroborates the reported ' +
+         'series on a lag that has never been established, which is precisely what the backtest ' +
+         'protocol exists to settle.',
+    investor: 'What the evidence establishes is a persisting, slowing recovery in spending intent ' +
+         'with improving breadth. What it does not establish is causation, a company outcome, or any ' +
+         'forward expectation — and the package says so in its own rules.',
+    pe: 'Underwriting needs durability, and two of the inputs are missing: the current-period ' +
+         'retention reading, and a current shared-account comparison. Both are open questions with ' +
+         'named expected sources.',
+    etrresearch: 'The gaps in this package are methodological rather than analytical: cut-level ' +
+         'bases, approved Z-Score bands, and a recorded data outlook for the current period.'
+  };
+  return map[a.id] || 'This reading is demand context. The path from it to any company outcome is ' +
+    'recorded as a hypothesis and held at Backtest Required.';
+}
 
 /* ═════════════════════════════════ Deterministic generator machinery ════ */
 /* Prose is assembled from workbook objects by template. There is no model call and
    no free text: every sentence names the objects it was built from. */
 var CLAIM_SEQ = 0;
+var CLAIM_REGISTRY = {};
 function claim(outputType, text, classification, evidenceIds, objectIds, ruleIds, confidence, caveat, sn){
   CLAIM_SEQ++;
+  var c = mkClaim(outputType, text, classification, evidenceIds, objectIds, ruleIds,
+                  confidence, caveat, sn);
+  CLAIM_REGISTRY[c.claimId] = c;
+  return c;
+}
+function mkClaim(outputType, text, classification, evidenceIds, objectIds, ruleIds, confidence, caveat, sn){
   return {
     claimId: outputType.toUpperCase().replace(/[^A-Z]/g,'').slice(0,3)+'-'+String(CLAIM_SEQ).padStart(3,'0'),
     outputType: outputType, text: text, classification: classification,
@@ -2564,150 +3124,388 @@ function evidencePicker(name, selectedIds, pool){
   }).join('')+'</div>';
 }
 
-RENDER['gen-sunday'] = function(){
-  var g = GEN.sunday;
-  var sections = buildSunday();
-  var title = g.title + ' — Sunday Signal';
-  var pool = (D.evidence||[]).filter(function(e){return e.currentOrHistorical==='current';});
-  var counterPool = (D.risks||[]);
-  var qPool = (D.openQuestions||[]).filter(function(q){return /critical|high/i.test(q.importance||'');});
-  var h=['<div class="vhead"><div class="eyebrow">Sunday Signal Generator</div>'+
-    '<h2>Deterministic draft assembly</h2>'+
-    '<p>Prose is assembled by template from the objects selected on the left. No model is called. '+
-    'Every paragraph carries a claim manifest — click any paragraph to open it.</p></div>'];
-  h.push('<div class="gen"><div class="gen-controls no-print">'+
-    '<label for="ssTitle">Title</label><input id="ssTitle" type="text" value="'+esc(g.title)+'">'+
-    '<label for="ssAud">Audience</label><select id="ssAud">'+AUDIENCES.map(function(a){
-      return '<option value="'+a.id+'"'+(a.id===g.audience?' selected':'')+'>'+esc(a.label)+'</option>';
-    }).join('')+'</select>'+
-    '<label for="ssSig">Primary signal</label><select id="ssSig">'+(D.signals||[]).map(function(s){
-      return '<option value="'+s.id+'"'+(s.id===g.signal?' selected':'')+'>'+esc(s.id+' — '+s.title)+
-        '</option>';}).join('')+'</select>'+
-    '<label for="ssKpi">KPI bridge</label><select id="ssKpi">'+(D.bridges||[])
-      .filter(function(b){return b.relatedSignalIds[0]===g.signal;})
-      .sort(function(a2,b2){ /* the proof-case pairing first */
-        return (b2.relatedKpiIds[0]==='KPI-003'?1:0)-(a2.relatedKpiIds[0]==='KPI-003'?1:0); })
-      .map(function(b){
-      return '<option value="'+esc(b.id)+'">'+esc(b.relatedSignalIds[0]+' → '+b.relatedKpiIds[0])+
-        ' ('+esc(b.cellState)+')</option>';}).join('')+'</select>'+
-    '<label>Evidence objects</label>'+evidencePicker('genEvidence', state.genEvidence, pool)+
-    '<label>Counter-evidence</label>'+evidencePicker('genCounter', state.genCounter, counterPool)+
-    '<label>Open questions</label>'+evidencePicker('genQuestion', state.genQuestion, qPool)+
-    '<label for="ssTone">Tone</label><select id="ssTone">'+['concise','analytical','executive']
-      .map(function(t){return '<option'+(t===g.tone?' selected':'')+'>'+t+'</option>';}).join('')+'</select>'+
-    '<label for="ssLen">Length</label><select id="ssLen">'+['short','standard','extended']
-      .map(function(t){return '<option'+(t===g.length?' selected':'')+'>'+t+'</option>';}).join('')+'</select>'+
-    '<label class="toggle" style="margin-top:9px"><input type="checkbox" id="ssChart"'+
-      (g.chart?' checked':'')+'> Include current chart</label>'+
-    '<label class="toggle"><input type="checkbox" id="ssMethod"'+(g.method?' checked':'')+
-      '> Include methodology note</label>'+
-    '<label class="toggle"><input type="checkbox" id="ssAppendix"'+(g.appendix?' checked':'')+
-      '> Include evidence appendix</label>'+
-    '<div class="sep"></div>'+
-    '<button class="btn pri" id="ssRegen" style="width:100%">Regenerate</button>'+
-    '<button class="btn" id="ssReorder" style="width:100%;margin-top:5px">Reorder sections</button>'+
-    '<button class="btn" id="ssEdit" style="width:100%;margin-top:5px">Edit draft locally</button>'+
-    '<button class="btn" id="ssRestore" style="width:100%;margin-top:5px">Restore generated text</button>'+
-    '</div>');
-  h.push('<div><div class="actbar no-print">'+
-    '<button class="btn'+(state.inspect?' on':'')+'" id="ssInspect">Inspect claims</button>'+
-    '<button class="btn" id="ssCopy">Copy to clipboard</button>'+
-    '<button class="btn" id="ssMd">Download Markdown</button>'+
-    '<button class="btn" id="ssHtml">Download HTML</button>'+
-    '<button class="btn" id="ssManifest">Download claim manifest JSON</button>'+
-    '<button class="btn" id="ssPrint">Print</button></div>');
-  h.push('<div class="gen-out'+(state.inspect?' inspect':'')+'" id="ssOut">');
-  h.push('<div class="hyp-bar" style="background:var(--lred);border-color:var(--red);color:var(--red)">'+
-    'Generated draft — Human Review Required</div>');
-  h.push('<h3 style="margin-top:10px">'+esc(title)+'</h3>');
-  h.push('<p class="note">Audience: '+esc((AUDIENCES.filter(function(a){return a.id===g.audience;})[0]||{}).label)+
-    ' · tone '+esc(g.tone)+' · length '+esc(g.length)+' · '+CP.label+' · N '+n2(CP.nBase,0)+'</p>');
-  if (g.chart) h.push('<div style="margin:10px 0">'+lineChart(
-    D.rawTables.pervasionTrend.rows.map(function(r){
-      return {label:r.Category.replace(' 20',' ’'), value:Number(r.Pervasion)};}),
-    {label:'Pervasion series', color:'#12776E'})+
-    '<p class="note">Pervasion, Jan 2024 – Oct 2026, as supplied. '+
-    '<span class="oid" style="pointer-events:none">ETR-OCT26-PV</span></p></div>');
-  if (GEN.sunday.edited!=null){
-    h.push('<textarea class="draft" id="ssDraft">'+esc(GEN.sunday.edited)+'</textarea>');
-  } else {
-    h.push(renderClaims(sections));
+/* ═══════════════════════════════════════════ VIEW: Update Email Generator ═
+   The deliverable is an email, so the email is what the page shows: To, Subject,
+   Body, and prose that reads as prose. The claim manifests are still generated
+   for every paragraph — they live behind "Inspect claims" rather than inside the
+   text, and they never travel with anything the reader copies.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Build the email for the selected format. Returns
+    {subject, greeting, paragraphs:[claim], closing, footnotes:[claim]} */
+function buildCleanEmail(){
+  var g = GEN.email;
+  CLAIM_SEQ = 500;
+  var fmt = state.emailFormat || 'clean';
+  var P = fmt === 'alert' ? NARRATIVE.emailAlert(g)
+        : fmt === 'exec'  ? NARRATIVE.emailExec(g)
+        : NARRATIVE.emailClean(g);
+  var notes = [];
+  var N = state.emailNotes || {};
+  if (N.method) notes.push(claim('email',
+    'Methodology: sole source is the authorized worksheets of ' + D.metadata.workbook + '. ' +
+    CP.label + ' is the current TSIS period; July 2026 is historical comparison. N counts citations, ' +
+    'not people. ETR evidence and company evidence are parallel lanes and no causal relationship is ' +
+    'asserted between them.',
+    'Client-provided fact', [], ['R-009','R-015','R-025'], ['R-009','R-015','R-025'], null, null, []));
+  if (N.appendix){
+    var ids = unique(P.reduce(function(a, c){
+      return a.concat(c.sourceEvidenceIds, c.sourceObjectIds); }, []));
+    notes.push(claim('email', 'Evidence appendix: ' + ids.join(' · '),
+      'Client-provided fact', ids, [], [], null,
+      'Every ID resolves to an object in the authorized worksheets.', []));
   }
-  h.push('</div></div></div>');
-  h.push('<div id="ssManifestPanel" style="margin-top:12px"></div>');
-  el('view-gen-sunday').innerHTML = h.join('');
-};
+  if (N.review) notes.push(claim('email',
+    'Generated draft — Human Review Required. R-020 makes analyst approval a precondition of ' +
+    'external distribution.', 'Recommended action', [], ['R-020'], ['R-020'], null, null, []));
+  return {
+    subject: NARRATIVE.emailSubject(fmt, g.subjectStyle),
+    greeting: fmt === 'alert' ? null : greetingFor(g.recipient),
+    paragraphs: P,
+    closing: fmt === 'alert' ? null : 'Happy to walk through any of it.',
+    footnotes: notes,
+    format: fmt
+  };
+}
+/* A recipient label can be a person or a group. "Research team" is a group, so
+   it gets "Hi all" rather than "Hi Research". */
+function greetingFor(recipient){
+  var r = String(recipient || '').trim();
+  if (!r) return 'Hi all,';
+  if (/\b(team|group|all|desk|committee|everyone|list)\b/i.test(r) || /[,&]/.test(r))
+    return 'Hi all,';
+  return 'Hi ' + r.split(/\s+/)[0] + ',';
+}
+
+/** The structured variant keeps the old labelled shape, for readers who want it. */
+function structuredEmail(){
+  var built = buildEmail();
+  CLAIM_SEQ = 700;
+  return built;
+}
+
+/** Plain text of the email body only — no manifests, no IDs, no chrome. */
+function emailBodyText(E){
+  var out = [];
+  if (E.greeting) out.push(E.greeting, '');
+  E.paragraphs.forEach(function(c){ out.push(c.text, ''); });
+  if (E.closing) out.push(E.closing, '');
+  if (E.footnotes.length){
+    out.push('—', '');
+    E.footnotes.forEach(function(c){ out.push(c.text, ''); });
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function emailBodyHtml(E){
+  var h = ['<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' + esc(E.subject) +
+    '</title><style>body{font:15px/1.65 Georgia,serif;max-width:640px;margin:32px auto;' +
+    'padding:0 18px;color:#1B2430}p{margin:0 0 15px}hr{border:none;border-top:1px solid #D8DEE6;' +
+    'margin:22px 0}.fn{font-size:12.5px;color:#5B6068}</style></head><body>'];
+  if (E.greeting) h.push('<p>' + esc(E.greeting) + '</p>');
+  E.paragraphs.forEach(function(c){ h.push('<p>' + esc(c.text) + '</p>'); });
+  if (E.closing) h.push('<p>' + esc(E.closing) + '</p>');
+  if (E.footnotes.length){
+    h.push('<hr>');
+    E.footnotes.forEach(function(c){ h.push('<p class="fn">' + esc(c.text) + '</p>'); });
+  }
+  h.push('</body></html>');
+  return h.join('');
+}
 
 RENDER['gen-email'] = function(){
   var g = GEN.email;
-  var built = buildEmail();
-  var pool = (D.evidence||[]).filter(function(e){return e.currentOrHistorical==='current';});
-  var h=['<div class="vhead"><div class="eyebrow">Update Email Generator</div>'+
-    '<h2>Research update draft</h2>'+
-    '<p>Same deterministic claim-manifest system as the Sunday Signal. This prototype only generates '+
-    'draft content — it does not create or send email.</p></div>'];
-  h.push('<div class="gen"><div class="gen-controls no-print">'+
-    '<label for="emType">Output type</label><select id="emType">'+
-      D.generatedOutputTemplates.updateEmail.types.map(function(t){
-        return '<option'+(t===g.type?' selected':'')+'>'+esc(t)+'</option>';}).join('')+'</select>'+
-    '<label for="emRecipient">Recipient label</label><input id="emRecipient" type="text" value="'+
-      esc(g.recipient)+'">'+
-    '<label for="emSubject">Subject style</label><select id="emSubject">'+
+  var fmt = state.emailFormat || 'clean';
+  var structured = (fmt === 'structured');
+  var E = structured ? null : buildCleanEmail();
+  var built = structured ? structuredEmail() : null;
+  var N = state.emailNotes || {};
+  var pool = (D.evidence || []).filter(function(e){ return e.currentOrHistorical === 'current'; });
+  var h = [];
+
+  h.push('<div class="vhead"><div class="eyebrow">Update Email</div>' +
+    '<h2>' + (structured ? 'Structured update' : 'A draft you could send') + '</h2>' +
+    '<p>Prose is assembled by template from the objects on the left. No model is called. Every ' +
+    'paragraph carries a claim manifest; turn on <em>Inspect claims</em> to see them. Nothing you ' +
+    'copy from here carries hidden metadata.</p></div>');
+
+  /* format switcher — the primary control, above everything else */
+  h.push('<div class="fmtbar no-print" role="group" aria-label="Email format">' +
+    NARRATIVE.EMAIL_FORMATS.map(function(f){
+      return '<button type="button" class="fmt' + (f[0] === fmt ? ' on' : '') + '" data-emfmt="' +
+        f[0] + '" aria-pressed="' + (f[0] === fmt) + '"><span class="t">' + esc(f[1]) +
+        '</span><span class="d">' + esc(f[2]) + '</span></button>';
+    }).join('') + '</div>');
+
+  h.push('<div class="gen gen-wide">');
+
+  /* ── controls ───────────────────────────────────────────────────────── */
+  h.push('<div class="gen-controls no-print">' +
+    '<label for="emRecipient">To</label><input id="emRecipient" type="text" value="' +
+      esc(g.recipient) + '">' +
+    '<label for="emSubject">Subject style</label><select id="emSubject">' +
       [['default','Standard update'],['signal','Signal alert'],['question','Question-led']]
-      .map(function(o){return '<option value="'+o[0]+'"'+(o[0]===g.subjectStyle?' selected':'')+'>'+
-        esc(o[1])+'</option>';}).join('')+'</select>'+
-    '<label for="emAud">Audience</label><select id="emAud">'+AUDIENCES.map(function(a){
-      return '<option value="'+a.id+'"'+(a.id===g.audience?' selected':'')+'>'+esc(a.label)+'</option>';
-    }).join('')+'</select>'+
-    '<label for="emSig">Signal</label><select id="emSig">'+(D.signals||[]).map(function(s){
-      return '<option value="'+s.id+'"'+(s.id===g.signal?' selected':'')+'>'+esc(s.id)+'</option>';
-    }).join('')+'</select>'+
-    '<label>Evidence</label>'+evidencePicker('genEvidence', state.genEvidence, pool)+
-    '<label for="emRisk">Risk</label><select id="emRisk">'+(D.risks||[]).map(function(r){
-      return '<option value="'+r.id+'"'+(r.id===g.risk?' selected':'')+'>'+esc(r.id+' — '+
-        (r.title||'').slice(0,40))+'</option>';}).join('')+'</select>'+
-    '<label for="emQ">Open question</label><select id="emQ">'+(D.openQuestions||[]).map(function(q){
-      return '<option value="'+q.id+'"'+(q.id===g.question?' selected':'')+'>'+esc(q.id+' — '+
-        (q.title||'').slice(0,40))+'</option>';}).join('')+'</select>'+
-    '<label for="emAction">Next action</label><input id="emAction" type="text" value="'+esc(g.action)+'">'+
-    '<label for="emLen">Length</label><select id="emLen">'+['concise','standard','detailed']
-      .map(function(t){return '<option'+(t===g.length?' selected':'')+'>'+t+'</option>';}).join('')+'</select>'+
-    '<label class="toggle" style="margin-top:9px"><input type="checkbox" id="emIds"'+
-      (g.includeIds?' checked':'')+'> Include evidence IDs</label>'+
-    '<label class="toggle"><input type="checkbox" id="emMethod"'+(g.includeMethod?' checked':'')+
-      '> Include methodology caveat</label>'+
-    '<div class="sep"></div>'+
-    '<button class="btn pri" id="emRegen" style="width:100%">Regenerate</button>'+
-    '<button class="btn" id="emReset" style="width:100%;margin-top:5px">Reset</button>'+
+      .map(function(o){ return '<option value="' + o[0] + '"' +
+        (o[0] === g.subjectStyle ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') +
+      '</select>' +
+    '<label for="emAud">Audience</label><select id="emAud">' + AUDIENCES.map(function(a){
+      return '<option value="' + a.id + '"' + (a.id === g.audience ? ' selected' : '') + '>' +
+        esc(a.label) + '</option>'; }).join('') + '</select>' +
+    '<label for="emSig">Signal</label><select id="emSig">' + (D.signals || []).map(function(s){
+      return '<option value="' + s.id + '"' + (s.id === g.signal ? ' selected' : '') + '>' +
+        esc(s.id) + '</option>'; }).join('') + '</select>' +
+    '<label for="emRisk">Counter-evidence</label><select id="emRisk">' + (D.risks || []).map(function(r){
+      return '<option value="' + r.id + '"' + (r.id === g.risk ? ' selected' : '') + '>' +
+        esc(r.id + ' — ' + (r.title || '').slice(0, 38)) + '</option>'; }).join('') + '</select>' +
+    '<label for="emQ">Open question</label><select id="emQ">' + (D.openQuestions || []).map(function(q){
+      return '<option value="' + q.id + '"' + (q.id === g.question ? ' selected' : '') + '>' +
+        esc(q.id + ' — ' + (q.title || '').slice(0, 38)) + '</option>'; }).join('') + '</select>' +
+    '<label for="emAction">Next action</label><input id="emAction" type="text" value="' +
+      esc(g.action) + '">' +
+    '<label for="emLen">Length</label><select id="emLen">' + ['concise','standard','detailed']
+      .map(function(t){ return '<option' + (t === g.length ? ' selected' : '') + '>' + t +
+        '</option>'; }).join('') + '</select>' +
+    (structured ? '<label>Evidence</label>' + evidencePicker('genEvidence', state.genEvidence, pool) : '') +
+    '<div class="sep"></div><div class="ctl-lab">Include</div>' +
+    noteToggle('email','method','Methodology footnote') +
+    noteToggle('email','appendix','Evidence appendix') +
+    noteToggle('email','review','Human Review line') +
+    noteToggle('email','ids','Source IDs in the body') +
+    '<p class="note" style="margin-top:8px">All four are off for a clean email, so the body stays ' +
+    'sendable. The Human Review status stays on the application chrome either way.</p>' +
+    '<div class="sep"></div>' +
+    '<button class="btn pri" id="emRegen" style="width:100%">Regenerate</button>' +
+    '<button class="btn" id="emReset" style="width:100%;margin-top:5px">Reset</button>' +
     '</div>');
-  h.push('<div><div class="actbar no-print">'+
-    '<button class="btn'+(state.inspect?' on':'')+'" id="emInspect">Inspect claims</button>'+
-    '<button class="btn" id="emCopySubject">Copy subject</button>'+
-    '<button class="btn" id="emCopyBody">Copy body</button>'+
-    '<button class="btn" id="emCopyAll">Copy full email</button>'+
-    '<button class="btn" id="emTxt">Download .txt</button>'+
-    '<button class="btn" id="emHtml">Download .html</button>'+
-    '<button class="btn" id="emManifest">Download manifest JSON</button>'+
-    '<button class="btn" id="emPrint">Print</button>'+
-    '<button class="btn" id="emLineage">Open supporting lineage</button></div>');
-  h.push('<div class="gen-out'+(state.inspect?' inspect':'')+'" id="emOut">');
-  h.push('<div class="hyp-bar" style="background:var(--lred);border-color:var(--red);color:var(--red)">'+
-    'Generated draft — Human Review Required</div>');
-  h.push('<dl class="kv" style="margin:10px 0"><dt>To</dt><dd id="emTo">'+esc(g.recipient)+'</dd>'+
-    '<dt>Subject</dt><dd><strong id="emSubjectLine">'+esc(built.subject)+'</strong></dd>'+
-    '<dt>Type</dt><dd>'+esc(g.type)+'</dd></dl><div class="sep"></div>');
-  if (GEN.email.edited!=null){
-    h.push('<textarea class="draft" id="emDraft">'+esc(GEN.email.edited)+'</textarea>');
+
+  /* ── output ─────────────────────────────────────────────────────────── */
+  h.push('<div><div class="actbar no-print">' +
+    '<button class="btn' + (state.inspect ? ' on' : '') + '" id="emInspect">Inspect claims</button>' +
+    '<button class="btn" id="emCopySubject">Copy subject</button>' +
+    '<button class="btn" id="emCopyBody">Copy body</button>' +
+    '<button class="btn" id="emCopyAll">Copy full email</button>' +
+    '<button class="btn" id="emTxt">Download TXT</button>' +
+    '<button class="btn" id="emHtml">Download HTML</button>' +
+    '<button class="btn" id="emPrint">Print</button>' +
+    '<button class="btn" id="emManifest">Manifest JSON</button>' +
+    '<button class="btn" id="emLineage">Open lineage</button></div>');
+
+  h.push('<div class="hyp-bar chrome-note no-print">Generated draft — Human Review Required. ' +
+    'This line is application chrome and is not part of the email body.</div>');
+
+  h.push('<div class="gen-out email-canvas' + (state.inspect ? ' inspect' : '') + '" id="emOut">');
+  h.push('<div class="email-head">' +
+    '<div class="eh-row"><span class="eh-k">To</span><span class="eh-v" id="emTo">' +
+      esc(g.recipient) + '</span></div>' +
+    '<div class="eh-row"><span class="eh-k">Subject</span><span class="eh-v subj" id="emSubjectLine">' +
+      esc(structured ? built.subject : E.subject) + '</span></div></div>');
+
+  if (GEN.email.edited != null){
+    h.push('<textarea class="draft" id="emDraft">' + esc(GEN.email.edited) + '</textarea>');
+  } else if (structured){
+    h.push('<div id="emBody">' + renderClaims(built.sections) + '</div>');
   } else {
-    h.push('<div id="emBody">'+renderClaims(built.sections)+'</div>');
+    h.push('<div class="email-body" id="emBody">');
+    if (E.greeting) h.push(para(E.greeting, null));
+    E.paragraphs.forEach(function(c){ h.push(para(c.text, c)); });
+    if (E.closing) h.push(para(E.closing, null));
+    if (E.footnotes.length){
+      h.push('<div class="footnotes">');
+      E.footnotes.forEach(function(c){ h.push(para(c.text, c, 'fn')); });
+      h.push('</div>');
+    }
+    h.push('</div>');
+    LAST_MANIFEST = E.paragraphs.concat(E.footnotes);
   }
   h.push('</div></div></div>');
   h.push('<div id="emManifestPanel" style="margin-top:12px"></div>');
   el('view-gen-email').innerHTML = h.join('');
 };
 
+/* ════════════════════════════════════════ VIEW: Sunday Signal Generator ══ */
+
+function buildCohesive(){
+  CLAIM_SEQ = 0;
+  var style = state.sundayStyle || 'cohesive';
+  var length = state.sundayLength || 'standard';
+  var blocks = NARRATIVE.sunday(style, length, {
+    signal: GEN.sunday.signal,
+    evidence: state.genEvidence,
+    counter: state.genCounter,
+    questions: state.genQuestion
+  });
+  var notes = NARRATIVE.sundayFootnotes(state.sundayNotes || {}, blocks);
+  return {title: GEN.sunday.title || NARRATIVE.sundayTitle(), deck: NARRATIVE.sundayDeck(),
+          blocks: blocks, footnotes: notes, style: style, length: length};
+}
+
+function essayText(S, withNotes){
+  var out = [S.title, '', S.deck, ''];
+  S.blocks.forEach(function(b){
+    if (b.sub) out.push(b.sub, '');
+    out.push(b.c.text, '');
+  });
+  if (withNotes && S.footnotes.length){
+    out.push('—', '');
+    S.footnotes.forEach(function(c){ out.push(c.text, ''); });
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function essayMarkdown(S){
+  var out = ['# ' + S.title, '', '_' + S.deck + '_', ''];
+  S.blocks.forEach(function(b){
+    if (b.sub) out.push('## ' + b.sub, '');
+    out.push(b.c.text, '');
+  });
+  if (S.footnotes.length){ out.push('---', ''); S.footnotes.forEach(function(c){ out.push(c.text, ''); }); }
+  return out.join('\n');
+}
+function essayHtml(S){
+  var h = ['<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' + esc(S.title) +
+    '</title><style>body{font:16px/1.72 Georgia,serif;max-width:660px;margin:40px auto;padding:0 20px;' +
+    'color:#1B2430}h1{font-size:29px;line-height:1.22;color:#0F243E;margin:0 0 10px}' +
+    '.deck{font-size:17px;color:#5B6068;margin:0 0 26px}h2{font-size:17px;color:#17365D;' +
+    'margin:28px 0 10px}p{margin:0 0 17px}hr{border:none;border-top:1px solid #D8DEE6;margin:26px 0}' +
+    '.fn{font-size:13px;color:#5B6068}</style></head><body>'];
+  h.push('<h1>' + esc(S.title) + '</h1><p class="deck">' + esc(S.deck) + '</p>');
+  S.blocks.forEach(function(b){
+    if (b.sub) h.push('<h2>' + esc(b.sub) + '</h2>');
+    h.push('<p>' + esc(b.c.text) + '</p>');
+  });
+  if (S.footnotes.length){
+    h.push('<hr>');
+    S.footnotes.forEach(function(c){ h.push('<p class="fn">' + esc(c.text) + '</p>'); });
+  }
+  h.push('</body></html>');
+  return h.join('');
+}
+
+RENDER['gen-sunday'] = function(){
+  var g = GEN.sunday;
+  var S = buildCohesive();
+  var pool = (D.evidence || []).filter(function(e){ return e.currentOrHistorical === 'current'; });
+  var counterPool = (D.risks || []);
+  var qPool = (D.openQuestions || []).filter(function(q){ return /critical|high/i.test(q.importance || ''); });
+  var subheads = S.blocks.filter(function(b){ return !!b.sub; }).length;
+  var h = [];
+
+  h.push('<div class="vhead"><div class="eyebrow">Sunday Signal</div>' +
+    '<h2>One connected piece, not a stack of sections</h2>' +
+    '<p>Assembled deterministically from the selected objects. Every paragraph carries a claim ' +
+    'manifest behind <em>Inspect claims</em>; the prose itself stays free of IDs.</p></div>');
+
+  h.push('<div class="fmtbar no-print" role="group" aria-label="Composition style">' +
+    NARRATIVE.SUNDAY_STYLES.map(function(f){
+      return '<button type="button" class="fmt' + (f[0] === S.style ? ' on' : '') + '" data-ssty="' +
+        f[0] + '" aria-pressed="' + (f[0] === S.style) + '"><span class="t">' + esc(f[1]) +
+        '</span><span class="d">' + esc(f[2]) + '</span></button>';
+    }).join('') + '</div>');
+
+  h.push('<div class="gen gen-wide">');
+  h.push('<div class="gen-controls no-print">' +
+    '<label for="ssTitle">Title</label><input id="ssTitle" type="text" value="' + esc(S.title) + '">' +
+    '<div class="ctl-lab">Length</div><div class="segbar">' + NARRATIVE.SUNDAY_LENGTHS.map(function(l){
+      return '<button type="button" class="seg' + (l[0] === S.length ? ' on' : '') + '" data-sslen="' +
+        l[0] + '" aria-pressed="' + (l[0] === S.length) + '">' + esc(l[1]) + '</button>';
+    }).join('') + '</div>' +
+    '<label for="ssAud">Audience</label><select id="ssAud">' + AUDIENCES.map(function(a){
+      return '<option value="' + a.id + '"' + (a.id === g.audience ? ' selected' : '') + '>' +
+        esc(a.label) + '</option>'; }).join('') + '</select>' +
+    '<label for="ssSig">Primary signal</label><select id="ssSig">' + (D.signals || []).map(function(s){
+      return '<option value="' + s.id + '"' + (s.id === g.signal ? ' selected' : '') + '>' +
+        esc(s.id + ' — ' + s.title) + '</option>'; }).join('') + '</select>' +
+    '<label>Additional evidence</label>' + evidencePicker('genEvidence', state.genEvidence, pool) +
+    '<label>Counter-evidence</label>' + evidencePicker('genCounter', state.genCounter, counterPool) +
+    '<label>Open questions</label>' + evidencePicker('genQuestion', state.genQuestion, qPool) +
+    '<div class="sep"></div><div class="ctl-lab">Include</div>' +
+    '<label class="toggle"><input type="checkbox" id="ssChart"' + (g.chart ? ' checked' : '') +
+      '> Lead chart</label>' +
+    noteToggle('sunday','method','Methodology footnote') +
+    noteToggle('sunday','ids','Evidence ID footnote') +
+    noteToggle('sunday','review','Human Review line') +
+    '<div class="sep"></div>' +
+    '<button class="btn pri" id="ssRegen" style="width:100%">Regenerate</button>' +
+    '<button class="btn" id="ssEdit" style="width:100%;margin-top:5px">Edit draft locally</button>' +
+    '<button class="btn" id="ssRestore" style="width:100%;margin-top:5px">Restore generated text</button>' +
+    '</div>');
+
+  h.push('<div><div class="actbar no-print">' +
+    '<button class="btn' + (state.inspect ? ' on' : '') + '" id="ssInspect">Inspect claims</button>' +
+    '<button class="btn" id="ssCopy">Copy prose</button>' +
+    '<button class="btn" id="ssCopyNotes">Copy with footnotes</button>' +
+    '<button class="btn" id="ssMd">Download Markdown</button>' +
+    '<button class="btn" id="ssHtml">Download HTML</button>' +
+    '<button class="btn" id="ssPrint">Print</button>' +
+    '<button class="btn" id="ssManifest">Manifest JSON</button>' +
+    '<button class="btn" id="ssLineage">Open lineage</button>' +
+    '<button class="btn' + (SS_PREVIEW ? ' on' : '') + '" id="ssPreview">Preview as newsletter</button>' +
+    '</div>');
+
+  h.push('<div class="hyp-bar chrome-note no-print">Generated draft — Human Review Required. ' +
+    'This line is application chrome and is not part of the piece.</div>');
+
+  h.push('<div class="gen-out essay' + (state.inspect ? ' inspect' : '') +
+    (SS_PREVIEW ? ' newsletter' : '') + '" id="ssOut">');
+  h.push('<h1 class="essay-title">' + esc(S.title) + '</h1>');
+  h.push('<p class="essay-deck">' + esc(S.deck) + '</p>');
+  if (g.chart) h.push('<div class="essay-fig">' +
+    recoveryChart({id:'essay', bare:true}) + '</div>');
+
+  if (GEN.sunday.edited != null){
+    h.push('<textarea class="draft" id="ssDraft">' + esc(GEN.sunday.edited) + '</textarea>');
+  } else {
+    S.blocks.forEach(function(b){
+      if (b.sub) h.push('<h3>' + esc(b.sub) + '</h3>');
+      h.push(para(b.c.text, b.c));
+    });
+    if (S.footnotes.length){
+      h.push('<div class="footnotes">');
+      S.footnotes.forEach(function(c){ h.push(para(c.text, c, 'fn')); });
+      h.push('</div>');
+    }
+    LAST_MANIFEST = S.blocks.map(function(b){ return b.c; }).concat(S.footnotes);
+  }
+  h.push('</div>');
+  h.push('<p class="note no-print" style="margin-top:9px">' + S.blocks.length + ' paragraphs, ' +
+    subheads + ' visible ' + (subheads === 1 ? 'subhead' : 'subheads') + ', ' +
+    (S.blocks.length + S.footnotes.length) + ' claim manifests.</p>');
+  h.push('</div></div>');
+  h.push('<div id="ssManifestPanel" style="margin-top:12px"></div>');
+  el('view-gen-sunday').innerHTML = h.join('');
+  if (g.chart) wireChart();
+};
+
+var SS_PREVIEW = false;
+
+/** A paragraph. In Inspect mode it gains a claim-class outline and becomes
+    clickable; the text itself never changes, so what is copied never changes. */
+function para(text, c, cls){
+  if (!c) return '<p' + (cls ? ' class="' + cls + '"' : '') + '>' + esc(text) + '</p>';
+  return '<p class="cp ' + claimClass(c.classification) + (cls ? ' ' + cls : '') +
+    '" data-claim="' + esc(c.claimId) + '" tabindex="0" role="button" ' +
+    'aria-label="Open claim manifest ' + esc(c.claimId) + '">' + esc(text) + '</p>';
+}
+
+/** A footnote toggle that reads as an inclusion choice rather than a setting. */
+function noteToggle(kind, key, label){
+  var on = ((kind === 'email' ? state.emailNotes : state.sundayNotes) || {})[key];
+  return '<label class="toggle"><input type="checkbox" data-note="' + kind + '|' + key + '"' +
+    (on ? ' checked' : '') + '> ' + esc(label) + '</label>';
+}
+
+/** What the reader would actually copy — never the manifests, never the IDs. */
+function currentEmailSubject(){
+  return state.emailFormat==='structured' ? structuredEmail().subject
+    : NARRATIVE.emailSubject(state.emailFormat || 'clean', GEN.email.subjectStyle);
+}
+function currentEmailBody(){
+  if (GEN.email.edited != null) return GEN.email.edited;
+  if (state.emailFormat==='structured') return claimsToText('', structuredEmail().sections);
+  return emailBodyText(buildCleanEmail());
+}
+
 function showManifest(claimId, panelId){
-  var c = LAST_MANIFEST.filter(function(x){return x.claimId===claimId;})[0];
+  var c = LAST_MANIFEST.filter(function(x){return x.claimId===claimId;})[0] ||
+          CLAIM_REGISTRY[claimId];
   if (!c) return;
   var p = el(panelId); if (!p) return;
   p.innerHTML = '<div class="card" style="border-left:4px solid var(--orange)">'+
@@ -2834,9 +3632,29 @@ function runRuntimeChecks(){
       detail:'Blob/URL available; CSV '+csv.length+' bytes, Markdown '+md.length+' bytes generated locally'};
   });
   runtimeCheck('V-26','Print Brief works', function(){
-    var v = el('view-brief');
-    return {ok: !!v && v.classList.contains('print-target') && v.innerHTML.length>4000,
-      detail:'brief view rendered ('+(v?v.innerHTML.length:0)+' chars) and marked as the print target'};
+    /* Exercise the scoping the print path actually uses: paint the narrative
+       brief, scope the document to it, and confirm that it is the only view left
+       showing. The earlier version of this check asserted on a class that a
+       previous print had left behind, so it failed as soon as anything else was
+       printed — it tested a side effect rather than the mechanism. */
+    var v = el('view-narrative');
+    if (!v) return {ok:false, detail:'no narrative view in the document'};
+    RENDER.narrative({view:'narrative'});
+    var hadScope = document.body.classList.contains('print-scope');
+    var prior = $$('.view.print-target').map(function(x){ return x.id; });
+    $$('.view').forEach(function(x){ x.classList.remove('print-target'); });
+    v.classList.add('print-target');
+    document.body.classList.add('print-scope');
+    var targets = $$('.view.print-target');
+    var only = targets.length===1 && targets[0]===v;
+    var body = (v.innerText||v.textContent||'');
+    var hasQuestion = body.indexOf('research question')>=0 || body.indexOf(NARRATIVE.QUESTION)>=0;
+    if (!hadScope) document.body.classList.remove('print-scope');
+    $$('.view').forEach(function(x){ x.classList.remove('print-target'); });
+    prior.forEach(function(id){ var n = el(id); if (n) n.classList.add('print-target'); });
+    return {ok: only && v.innerHTML.length>4000 && hasQuestion,
+      detail:'narrative brief rendered ('+v.innerHTML.length+' chars), print scope isolates it to '+
+        'one view, and the question and short answer survive the scoping'};
   });
   runtimeCheck('V-27','App works under file://', function(){
     return {ok: true, detail:'protocol '+location.protocol+'; no fetch() and no module loading is used'};
@@ -2860,13 +3678,14 @@ function parseHashFrom(h){
   var old = location.hash;
   var fake = {hash:h};
   var p = h.replace(/^#/,'').split('/');
-  var r = {view:'index'};
-  var map = {'':'index','index':'index','brief':'brief','signals':'signals','signal':'signals',
+  var r = {view:'company'};
+  var map = {'':'company','index':'company','company':'company','brief':'narrative',
+    'narrative':'narrative','signals':'signals','signal':'signals',
     'evidence':'evidence','lineage':'lineage','kpi':'kpis','kpis':'kpis','bridge':'kpis',
     'cohorts':'cohorts','rules':'rules','rule':'rules','risks':'risks','question':'risks','risk':'risks',
     'sources':'sources','source':'sources','audience':'audience','methodology':'methodology'};
   if (p[0]==='generator') r.view = (p[1]==='update-email')?'gen-email':'gen-sunday';
-  else r.view = map[p[0]] || 'index';
+  else r.view = map[p[0]] || 'company';
   return r;
 }
 function walk(start, dir, depth){
@@ -2895,9 +3714,12 @@ RENDER.methodology = function(){
     '<h2>What this application is allowed to say</h2>'+
     '<p>Extraction checks run in Python when reveal-data.js is built. Runtime checks run in the browser '+
     'every time this view opens, against the live application.</p></div>'];
+  var ux = (v.uxChecks || []);
+  var uxFail = ux.filter(function(c){ return c.result==='FAIL'; });
+  allFail = allFail.concat(uxFail);
   h.push('<div class="'+(allFail.length?'warnbox':'okbox')+'"><strong>'+
     (allFail.length? allFail.length+' check(s) failing — build is not complete.'
-                   : (ext.length+rt.length)+' checks, 0 failing.')+'</strong> '+
+                   : (ext.length+rt.length+ux.length)+' checks, 0 failing.')+'</strong> '+
     'Extraction '+ext.length+' · runtime '+rt.length+'. '+
     (allFail.length? 'Failing: '+allFail.map(function(c){return c.id;}).join(', ') : '')+'</div>');
   h.push('<div class="actbar no-print"><button class="btn" id="dlValidation">Download validation JSON</button>'+
@@ -2913,6 +3735,17 @@ RENDER.methodology = function(){
 
   h.push('<h4 style="margin-top:14px">Extraction checks</h4>'+ckTable(ext));
   h.push('<h4 style="margin-top:14px">Runtime checks</h4>'+ckTable(rt));
+  if (ux.length){
+    h.push('<h4 style="margin-top:14px">Interface and behaviour checks ('+ux.length+')</h4>');
+    h.push('<p class="note" style="margin-bottom:7px">Run against the built application by the '+
+      'Playwright suite in test.mjs and recorded here. They cover the default route and mode, the '+
+      'lead chart\u2019s refusal to interpolate, the Current Call staying reviewer-controlled, clean '+
+      'prose in both generators, claim-manifest completeness, print scoping, every preserved route, '+
+      'and responsive behaviour down to a phone.</p>');
+    h.push('<button type="button" class="btn no-print" data-expand="uxTable" aria-expanded="false" '+
+      'aria-controls="uxTable">Show all '+ux.length+' checks</button>');
+    h.push('<div class="xpanel" id="uxTable" hidden>'+ckTable(ux)+'</div>');
+  }
   h.push('<h4 style="margin-top:14px">Workbook self-validation (V3.5 Validation sheet)</h4>'+
     '<div class="tw"><table><thead><tr><th>ID</th><th>Check</th><th>Result</th><th>Note</th>'+
     '</tr></thead><tbody>'+(D.workbookValidation||[]).map(function(c){
@@ -3232,8 +4065,47 @@ function applyQuick(k){
 }
 
 /* ═══════════════════════════════════════════════════════ event wiring ══ */
+/* The print menu. Six named surfaces, each with its own print styling, plus
+   whatever the reader is currently looking at. */
+var PRINT_TARGETS = [
+  ['pmCompany',   'Company profile'],
+  ['pmNarrative', 'Narrative brief'],
+  ['pmSunday',    'Sunday Signal'],
+  ['pmEmail',     'Update email'],
+  ['pmLineage',   'Lineage'],
+  ['pmEvidence',  'Evidence comparison'],
+  ['pmCurrent',   'This page']
+];
+function togglePrintMenu(){
+  var m = el('printMenu'), b = el('btnPrint');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'printMenu'; m.className = 'printmenu'; m.setAttribute('role','menu');
+    m.innerHTML = PRINT_TARGETS.map(function(t){
+      return '<button type="button" role="menuitem" id="' + t[0] + '">' + esc(t[1]) + '</button>';
+    }).join('');
+    document.body.appendChild(m);
+  }
+  var open = m.hasAttribute('hidden');
+  if (open){
+    var r = b.getBoundingClientRect();
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+    m.removeAttribute('hidden');
+  } else m.setAttribute('hidden','');
+  b.setAttribute('aria-expanded', String(open));
+}
+function closePrintMenu(){
+  var m = el('printMenu'); if (m) m.setAttribute('hidden','');
+  var b = el('btnPrint'); if (b) b.setAttribute('aria-expanded','false');
+}
+
 function printScoped(viewId){
+  closePrintMenu();
   $$('.view').forEach(function(v){ v.classList.remove('print-target'); });
+  /* paint the target even if the reader has never opened it */
+  var key = viewId.replace(/^view-/, '');
+  if (RENDER[key]) { try { RENDER[key]({view:key}); } catch(e){} }
   var v = el(viewId); if (v) v.classList.add('print-target');
   document.body.classList.add('print-scope');
   window.print();
@@ -3244,8 +4116,52 @@ document.addEventListener('click', function(ev){
   var t = ev.target.closest ? ev.target.closest('[data-oid],[data-goto],[data-quick],[data-unchip],'+
     '[data-evq],[data-evmode],[data-cmp],[data-rtab],[data-dtab],[data-tab],[data-aud],[data-lin],'+
     '[data-ntype],[data-etype],[data-rstatus],[data-rfam],[data-renf],[data-claim],[data-linfocus],'+
-    '[data-scroll],[data-lane]') : null;
+    '[data-scroll],[data-lane],[data-mode],[data-rscope],[data-rkview],[data-note],[data-emfmt],[data-ssty],[data-sslen],'+
+    '[data-expand],[data-handoff],[data-sub]') : null;
 
+  if (t && t.hasAttribute('data-mode')){ ev.preventDefault(); setMode(t.getAttribute('data-mode')); return; }
+  if (t && t.hasAttribute('data-rscope')){
+    ev.preventDefault(); ruleFilter.scope = t.getAttribute('data-rscope'); RENDER.rules({}); return;
+  }
+  if (t && t.hasAttribute('data-rkview')){
+    ev.preventDefault(); riskView = t.getAttribute('data-rkview'); RENDER.risks({}); return;
+  }
+  if (t && t.hasAttribute('data-emfmt')){
+    ev.preventDefault();
+    state.emailFormat = t.getAttribute('data-emfmt');
+    /* a format change keeps every selection the reader has already made */
+    GEN.email.edited = null; save(); RENDER['gen-email']({}); return;
+  }
+  if (t && t.hasAttribute('data-ssty')){
+    ev.preventDefault();
+    state.sundayStyle = t.getAttribute('data-ssty');
+    GEN.sunday.edited = null; save(); RENDER['gen-sunday']({}); return;
+  }
+  if (t && t.hasAttribute('data-sslen')){
+    ev.preventDefault();
+    state.sundayLength = t.getAttribute('data-sslen');
+    GEN.sunday.edited = null; save(); RENDER['gen-sunday']({}); return;
+  }
+  if (t && t.hasAttribute('data-handoff')){
+    ev.preventDefault();
+    var hv = t.getAttribute('data-handoff').split('|');
+    if (hv[0]==='sunday'){ GEN.sunday.audience = hv[1]; save(); location.hash = '#generator/sunday-signal'; }
+    else { GEN.email.audience = hv[1]; save(); location.hash = '#generator/update-email'; }
+    return;
+  }
+  /* progressive disclosure: a control that owns a panel and says so */
+  if (t && t.hasAttribute('data-expand')){
+    ev.preventDefault();
+    var pan = el(t.getAttribute('data-expand'));
+    if (pan){
+      pan.hidden = !pan.hidden;
+      t.setAttribute('aria-expanded', String(!pan.hidden));
+      t.classList.toggle('open', !pan.hidden);
+      var lbl = t.getAttribute('data-label-open'), lbl2 = t.getAttribute('data-label-shut');
+      if (lbl && lbl2) t.textContent = pan.hidden ? lbl : lbl2;
+    }
+    return;
+  }
   /* contents table: scroll the reader to a section of the brief */
   if (t && t.hasAttribute('data-scroll')){
     ev.preventDefault();
@@ -3318,8 +4234,10 @@ document.addEventListener('click', function(ev){
     RENDER.rules(); return;
   }
   if (t && t.hasAttribute('data-claim')){
-    showManifest(t.getAttribute('data-claim'),
-      state.view==='gen-email' ? 'emManifestPanel' : 'ssManifestPanel');
+    var panel = state.view==='gen-email' ? 'emManifestPanel'
+              : state.view==='company'   ? 'snapManifest'
+              : state.view==='narrative' ? 'narManifest' : 'ssManifestPanel';
+    showManifest(t.getAttribute('data-claim'), panel);
     return;
   }
   if (t && t.hasAttribute('data-linfocus')){ LIN.focus = t.getAttribute('data-linfocus');
@@ -3373,6 +4291,13 @@ document.addEventListener('change', function(ev){
     if (!t.checked && i>=0) state[key].splice(i,1);
     save(); paintChips(); render(); return;
   }
+  if (t.hasAttribute && t.hasAttribute('data-note')){
+    var nk = t.getAttribute('data-note').split('|');
+    var bag = nk[0]==='email' ? state.emailNotes : state.sundayNotes;
+    bag[nk[1]] = t.checked; save();
+    RENDER[nk[0]==='email' ? 'gen-email' : 'gen-sunday']({});
+    return;
+  }
   if (t.hasAttribute && t.hasAttribute('data-pick')){
     var g = t.getAttribute('data-pick'), val = t.value, j = state[g].indexOf(val);
     if (t.checked && j<0) state[g].push(val);
@@ -3392,20 +4317,13 @@ document.addEventListener('change', function(ev){
     case 'sigReview': signalFilter.review=t.value; RENDER.signals({}); break;
     case 'ssAud': GEN.sunday.audience=t.value; RENDER['gen-sunday']({}); break;
     case 'ssSig': GEN.sunday.signal=t.value; RENDER['gen-sunday']({}); break;
-    case 'ssTone': GEN.sunday.tone=t.value; RENDER['gen-sunday']({}); break;
-    case 'ssLen': GEN.sunday.length=t.value; RENDER['gen-sunday']({}); break;
     case 'ssChart': GEN.sunday.chart=t.checked; RENDER['gen-sunday']({}); break;
-    case 'ssMethod': GEN.sunday.method=t.checked; RENDER['gen-sunday']({}); break;
-    case 'ssAppendix': GEN.sunday.appendix=t.checked; RENDER['gen-sunday']({}); break;
-    case 'emType': GEN.email.type=t.value; RENDER['gen-email']({}); break;
     case 'emSubject': GEN.email.subjectStyle=t.value; RENDER['gen-email']({}); break;
     case 'emAud': GEN.email.audience=t.value; RENDER['gen-email']({}); break;
     case 'emSig': GEN.email.signal=t.value; RENDER['gen-email']({}); break;
     case 'emRisk': GEN.email.risk=t.value; RENDER['gen-email']({}); break;
     case 'emQ': GEN.email.question=t.value; RENDER['gen-email']({}); break;
     case 'emLen': GEN.email.length=t.value; RENDER['gen-email']({}); break;
-    case 'emIds': GEN.email.includeIds=t.checked; RENDER['gen-email']({}); break;
-    case 'emMethod': GEN.email.includeMethod=t.checked; RENDER['gen-email']({}); break;
   }
 });
 
@@ -3462,20 +4380,27 @@ document.addEventListener('click', function(ev){
       el('btnSources').setAttribute('aria-expanded','false'); break;
     case 'drawerClose': closeDrawer(); break;
     case 'searchClose': el('searchPanel').hidden = true; break;
-    case 'btnGenerate': location.hash = '#generator/sunday-signal'; break;
-    case 'btnPrint': printScoped('view-'+state.view); break;
-    case 'printBrief': printScoped('view-brief'); break;
+    case 'btnPrint': togglePrintMenu(); break;
+    case 'pmCompany':   printScoped('view-company'); break;
+    case 'pmNarrative': printScoped('view-narrative'); break;
+    case 'pmSunday':    printScoped('view-gen-sunday'); break;
+    case 'pmEmail':     printScoped('view-gen-email'); break;
+    case 'pmLineage':   printScoped('view-lineage'); break;
+    case 'pmEvidence':  printScoped('view-evidence'); break;
+    case 'pmCurrent':   printScoped('view-'+state.view); break;
+    case 'printBrief':  printScoped('view-narrative'); break;
     case 'cmpPrint': printScoped('view-evidence'); break;
     case 'cmpClear': state.compare=[]; save(); RENDER.evidence(); break;
     case 'evClear': evFilter={q:'',quick:[],mode:evFilter.mode}; RENDER.evidence(); break;
     case 'evCsv': download('crowdstrike-evidence-filtered.csv', evidenceCsv(), 'text/csv'); break;
     case 'sigClear': signalFilter={q:'',theme:'',direction:'',confidence:'',period:'',review:''};
       RENDER.signals({}); break;
-    case 'ruleClear': ruleFilter={status:'',family:'',enforcement:'',q:''}; RENDER.rules(); break;
+    case 'ruleClear': ruleFilter={status:'',family:'',enforcement:'',q:'',scope:ruleFilter.scope};
+      RENDER.rules(); break;
     case 'ssRegen': GEN.sunday.edited=null; RENDER['gen-sunday']({}); break;
     case 'ssRestore': GEN.sunday.edited=null; delete state.drafts.sunday; save(); RENDER['gen-sunday']({}); break;
     case 'ssEdit':
-      GEN.sunday.edited = claimsToText(GEN.sunday.title, buildSunday());
+      GEN.sunday.edited = essayText(buildCohesive(), true);
       state.drafts.sunday = GEN.sunday.edited; save(); RENDER['gen-sunday']({}); break;
     case 'ssReorder':
       var secs = buildSunday().map(function(s){return s.h;});
@@ -3487,36 +4412,47 @@ document.addEventListener('click', function(ev){
       if (state.view==='gen-email') RENDER['gen-email']({}); else RENDER['gen-sunday']({});
       break;
     case 'ssCopy': copyText(GEN.sunday.edited!=null ? GEN.sunday.edited
-      : claimsToText(GEN.sunday.title, buildSunday()), ev.target); break;
+      : essayText(buildCohesive(), false), ev.target); announce('Prose copied.'); break;
+    case 'ssCopyNotes': copyText(GEN.sunday.edited!=null ? GEN.sunday.edited
+      : essayText(buildCohesive(), true), ev.target); announce('Prose and footnotes copied.'); break;
     case 'ssMd': download('crowdstrike-sunday-signal.md',
-      claimsToMarkdown(GEN.sunday.title, buildSunday()), 'text/markdown'); break;
+      essayMarkdown(buildCohesive()), 'text/markdown'); break;
     case 'ssHtml': download('crowdstrike-sunday-signal.html',
-      claimsToHtml(GEN.sunday.title, buildSunday()), 'text/html'); break;
-    case 'ssManifest': download('crowdstrike-sunday-signal-manifest.json',
-      JSON.stringify(buildSunday().reduce(function(a,s){return a.concat(s.c);},[]),null,2),
-      'application/json'); break;
+      essayHtml(buildCohesive()), 'text/html'); break;
+    case 'ssManifest':
+      var SS = buildCohesive();
+      download('crowdstrike-sunday-signal-manifest.json',
+        JSON.stringify(SS.blocks.map(function(b){return b.c;}).concat(SS.footnotes), null, 2),
+        'application/json'); break;
+    case 'ssLineage': location.hash = '#lineage/SIG-02'; break;
+    case 'ssPreview': SS_PREVIEW = !SS_PREVIEW; RENDER['gen-sunday']({}); break;
     case 'ssPrint': printScoped('view-gen-sunday'); break;
     case 'emRegen': GEN.email.edited=null; RENDER['gen-email']({}); break;
     case 'emReset': GEN.email = {type:'Internal Research Update', recipient:'Research team',
       subjectStyle:'default', audience:'investor', signal:'SIG-02', risk:'CE-002', question:'OQ-014',
       action:'Pre-register BT-CRWD-OCT26 with an agreed lag and tolerance', length:'standard',
-      includeIds:true, includeMethod:true, edited:null}; RENDER['gen-email']({}); break;
-    case 'emCopySubject': copyText(buildEmail().subject, ev.target); break;
-    case 'emCopyBody': copyText(claimsToText('', buildEmail().sections), ev.target); break;
+      includeIds:true, includeMethod:true, edited:null};
+      state.emailFormat='clean';
+      state.emailNotes={method:false, appendix:false, review:false, ids:false};
+      save(); RENDER['gen-email']({}); break;
+    case 'emCopySubject': copyText(currentEmailSubject(), ev.target); announce('Subject copied.'); break;
+    case 'emCopyBody': copyText(currentEmailBody(), ev.target); announce('Email body copied.'); break;
     case 'emCopyAll':
-      var b = buildEmail();
-      copyText('To: '+GEN.email.recipient+'\nSubject: '+b.subject+'\n\n'+
-        claimsToText('', b.sections), ev.target); break;
+      copyText('To: '+GEN.email.recipient+'\nSubject: '+currentEmailSubject()+'\n\n'+
+        currentEmailBody(), ev.target); announce('Full email copied.'); break;
     case 'emTxt':
-      var b2 = buildEmail();
-      download('crowdstrike-update-email.txt','To: '+GEN.email.recipient+'\nSubject: '+b2.subject+
-        '\n\n'+claimsToText('', b2.sections), 'text/plain'); break;
+      download('crowdstrike-update-email.txt','To: '+GEN.email.recipient+'\nSubject: '+
+        currentEmailSubject()+'\n\n'+currentEmailBody(), 'text/plain'); break;
     case 'emHtml':
-      var b3 = buildEmail();
-      download('crowdstrike-update-email.html', claimsToHtml(b3.subject, b3.sections), 'text/html'); break;
-    case 'emManifest': download('crowdstrike-email-manifest.json',
-      JSON.stringify(buildEmail().sections.reduce(function(a,s){return a.concat(s.c);},[]),null,2),
-      'application/json'); break;
+      download('crowdstrike-update-email.html',
+        state.emailFormat==='structured' ? claimsToHtml(structuredEmail().subject, structuredEmail().sections)
+                                         : emailBodyHtml(buildCleanEmail()), 'text/html'); break;
+    case 'emManifest':
+      download('crowdstrike-email-manifest.json', JSON.stringify(
+        state.emailFormat==='structured'
+          ? structuredEmail().sections.reduce(function(a,x){return a.concat(x.c);},[])
+          : (function(){ var E=buildCleanEmail(); return E.paragraphs.concat(E.footnotes); })(),
+        null, 2), 'application/json'); break;
     case 'emPrint': printScoped('view-gen-email'); break;
     case 'emLineage': location.hash = '#lineage/SIG-02'; break;
     case 'dlValidation':
@@ -3534,20 +4470,36 @@ document.addEventListener('click', function(ev){
   }
 });
 
+document.addEventListener('click', function(ev){
+  var m = el('printMenu');
+  if (m && !m.hasAttribute('hidden') && !m.contains(ev.target) && ev.target.id !== 'btnPrint')
+    closePrintMenu();
+}, true);
 el('drawerScrim').addEventListener('click', function(ev){
   if (ev.target===el('drawerScrim')) closeDrawer();
 });
 el('searchPanel').addEventListener('click', function(ev){
   if (ev.target===el('searchPanel')) el('searchPanel').hidden = true;
 });
-window.addEventListener('hashchange', render);
+(function(){
+  var nt = el('navToggle');
+  if (nt) nt.addEventListener('click', function(){
+    var open = document.querySelector('.sidebar').classList.toggle('open');
+    nt.setAttribute('aria-expanded', open);
+  });
+})();
+window.addEventListener('hashchange', function(){
+  render();
+  /* on a phone the menu closes itself once a destination is chosen */
+  var sb = document.querySelector('.sidebar');
+  if (sb) { sb.classList.remove('open'); var nt=el('navToggle'); if (nt) nt.setAttribute('aria-expanded','false'); }
+});
 
 /* ══════════════════════════════════════════════════════════════ boot ══ */
 LIN.orient = state.graphOrientation || 'horizontal';
 if (state.drafts && state.drafts.sunday) GEN.sunday.edited = state.drafts.sunday;
 if (state.drafts && state.drafts.email) GEN.email.edited = state.drafts.email;
-if (!location.hash) location.hash = '#brief';
+if (!location.hash) location.hash = '#company';
 renderSourcePane();
-/* pre-render the brief so Print Brief and validation always have it */
-RENDER.brief();
+applyMode();
 render();
