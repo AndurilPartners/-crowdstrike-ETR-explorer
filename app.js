@@ -32,7 +32,7 @@ var LANES = [
   ['crosslane','Cross-Lane Synthesis'], ['interpretation','Analyst Interpretation'],
   ['rules','Rules and Methodology']
 ];
-var CLASSES = ['Client-provided fact','Anduril interpretation','Hypothesis',
+var CLASSES = ['Client-provided fact','ETR interpretation','Hypothesis',
                'Open question','Recommended action'];
 var STATES = ['Supporting','Contradictory','Contextual','Source Needed','Verified',
               'Pending Review','Current','Historical'];
@@ -66,35 +66,42 @@ var EDGE_COLOR = {SUPPORTS:'#70AD47', CONTRADICTS:'#C00000', BLOCKS:'#C00000',
 
 /* ─────────────────────────────────────────────────────────────── state ── */
 var DEFAULT_STATE = {
-  view:'company', mode:'narrative',
+  view:'company', schemaVersion:2,
   emailFormat:'clean', sundayStyle:'cohesive', sundayLength:'standard',
-  emailNotes:{method:false, appendix:false, review:false, ids:false},
+  emailNotes:{method:false, appendix:false, review:false, ids:false, logo:true},
   sundayNotes:{method:false, ids:false, review:false},
   lanes:null, classes:null, states:null, confs:null,
   audience:'investor', evidenceMode:'list', graphOrientation:'horizontal',
   graphDepth:'2', nodeTypes:null, edgeTypes:null,
   genEvidence:['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-ZS'],
   genCounter:['CE-002'], genQuestion:['OQ-014'], drafts:{}, dismissedTips:[],
-  inspect:false, compare:[]
+  inspect:false, compare:[], sundayNewsletter:false
 };
 var state = load();
 
+/* No reading-mode toggle exists in this application: there is one interface,
+   and the one inspection toggle is Inspect Claims (state.inspect). A saved
+   "mode" value from an earlier build is dropped silently by the storage
+   migration below, never carried forward and never warned about. */
 function load(){
   var s = {};
   for (var k in DEFAULT_STATE) s[k] = DEFAULT_STATE[k];
   try {
     var raw = localStorage.getItem('reveal.crwd.state');
-    if (raw) { var p = JSON.parse(raw); for (var j in p) if (j in s) s[j] = p[j]; }
+    var p = raw ? JSON.parse(raw) : null;
+    if (typeof REVEAL_MIGRATE_STATE === 'function') p = REVEAL_MIGRATE_STATE(p);
+    if (p) for (var j in p) if (j in s) s[j] = p[j];
   } catch(e){}
   if (!s.lanes)   s.lanes   = LANES.map(function(l){return l[0];});
   if (!s.classes) s.classes = CLASSES.slice();
   if (!s.states)  s.states  = STATES.slice();
   if (!s.confs)   s.confs   = CONFS.slice();
   if (!s.nodeTypes) s.nodeTypes = Object.keys(NODE_STYLE);
-  if (s.mode !== 'research') s.mode = 'narrative';
-  if (!s.emailNotes) s.emailNotes = {method:false, appendix:false, review:false, ids:false};
+  if (!s.emailNotes) s.emailNotes = {method:false, appendix:false, review:false, ids:false, logo:true};
+  if (!('logo' in s.emailNotes)) s.emailNotes.logo = true;
   if (!s.sundayNotes) s.sundayNotes = {method:false, ids:false, review:false};
   if (!s.edgeTypes) s.edgeTypes = EDGE_TYPES.slice();
+  s.schemaVersion = DEFAULT_STATE.schemaVersion;
   return s;
 }
 function save(){
@@ -117,56 +124,8 @@ function scrollToSection(id){
   setTimeout(function(){ node.classList.remove('flash'); }, 1200);
 }
 
-/* The strip beneath the top bar. It states, in plain words, how much of the
-   evidence base is switched on — and lets a reader switch a lane off from here. */
-var STRIP_LANES = ['oct26','jul26','historical','zscore','cohort','region',
-                   'adoption','composition','peer','company'];
-function renderSourceStrip(){
-  var host = el('srcStrip'); if (!host) return;
-  var on = STRIP_LANES.filter(function(l){ return state.lanes.indexOf(l) >= 0; });
-  var complete = on.length === STRIP_LANES.length;
-  var h = ['<span class="lead"><span class="dot'+(complete?'':' off')+'"></span>'+
-    (complete ? '<b>Complete ETR view</b>' : '<b>Partial ETR view</b>')+' · '+
-    on.length+' of '+STRIP_LANES.length+' ETR sources on</span>'];
-  STRIP_LANES.forEach(function(l){
-    var lab = (LANES.filter(function(x){return x[0]===l;})[0]||[l,l])[1]
-                .replace(/ TSIS$/,'').replace(/ Evidence$/,'').replace(/^Subsample \/ /,'');
-    var isOn = state.lanes.indexOf(l) >= 0;
-    h.push('<button type="button" class="lanechip'+(isOn?'':' off')+'" data-lane="'+esc(l)+'" '+
-      'aria-pressed="'+isOn+'">'+esc(lab)+'</button>');
-  });
-  if (!complete) h.push('<span class="stripnote">Readings below are drawn from the lanes still on. '+
-    'The approved Current Call does not move.</span>');
-  host.innerHTML = h.join('');
-}
-
-/* ─────────────────────────────────────────────────────────────── modes ──
-   Two reading modes over one dataset. Narrative hides the machinery; Research
-   shows it. Neither changes a value, a filter, a call or a claim manifest —
-   the mode is a presentation state and nothing else. */
-function applyMode(){
-  var b = document.body;
-  b.classList.toggle('mode-narrative', state.mode !== 'research');
-  b.classList.toggle('mode-research',  state.mode === 'research');
-  $$('.modebtn').forEach(function(x){
-    var on = x.getAttribute('data-mode') === state.mode;
-    x.classList.toggle('on', on);
-    x.setAttribute('aria-pressed', on);
-  });
-}
-function setMode(m){
-  if (m !== 'narrative' && m !== 'research') return;
-  if (state.mode === m) return;
-  state.mode = m; save(); applyMode();
-  /* the route is preserved: only the current view repaints */
-  var fn = RENDER[state.view]; if (fn) fn(parseHash());
-  updateChrome();
-  announce('Switched to ' + (m === 'research' ? 'Research' : 'Narrative') + ' mode.');
-}
-function narrativeMode(){ return state.mode !== 'research'; }
-
-/* A polite live region, so mode and copy actions are announced rather than
-   only shown. */
+/* A polite live region, so copy actions and other state changes are
+   announced rather than only shown. */
 function announce(msg){
   var r = el('liveRegion'); if (!r) return;
   r.textContent = '';
@@ -200,7 +159,7 @@ function tagClass(c){
   c = (c||'').toLowerCase();
   if (c.indexOf('client-provided')===0 || c.indexOf('etr quantitative')===0 ||
       c.indexOf('etr evidence')===0 || c.indexOf('etr outlook')===0) return 't-fact';
-  if (c.indexOf('anduril')===0 || c.indexOf('interpretation')>=0) return 't-interp';
+  if (c.indexOf('interpretation')>=0) return 't-interp';
   if (c.indexOf('hypoth')===0) return 't-hyp';
   if (c.indexOf('open question')===0) return 't-oq';
   if (c.indexOf('recommend')===0) return 't-act';
@@ -218,6 +177,22 @@ function laneChip(l){
   var label = (LANES.filter(function(x){return x[0]===l;})[0]||[l,l])[1];
   return '<span class="lane lane-'+esc(l||'rules')+'">'+esc(label)+'</span>';
 }
+/* Company, Narrative and the Executive Brief are the default reading paths.
+   Object IDs (EV-, SIG-, OQ-, R-, KPI-… and relationship IDs) are absent from
+   their running prose regardless of any toggle — this flag is switched on
+   only while those three render, and oid()/oids() answer it by rendering a
+   small, unlabelled citation mark instead of the literal ID. The mark is
+   still a real button: it still opens the object drawer on click, still
+   carries the object's title as its accessible name, so the evidence is one
+   click away — it is reachable, just not printed as a bare code in the
+   sentence. Every other view (drawers, Evidence, Signals, KPI Bridges,
+   Lineage, Methodology, claim manifests, technical-detail disclosures,
+   export footnotes) renders the literal ID as before. */
+var QUIET_CITE = false;
+function withQuietCite(fn){
+  QUIET_CITE = true;
+  try { return fn(); } finally { QUIET_CITE = false; }
+}
 /** Clickable object-ID chip. Every ID in the app is one of these. */
 function oid(id, extra){
   var o = OBJ[id];
@@ -229,12 +204,63 @@ function oid(id, extra){
   else if (o.objectType==='Rule' || o.objectType==='ContextRule') cls += ' rule';
   else if (o.objectType==='Source') cls += ' src';
   var title = o ? (o.title||o.statement||'').slice(0,140) : 'Not resolved to an object in this workbook';
+  if (QUIET_CITE){
+    return '<button type="button" class="'+cls+' oid-quiet" data-oid="'+esc(id)+'" '+
+      'title="'+esc(title)+'" aria-label="Open supporting evidence: '+esc(title)+'">'+
+      '<span aria-hidden="true">●</span></button>';
+  }
   return '<button type="button" class="'+cls+'" data-oid="'+esc(id)+'" title="'+esc(title)+'">'+
          esc(id)+(extra?' '+esc(extra):'')+'</button>';
 }
 function oids(list){
-  if (!list || !list.length) return '<span class="note">none recorded</span>';
+  if (!list || !list.length) return QUIET_CITE ? '' : '<span class="note">none recorded</span>';
   return '<span class="oids">'+list.map(function(i){return oid(i);}).join('')+'</span>';
+}
+
+/** The "Missing source" component. Used in the default reading paths in
+    place of a bare "SOURCE NEEDED" span — never invents an owner, priority or
+    expected evidence: any field the data does not supply reads "Not
+    specified". `opts.question` names the open question this gap already is,
+    when one exists, and drives the View question / Open lineage actions. */
+function missingSource(need, why, opts){
+  opts = opts || {};
+  var qid = opts.question;
+  var q = qid ? OBJ[qid] : null;
+  var owner = opts.owner || 'Not specified';
+  var priority = opts.priority || (q && q.importance) || 'Not specified';
+  var status = opts.status || (q && q.workflowStatus) || 'Source Needed';
+  var expected = opts.expected || (q && q.sourceName) || 'Not specified';
+  var lineageId = opts.lineage || qid;
+  var acts = [];
+  if (qid) acts.push('<button type="button" class="lnk" data-goto="#question/'+esc(qid)+
+    '">View question</button>');
+  if (lineageId) acts.push('<button type="button" class="lnk" data-goto="#lineage/'+esc(lineageId)+
+    '">Open lineage</button>');
+  if (expected !== 'Not specified') acts.push('<button type="button" class="lnk" data-goto="#sources">'+
+    'View expected evidence</button>');
+  var reqText = 'Research request — ' + need + '. ' + why +
+    (expected !== 'Not specified' ? ' Expected evidence: ' + expected + '.' : '');
+  acts.push('<button type="button" class="lnk" data-copyreq="'+esc(reqText)+
+    '">Copy research request</button>');
+  return '<div class="missing-source"><div class="ms-head"><span class="ms-tag">Missing source</span></div>'+
+    '<dl class="ms-kv">'+
+      '<dt>Need</dt><dd>'+esc(need)+'</dd>'+
+      '<dt>Why it matters</dt><dd>'+esc(why)+'</dd>'+
+      '<dt>Owner</dt><dd>'+esc(owner)+'</dd>'+
+      '<dt>Priority</dt><dd>'+esc(priority)+'</dd>'+
+      '<dt>Status</dt><dd>'+esc(status)+'</dd>'+
+      '<dt>Expected evidence</dt><dd>'+esc(expected)+'</dd>'+
+    '</dl>'+
+    '<div class="ms-acts no-print">'+acts.join(' · ')+'</div>'+
+  '</div>';
+}
+
+/** The CrowdStrike wordmark. Small, restrained, and fails gracefully: if the
+    asset is ever unavailable the <img> hides itself rather than showing a
+    broken-image icon, and the surrounding layout does not depend on it. */
+function brandLogo(cls){
+  return '<img class="brand-logo '+esc(cls||'')+'" src="assets/crowdstrike-logo.png" alt="CrowdStrike" '+
+    'onerror="this.style.display=\'none\'">';
 }
 function periodChip(o){
   if (o.currentOrHistorical==='current')
@@ -352,7 +378,7 @@ var CALL = {
 
 /* ───────────────────────────────────────────────────────────── routing ── */
 var VIEWS = ['company','narrative','signals','evidence','lineage','kpis','cohorts','rules',
-             'risks','sources','audience','gen-sunday','gen-email','methodology'];
+             'risks','sources','audience','gen-sunday','gen-email','gen-brief','methodology'];
 var pendingFocus = null;
 
 function parseHash(){
@@ -381,7 +407,8 @@ function parseHash(){
     case 'sources': r.view='sources'; break;
     case 'source': r.view='sources'; r.arg=p[1]; break;
     case 'audience': r.view='audience'; r.arg=p[1]; break;
-    case 'generator': r.view = (p[1]==='update-email') ? 'gen-email' : 'gen-sunday'; break;
+    case 'generator': r.view = (p[1]==='update-email') ? 'gen-email' :
+      (p[1]==='executive-brief' ? 'gen-brief' : 'gen-sunday'); break;
     case 'methodology': r.view='methodology'; break;
     default: r.view='company';
   }
@@ -411,9 +438,8 @@ function render(){
 }
 
 function updateChrome(){
-  renderSourceStrip();
   el('tbPeriod').textContent = CP.label;
-  el('tbSignal').textContent = CALL.primarySignalId + ' · ' + (OBJ[CALL.primarySignalId]||{}).title;
+  el('tbUpdated').textContent = CP.exportTimestamp || 'Not specified';
   el('filterCount').textContent = activeFilterCount();
   el('nSignals').textContent  = (D.signals||[]).length;
   el('nEvidence').textContent = visibleEvidence().length + '/' + (D.evidence||[]).length;
@@ -640,13 +666,16 @@ function wireOnePlot(plot){
 }
 
 RENDER.company = function(){
+  QUIET_CITE = true;
   var v = { ns:CP.netScore, pv:CP.pervasion, z:CP.zScore, it:CP.intent };
   var h = [];
   CLAIM_SEQ = 0;   /* company claim ids are stable across repaints */
 
   /* ── hero ───────────────────────────────────────────────────────────── */
+  /* No logo repeated here — the persistent header already carries the one
+     CrowdStrike wordmark, and it stays on screen above every view. */
   h.push('<header class="chero">');
-  h.push('<div class="chero-eyebrow">REVEAL Company Explorer · ' + esc(CP.label) + '</div>');
+  h.push('<div class="chero-eyebrow">' + esc(CP.label) + ' research</div>');
   h.push('<div class="chero-id"><h1>CrowdStrike</h1><span class="tick">CRWD</span>' +
     '<button type="button" class="sigchip" data-goto="#signal/' + esc(CALL.primarySignalId) + '">' +
     esc((OBJ[CALL.primarySignalId] || {}).title || 'Primary signal') + '</button></div>');
@@ -656,16 +685,31 @@ RENDER.company = function(){
   h.push('<div class="chips">' +
     statusChip('Current call', CALL.current.value,
       CALL.current.value === 'Source Needed' ? 'need' : 'pos', 'OQ-002',
-      CALL.current.value === 'Source Needed' ? 'Why Source Needed?' : 'OQ-002') +
-    statusChip('Direction', CALL.direction, 'pos', 'SIG-02', 'SIG-02') +
-    statusChip('Conviction', CALL.conviction, 'neu', 'SIG-02', 'SIG-02') +
-    statusChip('Human review', 'Required', 'warn', 'R-020', 'R-020') +
+      CALL.current.value === 'Source Needed' ? 'Why Source Needed?' : 'Details') +
+    statusChip('Direction', CALL.direction, 'pos', 'SIG-02', 'Details') +
+    statusChip('Conviction', CALL.conviction, 'neu', 'SIG-02', 'Details') +
+    statusChip('Evidence confidence', CALL.evidenceConfidence.split(/[—-]/)[0].trim(),
+      'neu', 'SIG-02', 'Details') +
+    statusChip('Current period', CP.label, 'neu', null, null) +
     '</div>');
   h.push('<div class="chero-acts no-print">' +
     btn('Read the narrative', '#narrative', 'pri') +
     btn('Explore the signal', '#signal/SIG-02') +
     btn('Open lineage', '#lineage/SIG-02') + '</div>');
   h.push('</header>');
+
+  /* ── metric rail — right under the heading, above the chart ──────────── */
+  h.push('<div class="railhead"><h3>Key metrics</h3><p class="note">' + esc(CP.label) +
+    ' · N ' + n2(CP.nBase, 0) + ' citations. Every tile opens its evidence object.</p></div>');
+  h.push('<div class="mrail">' +
+    mtile('Net Score', n2(v.ns.value), 'spending intent', 'ETR-OCT26-NS') +
+    mtile('Q/Q change', sign(v.ns.qqDelta), moveWord(v.ns.qqDelta), 'ETR-OCT26-NS') +
+    mtile('Y/Y change', sign(v.ns.yyDelta), moveWord(v.ns.yyDelta), 'ETR-OCT26-NS') +
+    mtile('Pervasion', n2(v.pv.value), 'deployment breadth', 'ETR-OCT26-PV') +
+    mtile('Q/Q Z', n2(v.z.qqZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
+    mtile('Y/Y Z', n2(v.z.yyZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
+    mtile('N', n2(CP.nBase, 0), 'citations, not people', 'ETR-OCT26-ZS') +
+    '</div>');
 
   /* ── lead chart ─────────────────────────────────────────────────────── */
   h.push(recoveryChart());
@@ -679,19 +723,6 @@ RENDER.company = function(){
         '">Inspect evidence</button></div></div>';
   }).join('') + '</div>');
   h.push('<div id="snapManifest" class="no-print"></div>');
-
-  /* ── metric rail ────────────────────────────────────────────────────── */
-  h.push('<div class="railhead"><h3>Key metrics</h3><p class="note">' + esc(CP.label) +
-    ' · N ' + n2(CP.nBase, 0) + ' citations. Every tile opens its evidence object.</p></div>');
-  h.push('<div class="mrail">' +
-    mtile('Net Score', n2(v.ns.value), 'spending intent', 'ETR-OCT26-NS') +
-    mtile('Q/Q change', sign(v.ns.qqDelta), moveWord(v.ns.qqDelta), 'ETR-OCT26-NS') +
-    mtile('Y/Y change', sign(v.ns.yyDelta), moveWord(v.ns.yyDelta), 'ETR-OCT26-NS') +
-    mtile('Pervasion', n2(v.pv.value), 'deployment breadth', 'ETR-OCT26-PV') +
-    mtile('Q/Q Z', n2(v.z.qqZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
-    mtile('Y/Y Z', n2(v.z.yyZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
-    mtile('N', n2(CP.nBase, 0), 'citations, not people', 'ETR-OCT26-ZS') +
-    '</div>');
 
   /* ── the company story ──────────────────────────────────────────────── */
   h.push('<section class="band"><div class="band-head"><div class="eyebrow">The company story</div>' +
@@ -735,7 +766,7 @@ RENDER.company = function(){
       '<dl class="w-kv"><dt>What would resolve it</dt><dd>' + esc(w.resolve) + '</dd>' +
       '<dt>Related signal</dt><dd>' + oid(w.signal) + '</dd></dl>' +
       '<div class="no-print"><button type="button" class="lnk" data-goto="#question/' + esc(w.id) +
-      '">Open ' + esc(w.id) + '</button></div></li>';
+      '">Open this question</button></div></li>';
   }).join('') + '</ol>');
   h.push('<div class="no-print" style="margin-top:13px">' +
     btn('Generate update', '#generator/update-email', 'pri') +
@@ -759,6 +790,7 @@ RENDER.company = function(){
     btn('View sources', '#sources') + btn('View methodology', '#methodology') +
     btn('Explore the research foundation', '#evidence', 'pri') + '</div></div></section>');
 
+  QUIET_CITE = false;
   el('view-company').innerHTML = h.join('');
   wireChart();
 
@@ -782,18 +814,19 @@ function btn(label,href,cls){
 /* the three drivers, each assembled from workbook objects */
 var DRIVERS = [
   { key:'demand', title:'Post-outage demand recovery persists, modestly',
-    classification:'Anduril interpretation', direction:'Improving', confidence:'High on current raw values',
+    classification:'ETR interpretation', direction:'Improving', confidence:'High on current raw values',
     body:function(){
       var ns=CP.netScore;
       return 'Net Score '+n2(ns.value)+' in '+CP.label+', '+sign(ns.qqDelta)+' sequentially ('+
-        moveWord(ns.qqDelta)+' under R-005) and '+sign(ns.yyDelta)+' year over year ('+moveWord(ns.yyDelta)+
+        moveWord(ns.qqDelta)+', per the workbook’s movement terminology) and '+sign(ns.yyDelta)+
+        ' year over year ('+moveWord(ns.yyDelta)+
         '). Pervasion '+n2(CP.pervasion.value)+', '+sign(CP.pervasion.qqDelta)+' sequentially. '+
         'Both Z-Scores are positive with Y/Y above Q/Q.';
     },
     evidence:['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-ZS','ETR-OCT26-INTENT'],
     counter:['CE-002','CE-003'], kpi:'KPI-003', questions:['OQ-002','OQ-005'] },
   { key:'cohort', title:'Enterprise breadth is selective, not uniform',
-    classification:'Anduril interpretation', direction:'Mixed', confidence:'Medium — cohort N missing',
+    classification:'ETR interpretation', direction:'Mixed', confidence:'Medium — cohort N missing',
     body:function(){
       return 'Global 2000 Net Score 42.61 and Fortune 500 42.68 exceed the '+n2(CP.netScore.value)+
         ' overall reading, while Large Organizations sit below it at 35.82. The workbook states the '+
@@ -891,6 +924,7 @@ function lineChart(points, opts){
    ══════════════════════════════════════════════════════════════════════════ */
 
 RENDER.narrative = function(){
+  QUIET_CITE = true;
   var ns = CP.netScore, pv = CP.pervasion, z = CP.zScore, it = CP.intent;
   var cuts = (D.rawTables.subsampleCuts || {rows:[]}).rows;
   var h = [];
@@ -903,6 +937,7 @@ RENDER.narrative = function(){
         '</span>' + esc(s[2]) + '</button>';
     }).join('') + '</div>');
 
+  h.push(brandLogo('reader-logo'));
   h.push('<article class="reader">');
 
   /* ── 01 the research question ───────────────────────────────────────── */
@@ -925,9 +960,14 @@ RENDER.narrative = function(){
   h.push('<p>' + esc(sig.statement || CALL.primarySignalText) + ' That is the recorded reading for ' +
     oid(CALL.primarySignalId) + ', whose reviewer status is <strong>' +
     esc(sig.workflowStatus || 'Source Needed') + '</strong>. The prior call was ' +
-    esc(CALL.prior.value) + ' in July 2026; under R-025 that reading is now historical, and no ' +
+    esc(CALL.prior.value) + ' in July 2026; under the current-period promotion rule that reading is ' +
+    'now historical, and no ' +
     esc(CP.label) + ' data outlook is recorded anywhere in the package, which is why the current call ' +
-    'reads ' + needed() + ' rather than carrying the earlier one forward ' + oid('OQ-002') + '.</p>');
+    'reads <strong>Source Needed</strong> rather than carrying the earlier one forward.</p>');
+  h.push(missingSource('An October 2026 ETR data outlook',
+    'Without a recorded outlook for the current period, the call cannot resolve in either direction and ' +
+    'stays Source Needed rather than carrying the prior Positive reading forward.',
+    {question:'OQ-002'}));
   h.push(callouts([
     ['Current call', CALL.current.value, 'need'],
     ['Prior call', CALL.prior.value + ' · Jul 2026', 'neu'],
@@ -1000,9 +1040,13 @@ RENDER.narrative = function(){
   h.push('<p>Separately, the deviation figures cannot be read. Q/Q Z is ' + n2(z.qqZ, 6) +
     ' and Y/Y Z is ' + n2(z.yyZ, 6) + ' on N ' + n2(z.citations, 0) + ' ' + oid('ETR-OCT26-ZS') +
     ' — both positive, with the annual figure higher, consistent with the larger annual change in the ' +
-    'base metric. The approved bands that would say whether a move of this size is ordinary are ' +
-    needed() + ' ' + oids(['OQ-005', 'R-006', 'R-007']) + '. The Z-Score supplies deviation context ' +
+    'base metric. The approved bands that would say whether a move of this size is ordinary remain ' +
+    '<strong>Source Needed</strong>. The Z-Score supplies deviation context ' +
     'only and never creates or changes the call.</p>');
+  h.push(missingSource('Approved Z-Score interpretation bands',
+    'Without approved bands, the raw deviation figures stay context rather than evidence — there is no ' +
+    'way to say whether a move of this size is ordinary or unusual.',
+    {question:'OQ-005'}));
 
   /* ── 08 the hypothesis ──────────────────────────────────────────────── */
   h.push(nsec('bridge', '08', 'The signal-to-KPI hypothesis'));
@@ -1012,8 +1056,12 @@ RENDER.narrative = function(){
     'reading and the reported series move the same way over the same window, and ' + oid('XL-01') +
     ' records that as parallel evidence. ' + oid('R-021') + ' holds the pairing at Backtest Required. ' +
     'No lag is established. Flex, CCP, renewal timing, new logos and expansion are named as ' +
-    'confounders. The protocol is ' + oid('BT-CRWD-OCT26') + ', and its expected lag and tolerance are ' +
-    needed() + '.</p>');
+    'confounders. The protocol is ' + oid('BT-CRWD-OCT26') + ', and its expected lag and tolerance ' +
+    'remain <strong>Source Needed</strong>.</p>');
+  h.push(missingSource('Backtest protocol lag and tolerance',
+    'Needed to run BT-CRWD-OCT26 and test the signal-to-KPI hypothesis rather than leave it a hypothesis ' +
+    'indefinitely.',
+    {expected:'A pre-registered protocol with an agreed lag and tolerance', status:'Backtest Required'}));
   h.push(pull(NARRATIVE.pull('bridge')));
   h.push('<p class="note">' + oid('R-015') + ' permits a statement of directional consistency between ' +
     'the two lanes and prohibits any causal assertion between them. Nothing in this application ' +
@@ -1026,7 +1074,7 @@ RENDER.narrative = function(){
       esc(w.status) + '</span></div><p class="w-why">' + esc(w.why) + '</p>' +
       '<dl class="w-kv"><dt>What would resolve it</dt><dd>' + esc(w.resolve) + '</dd></dl>' +
       '<div class="no-print"><button type="button" class="lnk" data-goto="#question/' + esc(w.id) +
-      '">Open ' + esc(w.id) + '</button></div></li>';
+      '">Open this question</button></div></li>';
   }).join('') + '</ol>');
 
   /* ── 10 methodology note ────────────────────────────────────────────── */
@@ -1056,12 +1104,13 @@ RENDER.narrative = function(){
         '<span class="s">' + esc(f.s) + '</span></button>';
     }).join('') + '</div><p class="note">Object counts, not scores. No composite is computed.</p>' +
     '<div class="no-print">' +
-    '<button type="button" class="btn pri" data-mode="research">Explore the research foundation</button>' +
-    btn('View evidence', '#evidence') + btn('View lineage', '#lineage') +
+    btn('Explore the research foundation', '#evidence', 'pri') +
+    btn('View lineage', '#lineage') +
     btn('View methodology', '#methodology') + '</div></div></section>');
 
   h.push('<div id="narManifest" class="no-print"></div>');
 
+  QUIET_CITE = false;
   el('view-narrative').innerHTML = h.join('');
 
   function nsec(id, num, title){
@@ -1300,7 +1349,7 @@ RENDER.signals = function(route){
     'choice derived from existing fields — the workbook records no ranking and none is invented ' +
     'here. Counts respond to the source controls; reviewer decisions do not.</p></div>'];
 
-  h.push('<div class="filters research-only"><div class="fgrp">' +
+  h.push('<div class="filters"><div class="fgrp">' +
     '<label class="mini" for="sigQ">Search</label>' +
     '<input id="sigQ" type="search" value="' + esc(signalFilter.q) + '" ' +
     'placeholder="signal name, statement, gap…" ' +
@@ -1376,7 +1425,7 @@ function signalRow(s, m, primary){
       '<div class="sr-ev"><span class="n">' + m.current + '</span> current evidence · ' +
         '<span class="n">' + m.supporting.length + '</span> supporting · ' +
         '<span class="n">' + m.contradicting.length + '</span> counter</div>' +
-      '<div class="sr-id research-only">' + oid(s.id) + '<span class="note">' +
+      '<div class="sr-id">' + oid(s.id) + '<span class="note">' +
         esc(s.workflowStatus || '') + '</span></div>' +
     '</div></article>';
 }
@@ -1417,7 +1466,7 @@ function signalCard(s,m){
     '<div class="row" style="margin-bottom:4px">'+oid(s.id)+
       '<span class="pill">'+esc(m.direction)+'</span>'+
       '<span class="pill">Confidence: '+esc(s.confidence||'—')+'</span>'+
-      tag(s.workflowStatus==='Pending Review'?'Open question':'Anduril interpretation')+'</div>'+
+      tag(s.workflowStatus==='Pending Review'?'Open question':'ETR interpretation')+'</div>'+
     '<h3>'+esc(s.title)+'</h3>'+
     '<p class="note" style="margin-top:4px">'+esc((s.statement||'').slice(0,230))+'</p>'+
     '<div class="row" style="margin-top:7px">'+
@@ -1632,7 +1681,7 @@ RENDER.evidence = function(route){
           '<span class="ev-f"><i>Lane</i>'+esc((LANES.filter(function(l){return l[0]===laneOf(e);})[0]||['','—'])[1])+'</span>'+
           '<span class="ev-f"><i>Confidence</i>'+esc(e.confidence||'Source Needed')+'</span>'+
           '<span class="ev-f"><i>Signal</i>'+esc(sig||'—')+'</span>'+
-          '<span class="ev-f research-only"><i>ID</i>'+esc(e.id)+'</span>'+
+          '<span class="ev-f"><i>ID</i>'+esc(e.id)+'</span>'+
         '</span></button>');
     });
     h.push('</div>');
@@ -2162,7 +2211,7 @@ RENDER.cohorts = function(){
       '<td>'+needed()+'</td><td>'+(eid?oid(eid):'<span class="note">raw cut</span>')+'</td></tr>');
   });
   h.push('</tbody></table></div>');
-  h.push('<div class="callout">'+tag('Anduril interpretation')+' Global 2000 and Fortune 500 sit above '+
+  h.push('<div class="callout">'+tag('ETR interpretation')+' Global 2000 and Fortune 500 sit above '+
     'the All Respondents reading of '+n2(CP.netScore.value)+', while Large Organizations sit below it. '+
     'The workbook records this as enterprise evidence that is <em>selective, not uniform</em>. '+
     'Without cut-level N, R-010 caps what any of these can carry. '+
@@ -2207,7 +2256,7 @@ RENDER.cohorts = function(){
         '</td><td class="num '+(d>0?'up':(d<0?'dn':'flat'))+'">'+sign(d)+'</td>'+
         '<td><span class="bar"><i style="width:'+a.toFixed(0)+'%;background:var(--navy)"></i></span></td></tr>';
     }).join('')+'</tbody></table></div>');
-  h.push('<div class="callout">'+tag('Anduril interpretation')+' Technical capabilities and product '+
+  h.push('<div class="callout">'+tag('ETR interpretation')+' Technical capabilities and product '+
     'security are the two highest-cited reasons in October. Technological lead/lag falls the most '+
     'between periods. These are stated reasons for adoption and carry no causal weight against the '+
     'Net Score movement. '+oids(['ETR-OCT26-ADOPT','R-013','R-019'])+'</div>');
@@ -2278,7 +2327,7 @@ RENDER.rules = function(route){
     '<span class="c">'+narrativeIds.filter(function(i){return OBJ[i];}).length+'</span></button>'+
     '<button type="button" class="seg'+(narrow?'':' on')+'" data-rscope="all" aria-pressed="'+
     (!narrow)+'">View all rules<span class="c">'+all.length+'</span></button></div>');
-  h.push('<div class="filters research-only"><div class="fgrp">'+
+  h.push('<div class="filters"><div class="fgrp">'+
     '<input id="ruleQ" type="search" value="'+esc(ruleFilter.q)+'" placeholder="rule name, trigger, language…" '+
     'style="flex:1;min-width:200px;padding:4px 8px;border:1px solid var(--line);border-radius:3px">'+
     '</div><div class="fgrp"><span class="mini">Status</span>'+
@@ -2419,7 +2468,7 @@ function mostImportantNow(){
     var blocks = (OUT_BY[q.id]||[]).filter(function(e){return e.type==='BLOCKS';}).map(function(e){return e.to;});
     h.push('<article class="nowrow"><div class="nr-l">'+
       '<span class="nr-imp imp-'+esc((q.importance||'').toLowerCase())+'">'+esc(q.importance||'—')+'</span>'+
-      '<span class="nr-id research-only">'+oid(q.id)+'</span></div>'+
+      '<span class="nr-id">'+oid(q.id)+'</span></div>'+
       '<div class="nr-m"><h4>'+esc(q.title||q.id)+'</h4>'+
       '<p>'+esc(q.statement||'')+'</p>'+
       '<p class="nr-src"><span class="k">Expected source</span>'+
@@ -2440,7 +2489,7 @@ function mostImportantNow(){
   h.push('<div class="nowlist">'+ce.map(function(r){
     return '<article class="nowrow"><div class="nr-l">'+
       '<span class="nr-imp imp-counter">'+esc(r.confidence||'')+'</span>'+
-      '<span class="nr-id research-only">'+oid(r.id)+'</span></div>'+
+      '<span class="nr-id">'+oid(r.id)+'</span></div>'+
       '<div class="nr-m"><h4>'+esc(r.title||'')+'</h4><p>'+esc(r.statement||'')+'</p></div>'+
       '<div class="nr-r"><div class="k">Period</div><span class="note">'+esc(r.period||'—')+'</span>'+
       '<div class="no-print" style="margin-top:9px">'+
@@ -2693,14 +2742,14 @@ RENDER.audience = function(route){
     a.emph.filter(function(id){ return OBJ[id]; }).map(function(id){
       var o = OBJ[id];
       return '<li>' + esc(o.statement || o.title || id) +
-        '<span class="research-only"> ' + oid(id) + '</span></li>';
+        '<span class="cite-id"> ' + oid(id) + '</span></li>';
     }).join('') + '</ul></div>');
 
   h.push('<div class="am-block am-counter"><div class="am-k">Counterpoint</div><ul class="am-list">' +
     ['CE-002','CE-003'].filter(function(id){ return OBJ[id]; }).map(function(id){
       var o = OBJ[id];
       return '<li><strong>' + esc(o.title || id) + '.</strong> ' + esc(o.statement || '') +
-        '<span class="research-only"> ' + oid(id) + '</span></li>';
+        '<span class="cite-id"> ' + oid(id) + '</span></li>';
     }).join('') + '</ul>' +
     '<p class="note">Both readings are historical and neither is refreshed in the October set. ' +
     'They are carried unchanged for every audience.</p></div>');
@@ -2713,6 +2762,8 @@ RENDER.audience = function(route){
       '">Use this audience in Sunday Signal</button>' +
     '<button type="button" class="btn" data-handoff="email|' + esc(a.id) +
       '">Use this audience in Update Email</button>' +
+    '<button type="button" class="btn" data-handoff="brief|' + esc(a.id) +
+      '">Use this audience in Executive Brief</button>' +
     btn('Open the signal', '#signal/SIG-02') + '</div>');
   h.push('</div>');
 
@@ -2818,7 +2869,8 @@ var GEN = {
   email: {type:'Internal Research Update', recipient:'Research team', subjectStyle:'default',
     audience:'investor', signal:'SIG-02', risk:'CE-002', question:'OQ-014',
     action:'Pre-register BT-CRWD-OCT26 with an agreed lag and tolerance',
-    length:'standard', includeIds:true, includeMethod:true, edited:null}
+    length:'standard', includeIds:true, includeMethod:true, edited:null},
+  brief: {audience:'investor', signal:'SIG-02', appendix:false, ids:false, review:false}
 };
 
 /** Build the Sunday Signal as an ordered list of {heading, claims[]}. */
@@ -2836,7 +2888,7 @@ function buildSunday(){
   S.push({h:'Headline', c:[ claim('sunday',
     'CrowdStrike '+CP.label+': recovery persists, sequential improvement is modest, year-over-year '+
     'improvement is materially larger.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], [sig.id], ['R-002','R-004','R-005','R-025'],
+    'ETR interpretation', ['ETR-OCT26-NS'], [sig.id], ['R-002','R-004','R-005','R-025'],
     'High on current raw values', 'Direction only. No company outcome is implied.', [])]});
 
   S.push({h:'Why This Matters Now', c:[ claim('sunday',
@@ -2870,14 +2922,14 @@ function buildSunday(){
     'Sequentially the Net Score move of '+sign(ns.qqDelta)+' is '+moveWord(ns.qqDelta)+' under the '+
     'R-005 wording convention, while the year-over-year move of '+sign(ns.yyDelta)+' is '+
     moveWord(ns.yyDelta)+'. Pervasion moved '+sign(pv.qqDelta)+' sequentially, '+moveWord(pv.qqDelta)+'.',
-    'Anduril interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [], ['R-003','R-005'],
+    'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [], ['R-003','R-005'],
     'High on current raw values',
     'These are wording conventions, not statistical-significance thresholds.', [])]});
 
   S.push({h:'Where the Signal Is Strongest', c:[ claim('sunday',
     'Breadth. Pervasion improved more than intent did this quarter, and the largest indexed cohorts — '+
     'Global 2000 at 42.61 and Fortune 500 at 42.68 — read above the overall '+n2(ns.value)+'.',
-    'Anduril interpretation', ['ETR-OCT26-PV','ETR-OCT26-G2K','ETR-OCT26-F500'], ['SIG-05'],
+    'ETR interpretation', ['ETR-OCT26-PV','ETR-OCT26-G2K','ETR-OCT26-F500'], ['SIG-05'],
     ['R-008','R-010','R-011'], 'Medium — cohort N missing',
     'No cohort cut carries a citation base (OQ-014).', ['nBase'])]});
 
@@ -2885,7 +2937,7 @@ function buildSunday(){
     'Enterprise evidence is selective rather than uniform: Large Organizations read 35.82, below the '+
     'overall reading, while the indexed cohorts read above it. Geographically the October cuts run from '+
     'APAC 54.29 to EMEA 27.27 with no regional base supplied.',
-    'Anduril interpretation', ['ETR-OCT26-LARGE','ETR-OCT26-REGION'], ['SIG-05','SIG-07'],
+    'ETR interpretation', ['ETR-OCT26-LARGE','ETR-OCT26-REGION'], ['SIG-05','SIG-07'],
     ['R-010','R-011','R-024'], 'Medium — N missing throughout',
     'Do not link a regional survey cut to regional revenue.', ['nBase'])]});
 
@@ -2902,7 +2954,7 @@ function buildSunday(){
     'Nothing here establishes a company outcome. The ETR lane and the company lane are parallel '+
     'evidence: XL-01 records them as directionally consistent, and R-015 prohibits any causal reading '+
     'between them.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], ['XL-01'], ['R-013','R-015','CTX-007'], 'Medium',
+    'ETR interpretation', ['ETR-OCT26-NS'], ['XL-01'], ['R-013','R-015','CTX-007'], 'Medium',
     null, []) ];
   counter.forEach(function(id){
     var r = OBJ[id];
@@ -2991,7 +3043,7 @@ function buildEmail(){
     'CrowdStrike '+CP.label+' Net Score is '+n2(ns.value)+' ('+sign(ns.qqDelta)+' Q/Q, '+sign(ns.yyDelta)+
     ' Y/Y, N '+n2(CP.nBase,0)+'). The recovery persists; the sequential move is '+moveWord(ns.qqDelta)+
     ' and the year-over-year move is '+moveWord(ns.yyDelta)+'. No company outcome is implied.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], [sig.id], ['R-004','R-005','R-015'],
+    'ETR interpretation', ['ETR-OCT26-NS'], [sig.id], ['R-004','R-005','R-015'],
     'High on current raw values', null, [])]});
   S.push({h:'What Changed', c:[ claim('email',
     'October 2026 replaces July 2026 as the current TSIS period under R-025. Pervasion rose to '+
@@ -3097,12 +3149,14 @@ function claimsToText(title, sections){
   out.push('--','Generated draft — Human Review Required.');
   return out.join('\n');
 }
-function claimsToHtml(title, sections){
+function claimsToHtml(title, sections, includeLogo){
   var h=['<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>'+esc(title)+
     '</title><style>body{font:14px/1.55 Georgia,serif;max-width:760px;margin:32px auto;padding:0 18px;'+
     'color:#1B2430}h1,h2{font-family:Georgia,serif;color:#17365D}h2{font-size:17px;margin-top:22px}'+
     'code{font:11px Consolas,monospace;color:#595959;display:block;margin-top:3px}'+
+    '.brand-logo{max-height:34px;margin-bottom:14px}'+
     'hr{border:none;border-top:1px solid #D8DEE6;margin:22px 0}</style></head><body>'];
+  if (includeLogo) h.push(brandLogo('email-logo'));
   h.push('<h1>'+esc(title)+'</h1>');
   sections.forEach(function(s){
     h.push('<h2>'+esc(s.h)+'</h2>');
@@ -3196,11 +3250,13 @@ function emailBodyText(E){
   }
   return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
-function emailBodyHtml(E){
+function emailBodyHtml(E, includeLogo){
   var h = ['<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' + esc(E.subject) +
     '</title><style>body{font:15px/1.65 Georgia,serif;max-width:640px;margin:32px auto;' +
     'padding:0 18px;color:#1B2430}p{margin:0 0 15px}hr{border:none;border-top:1px solid #D8DEE6;' +
-    'margin:22px 0}.fn{font-size:12.5px;color:#5B6068}</style></head><body>'];
+    'margin:22px 0}.fn{font-size:12.5px;color:#5B6068}.brand-logo{max-height:34px;margin-bottom:14px}' +
+    '</style></head><body>'];
+  if (includeLogo) h.push(brandLogo('email-logo'));
   if (E.greeting) h.push('<p>' + esc(E.greeting) + '</p>');
   E.paragraphs.forEach(function(c){ h.push('<p>' + esc(c.text) + '</p>'); });
   if (E.closing) h.push('<p>' + esc(E.closing) + '</p>');
@@ -3266,12 +3322,14 @@ RENDER['gen-email'] = function(){
         '</option>'; }).join('') + '</select>' +
     (structured ? '<label>Evidence</label>' + evidencePicker('genEvidence', state.genEvidence, pool) : '') +
     '<div class="sep"></div><div class="ctl-lab">Include</div>' +
+    noteToggle('email','logo','Include logo in HTML version') +
     noteToggle('email','method','Methodology footnote') +
     noteToggle('email','appendix','Evidence appendix') +
     noteToggle('email','review','Human Review line') +
     noteToggle('email','ids','Source IDs in the body') +
-    '<p class="note" style="margin-top:8px">All four are off for a clean email, so the body stays ' +
-    'sendable. The Human Review status stays on the application chrome either way.</p>' +
+    '<p class="note" style="margin-top:8px">The logo appears only in the downloaded HTML version, ' +
+    'when a rendered logo file is available. The other four are off for a clean email, so the body ' +
+    'stays sendable. The Human Review status stays on the application chrome either way.</p>' +
     '<div class="sep"></div>' +
     '<button class="btn pri" id="emRegen" style="width:100%">Regenerate</button>' +
     '<button class="btn" id="emReset" style="width:100%;margin-top:5px">Reset</button>' +
@@ -3289,7 +3347,7 @@ RENDER['gen-email'] = function(){
     '<button class="btn" id="emManifest">Manifest JSON</button>' +
     '<button class="btn" id="emLineage">Open lineage</button></div>');
 
-  h.push('<div class="hyp-bar chrome-note no-print">Generated draft — Human Review Required. ' +
+  h.push('<div class="hyp-bar chrome-note review-status">Generated draft — Human Review Required. ' +
     'This line is application chrome and is not part of the email body.</div>');
 
   h.push('<div class="gen-out email-canvas' + (state.inspect ? ' inspect' : '') + '" id="emOut">');
@@ -3329,6 +3387,7 @@ function buildCohesive(){
   var length = state.sundayLength || 'standard';
   var blocks = NARRATIVE.sunday(style, length, {
     signal: GEN.sunday.signal,
+    audience: GEN.sunday.audience,
     evidence: state.genEvidence,
     counter: state.genCounter,
     questions: state.genQuestion
@@ -3437,14 +3496,15 @@ RENDER['gen-sunday'] = function(){
     '<button class="btn" id="ssPrint">Print</button>' +
     '<button class="btn" id="ssManifest">Manifest JSON</button>' +
     '<button class="btn" id="ssLineage">Open lineage</button>' +
-    '<button class="btn' + (SS_PREVIEW ? ' on' : '') + '" id="ssPreview">Preview as newsletter</button>' +
+    '<button class="btn' + (SS_PREVIEW ? ' on' : '') + '" id="ssPreview">Preview as branded newsletter</button>' +
     '</div>');
 
-  h.push('<div class="hyp-bar chrome-note no-print">Generated draft — Human Review Required. ' +
+  h.push('<div class="hyp-bar chrome-note review-status">Generated draft — Human Review Required. ' +
     'This line is application chrome and is not part of the piece.</div>');
 
   h.push('<div class="gen-out essay' + (state.inspect ? ' inspect' : '') +
     (SS_PREVIEW ? ' newsletter' : '') + '" id="ssOut">');
+  if (SS_PREVIEW) h.push(brandLogo('newsletter-logo'));
   h.push('<h1 class="essay-title">' + esc(S.title) + '</h1>');
   h.push('<p class="essay-deck">' + esc(S.deck) + '</p>');
   if (g.chart) h.push('<div class="essay-fig">' +
@@ -3475,6 +3535,166 @@ RENDER['gen-sunday'] = function(){
 };
 
 var SS_PREVIEW = false;
+
+/* ═══════════════════════════════════════ VIEW: Executive Brief Generator ═
+   A distinct route, not the Update Email's "Executive note" format — this is
+   a print-ready research brief: research question, bottom line, primary
+   signal, what changed, why it matters, counterpoint, what to watch, a
+   methodology note and an optional evidence appendix. It is built from the
+   same NARRATIVE prose and claim() manifests the Company page and Narrative
+   view already produce, rather than a second copy of the logic. No internal
+   ID appears in the default body — the same claim/para() convention the
+   other two generators use — reachable instead through Inspect Claims, the
+   object drawer and Lineage.
+   ══════════════════════════════════════════════════════════════════════════ */
+function buildBrief(){
+  CLAIM_SEQ = 900;
+  var g = GEN.brief;
+  var sig = OBJ[g.signal] || OBJ['SIG-02'] || {};
+  var snap = NARRATIVE.snapshot();          /* [changed, why it matters, what remains open] */
+  var counter = NARRATIVE.counterpoint();   /* 3 claims */
+  var watch = NARRATIVE.watch();            /* 3 {id, title, why, resolve, signal, status} */
+
+  var bottomLine = claim('brief',
+    'CrowdStrike ' + CP.label + ': the post-outage recovery in spending intent persists, deployment ' +
+    'breadth is improving faster than intent, and the current call reads ' + CALL.current.value + '. ' +
+    'No company outcome — revenue, ARR or market share — is implied by any of it.',
+    'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [sig.id || 'SIG-02'],
+    ['R-004','R-005','R-025'], 'High on current raw values',
+    'Direction only. No company outcome is implied.', []);
+
+  var primarySignal = claim('brief',
+    (sig.statement || CALL.primarySignalText || '') + ' Reviewer status: ' +
+    (sig.workflowStatus || 'Pending Review') + '.',
+    'Client-provided fact', [], [sig.id || 'SIG-02'], ['R-002'],
+    sig.confidence || 'Medium-High', sig.caveat || null, []);
+
+  var watchClaims = watch.map(function(w){
+    return claim('brief', w.title + '. ' + w.why, 'Open question', [], [w.id], ['R-019'], null,
+      w.resolve, [w.id]);
+  });
+
+  var methodology = claim('brief',
+    'Sole factual source: the authorized worksheets of ' + D.metadata.workbook + '. ' + CP.label +
+    ' is the current TSIS period; July 2026 is historical comparison under the workbook’s ' +
+    'current-period promotion rule. N counts citations, not people. Every claim in this brief carries ' +
+    'a full manifest, reachable behind Inspect Claims.',
+    'Client-provided fact', [], ['R-002','R-009','R-025'], ['R-002','R-009','R-025'], null, null, []);
+
+  var sections = [
+    {h:'Bottom line', c:[bottomLine]},
+    {h:'Primary signal', c:[primarySignal]},
+    {h:'What changed', c:[snap[0].c]},
+    {h:'Why it matters', c:[snap[1].c]},
+    {h:'Counterpoint', c:counter.slice(0, 2)},
+    {h:'What to watch', c:watchClaims},
+    {h:'Methodology note', c:[methodology]}
+  ];
+  var appendix = null;
+  if (g.appendix){
+    var ids = unique(sections.reduce(function(a, s){
+      return a.concat(s.c.reduce(function(b, c){
+        return b.concat(c.sourceEvidenceIds, c.sourceObjectIds); }, [])); }, []));
+    appendix = claim('brief', 'Evidence and object IDs behind this brief: ' + ids.join(' · '),
+      'Client-provided fact', ids, [], [], null,
+      'Every ID resolves to an object in the authorized worksheets.', []);
+  }
+  return {question:NARRATIVE.QUESTION, sections:sections, appendix:appendix};
+}
+
+RENDER['gen-brief'] = function(route){
+  if (route && route.arg && AUDIENCES.some(function(a){ return a.id === route.arg; }))
+    { GEN.brief.audience = route.arg; }
+  var g = GEN.brief;
+  var B = buildBrief();
+  var h = [];
+
+  h.push('<div class="vhead"><div class="eyebrow">Executive Brief</div>' +
+    '<h2>A print-ready research brief, not an email</h2>' +
+    '<p>Research question, bottom line, primary signal, what changed, why it matters, the ' +
+    'counterpoint and what to watch — assembled from the same objects and claim manifests as the ' +
+    'Company page and the Narrative view. No internal ID appears in the body by default; turn on ' +
+    '<em>Inspect claims</em> to see the manifest behind any paragraph.</p></div>');
+
+  h.push('<div class="gen gen-wide">');
+  h.push('<div class="gen-controls no-print">' +
+    '<label for="brAud">Audience</label><select id="brAud">' + AUDIENCES.map(function(a){
+      return '<option value="' + a.id + '"' + (a.id === g.audience ? ' selected' : '') + '>' +
+        esc(a.label) + '</option>'; }).join('') + '</select>' +
+    '<label for="brSig">Primary signal</label><select id="brSig">' + (D.signals || []).map(function(s){
+      return '<option value="' + s.id + '"' + (s.id === g.signal ? ' selected' : '') + '>' +
+        esc(s.id + ' — ' + s.title) + '</option>'; }).join('') + '</select>' +
+    '<div class="sep"></div><div class="ctl-lab">Include</div>' +
+    '<label class="toggle"><input type="checkbox" id="brAppendix"' + (g.appendix ? ' checked' : '') +
+      '> Evidence appendix</label>' +
+    '<p class="note" style="margin-top:8px">The audience selection carries the reading a step further ' +
+    'without changing a fact — see the Audience Translator’s <em>Use in Executive Brief</em> ' +
+    'handoff.</p></div>');
+
+  h.push('<div><div class="actbar no-print">' +
+    '<button class="btn' + (state.inspect ? ' on' : '') + '" id="brInspect">Inspect claims</button>' +
+    '<button class="btn" id="brCopy">Copy brief</button>' +
+    '<button class="btn" id="brMd">Download Markdown</button>' +
+    '<button class="btn" id="brHtml">Download HTML</button>' +
+    '<button class="btn" id="brPrint">Print</button>' +
+    '<button class="btn" id="brManifest">Manifest JSON</button>' +
+    '<button class="btn" id="brLineage">Open lineage</button></div>');
+
+  h.push('<div class="hyp-bar chrome-note review-status">Generated draft — Human Review Required. ' +
+    'R-020 makes analyst approval a precondition of external distribution.</div>');
+
+  h.push('<div class="gen-out essay brief' + (state.inspect ? ' inspect' : '') + '" id="brOut">');
+  h.push(brandLogo('brief-logo'));
+  h.push('<div class="eyebrow">Research question</div>');
+  h.push('<h1 class="brief-title">' + esc(B.question) + '</h1>');
+  B.sections.forEach(function(s){
+    h.push('<h3>' + esc(s.h) + '</h3>');
+    s.c.forEach(function(c){ h.push(para(c.text, c)); });
+  });
+  if (B.appendix){
+    h.push('<h3>Evidence appendix</h3>');
+    h.push(para(B.appendix.text, B.appendix, 'fn'));
+  }
+  h.push('</div>');
+  h.push('<p class="note no-print" style="margin-top:9px">' +
+    B.sections.reduce(function(a, s){ return a + s.c.length; }, 0) + ' claim manifests behind this brief.</p>');
+  h.push('</div></div>');
+  h.push('<div id="brManifestPanel" style="margin-top:12px"></div>');
+  el('view-gen-brief').innerHTML = h.join('');
+};
+function briefText(B){
+  var out = [B.question, ''];
+  B.sections.forEach(function(s){
+    out.push(s.h, '');
+    s.c.forEach(function(c){ out.push(c.text, ''); });
+  });
+  if (B.appendix) out.push('Evidence appendix', '', B.appendix.text, '');
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function briefMarkdown(B){
+  var out = ['# Executive Brief', '', '_' + B.question + '_', ''];
+  B.sections.forEach(function(s){
+    out.push('## ' + s.h, '');
+    s.c.forEach(function(c){ out.push(c.text, ''); });
+  });
+  if (B.appendix) out.push('---', '', B.appendix.text, '');
+  return out.join('\n');
+}
+function briefHtml(B){
+  var h = ['<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Executive Brief</title>' +
+    '<style>body{font:16px/1.7 Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;' +
+    'color:#1B2430}h1{font-size:26px;line-height:1.25;color:#0F243E}h3{font-size:14px;' +
+    'text-transform:uppercase;letter-spacing:.08em;color:#17365D;margin:26px 0 8px}p{margin:0 0 15px}' +
+    '</style></head><body>'];
+  h.push('<div>Research question</div><h1>' + esc(B.question) + '</h1>');
+  B.sections.forEach(function(s){
+    h.push('<h3>' + esc(s.h) + '</h3>');
+    s.c.forEach(function(c){ h.push('<p>' + esc(c.text) + '</p>'); });
+  });
+  if (B.appendix) h.push('<h3>Evidence appendix</h3><p>' + esc(B.appendix.text) + '</p>');
+  h.push('</body></html>');
+  return h.join('');
+}
 
 /** A paragraph. In Inspect mode it gains a claim-class outline and becomes
     clickable; the text itself never changes, so what is copied never changes. */
@@ -3576,7 +3796,8 @@ function runRuntimeChecks(){
     var routes = ['#brief','#signal/SIG-02','#signal/SIG-07','#evidence/ETR-OCT26-NS',
       '#evidence/ETR-OCT26-ZS','#kpi/KPI-003','#bridge/SIG-02/KPI-003','#rule/R-026',
       '#question/OQ-014','#lineage/SIG-02','#cohorts','#sources','#audience/investor',
-      '#generator/sunday-signal','#generator/update-email','#methodology','#index','#signals','#evidence'];
+      '#generator/sunday-signal','#generator/update-email','#generator/executive-brief',
+      '#methodology','#index','#signals','#evidence'];
     var bad = routes.filter(function(r){
       var save0 = location.hash; var p; 
       p = (function(h){ var old=location.hash; var res;
@@ -3663,14 +3884,43 @@ function runRuntimeChecks(){
     var bad = [];
     $$('script[src]').forEach(function(s){ if(/^https?:|^\/\//.test(s.getAttribute('src'))) bad.push(s.src); });
     $$('link[href]').forEach(function(s){ if(/^https?:|^\/\//.test(s.getAttribute('href'))) bad.push(s.href); });
-    $$('img,iframe').forEach(function(s){ bad.push(s.src||''); });
+    /* A local, relative image (the CrowdStrike wordmark, BRAND-001) is not an
+       external dependency — only a remote-scheme src/href counts as one. */
+    $$('img,iframe').forEach(function(s){
+      var v = s.getAttribute('src') || '';
+      if (/^https?:|^\/\//.test(v)) bad.push(v);
+    });
     return {ok: !bad.filter(Boolean).length,
-      detail:'0 external scripts, stylesheets, fonts, images or iframes'};
+      detail: bad.filter(Boolean).length
+        ? bad.filter(Boolean).join(', ')
+        : '0 external scripts, stylesheets, fonts, images or iframes'};
   });
-  runtimeCheck('V-29','Human Review Required is persistently visible', function(){
-    var badge = $('.hrr');
-    return {ok: !!badge && badge.offsetParent!==null,
-      detail:'top-bar badge is rendered on every view and never dismissible'};
+  runtimeCheck('V-29','Human Review status appears in generator chrome, not a global badge', function(){
+    /* There is no global "Human Review Required" warning in the top bar — that
+       badge was removed with the mode system. Review status still has to show
+       up somewhere non-optional: on every generated draft's own chrome. Render
+       each generator view (restoring whatever was on screen afterward, the
+       same pattern V-26 uses for the narrative print check) and confirm the
+       .review-status line is present and visible in each one, and that no
+       global .hrr badge exists anywhere in the document. */
+    var globalBadge = $('.hrr');
+    /* These three views are hidden .view sections unless the reader is on
+       one of them; rendering into their (offscreen) markup here to check for
+       the chrome line is harmless and does not touch state.view or the
+       currently-visible view — it never re-enters this check, unlike
+       re-rendering the current (methodology) view would. */
+    var ids = ['gen-sunday','gen-email','gen-brief'];
+    var missing = [];
+    ids.forEach(function(v){
+      RENDER[v]({});
+      var host = el('view-'+v);
+      var line = host && host.querySelector('.review-status');
+      if (!line || !/Human Review Required/i.test(line.textContent||'')) missing.push(v);
+    });
+    return {ok: !globalBadge && !missing.length,
+      detail: (globalBadge ? 'a global .hrr badge is still present; ' : 'no global .hrr badge; ') +
+        (missing.length ? 'missing review-status chrome on: '+missing.join(', ')
+                         : 'review-status chrome present on all '+ids.length+' generator views')};
   });
   return RUNTIME_CHECKS;
 }
@@ -3684,7 +3934,8 @@ function parseHashFrom(h){
     'evidence':'evidence','lineage':'lineage','kpi':'kpis','kpis':'kpis','bridge':'kpis',
     'cohorts':'cohorts','rules':'rules','rule':'rules','risks':'risks','question':'risks','risk':'risks',
     'sources':'sources','source':'sources','audience':'audience','methodology':'methodology'};
-  if (p[0]==='generator') r.view = (p[1]==='update-email')?'gen-email':'gen-sunday';
+  if (p[0]==='generator') r.view = (p[1]==='update-email')?'gen-email':
+    (p[1]==='executive-brief'?'gen-brief':'gen-sunday');
   else r.view = map[p[0]] || 'company';
   return r;
 }
@@ -4070,6 +4321,7 @@ function applyQuick(k){
 var PRINT_TARGETS = [
   ['pmCompany',   'Company profile'],
   ['pmNarrative', 'Narrative brief'],
+  ['pmBrief',     'Executive Brief'],
   ['pmSunday',    'Sunday Signal'],
   ['pmEmail',     'Update email'],
   ['pmLineage',   'Lineage'],
@@ -4100,6 +4352,40 @@ function closePrintMenu(){
   var b = el('btnPrint'); if (b) b.setAttribute('aria-expanded','false');
 }
 
+/* The header's Create control: a quick menu onto the four Create
+   destinations, so starting a generator does not require opening the
+   sidebar. It changes no state of its own — each item is a plain route. */
+var CREATE_TARGETS = [
+  ['#generator/sunday-signal',   'Sunday Signal'],
+  ['#generator/update-email',    'Update Email'],
+  ['#audience',                  'Audience Translator'],
+  ['#generator/executive-brief', 'Executive Brief']
+];
+function toggleCreateMenu(){
+  var m = el('createMenu'), b = el('btnCreate');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'createMenu'; m.className = 'printmenu'; m.setAttribute('role','menu');
+    m.innerHTML = CREATE_TARGETS.map(function(t){
+      return '<button type="button" role="menuitem" data-goto="' + esc(t[0]) + '">' + esc(t[1]) +
+        '</button>';
+    }).join('');
+    document.body.appendChild(m);
+  }
+  var open = m.hasAttribute('hidden');
+  if (open){
+    var r = b.getBoundingClientRect();
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+    m.removeAttribute('hidden');
+  } else m.setAttribute('hidden','');
+  b.setAttribute('aria-expanded', String(open));
+}
+function closeCreateMenu(){
+  var m = el('createMenu'); if (m) m.setAttribute('hidden','');
+  var b = el('btnCreate'); if (b) b.setAttribute('aria-expanded','false');
+}
+
 function printScoped(viewId){
   closePrintMenu();
   $$('.view').forEach(function(v){ v.classList.remove('print-target'); });
@@ -4116,10 +4402,9 @@ document.addEventListener('click', function(ev){
   var t = ev.target.closest ? ev.target.closest('[data-oid],[data-goto],[data-quick],[data-unchip],'+
     '[data-evq],[data-evmode],[data-cmp],[data-rtab],[data-dtab],[data-tab],[data-aud],[data-lin],'+
     '[data-ntype],[data-etype],[data-rstatus],[data-rfam],[data-renf],[data-claim],[data-linfocus],'+
-    '[data-scroll],[data-lane],[data-mode],[data-rscope],[data-rkview],[data-note],[data-emfmt],[data-ssty],[data-sslen],'+
-    '[data-expand],[data-handoff],[data-sub]') : null;
+    '[data-scroll],[data-rscope],[data-rkview],[data-note],[data-emfmt],[data-ssty],[data-sslen],'+
+    '[data-expand],[data-handoff],[data-sub],[data-copyreq],[data-create]') : null;
 
-  if (t && t.hasAttribute('data-mode')){ ev.preventDefault(); setMode(t.getAttribute('data-mode')); return; }
   if (t && t.hasAttribute('data-rscope')){
     ev.preventDefault(); ruleFilter.scope = t.getAttribute('data-rscope'); RENDER.rules({}); return;
   }
@@ -4145,9 +4430,18 @@ document.addEventListener('click', function(ev){
   if (t && t.hasAttribute('data-handoff')){
     ev.preventDefault();
     var hv = t.getAttribute('data-handoff').split('|');
-    if (hv[0]==='sunday'){ GEN.sunday.audience = hv[1]; save(); location.hash = '#generator/sunday-signal'; }
+    if (hv[0]==='sunday'){ GEN.sunday.audience = hv[1]; GEN.sunday.edited = null; save();
+      location.hash = '#generator/sunday-signal'; }
+    else if (hv[0]==='brief'){ GEN.brief.audience = hv[1]; save(); location.hash = '#generator/executive-brief'; }
     else { GEN.email.audience = hv[1]; save(); location.hash = '#generator/update-email'; }
     return;
+  }
+  if (t && t.hasAttribute('data-copyreq')){
+    ev.preventDefault(); copyText(t.getAttribute('data-copyreq'), t); announce('Research request copied.');
+    return;
+  }
+  if (t && t.hasAttribute('data-create')){
+    ev.preventDefault(); toggleCreateMenu(); return;
   }
   /* progressive disclosure: a control that owns a panel and says so */
   if (t && t.hasAttribute('data-expand')){
@@ -4168,13 +4462,6 @@ document.addEventListener('click', function(ev){
     scrollToSection(t.getAttribute('data-scroll'));
     return;
   }
-  /* source strip: a lane chip toggles that lane on or off */
-  if (t && t.hasAttribute('data-lane')){
-    ev.preventDefault();
-    var ln = t.getAttribute('data-lane'), li = state.lanes.indexOf(ln);
-    if (li>=0) state.lanes.splice(li,1); else state.lanes.push(ln);
-    save(); renderSourcePane(); render(); return;
-  }
   /* ids that resolve to an object open the drawer */
   if (t && t.hasAttribute('data-oid')){ ev.preventDefault(); openDrawer(t.getAttribute('data-oid')); return; }
   if (t && t.hasAttribute('data-goto')){
@@ -4182,6 +4469,7 @@ document.addEventListener('click', function(ev){
     var g = t.getAttribute('data-goto');
     if (g && g!=='#') location.hash = g;
     el('searchPanel').hidden = true;
+    closeCreateMenu();
     return;
   }
   if (t && t.hasAttribute('data-quick')){ applyQuick(t.getAttribute('data-quick')); return; }
@@ -4235,6 +4523,7 @@ document.addEventListener('click', function(ev){
   }
   if (t && t.hasAttribute('data-claim')){
     var panel = state.view==='gen-email' ? 'emManifestPanel'
+              : state.view==='gen-brief' ? 'brManifestPanel'
               : state.view==='company'   ? 'snapManifest'
               : state.view==='narrative' ? 'narManifest' : 'ssManifestPanel';
     showManifest(t.getAttribute('data-claim'), panel);
@@ -4302,8 +4591,10 @@ document.addEventListener('change', function(ev){
     var g = t.getAttribute('data-pick'), val = t.value, j = state[g].indexOf(val);
     if (t.checked && j<0) state[g].push(val);
     if (!t.checked && j>=0) state[g].splice(j,1);
-    save();
-    if (state.view==='gen-email') RENDER['gen-email']({}); else RENDER['gen-sunday']({});
+    /* a changed input set means the frozen manual draft, if any, is stale —
+       clear it so the visible piece reflects the new selection immediately. */
+    if (state.view==='gen-email'){ GEN.email.edited=null; save(); RENDER['gen-email']({}); }
+    else { GEN.sunday.edited=null; save(); RENDER['gen-sunday']({}); }
     return;
   }
   switch(t.id){
@@ -4315,15 +4606,18 @@ document.addEventListener('change', function(ev){
     case 'sigConf': signalFilter.confidence=t.value; RENDER.signals({}); break;
     case 'sigPeriod': signalFilter.period=t.value; RENDER.signals({}); break;
     case 'sigReview': signalFilter.review=t.value; RENDER.signals({}); break;
-    case 'ssAud': GEN.sunday.audience=t.value; RENDER['gen-sunday']({}); break;
-    case 'ssSig': GEN.sunday.signal=t.value; RENDER['gen-sunday']({}); break;
-    case 'ssChart': GEN.sunday.chart=t.checked; RENDER['gen-sunday']({}); break;
+    case 'ssAud': GEN.sunday.audience=t.value; GEN.sunday.edited=null; save(); RENDER['gen-sunday']({}); break;
+    case 'ssSig': GEN.sunday.signal=t.value; GEN.sunday.edited=null; save(); RENDER['gen-sunday']({}); break;
+    case 'ssChart': GEN.sunday.chart=t.checked; save(); RENDER['gen-sunday']({}); break;
     case 'emSubject': GEN.email.subjectStyle=t.value; RENDER['gen-email']({}); break;
     case 'emAud': GEN.email.audience=t.value; RENDER['gen-email']({}); break;
     case 'emSig': GEN.email.signal=t.value; RENDER['gen-email']({}); break;
     case 'emRisk': GEN.email.risk=t.value; RENDER['gen-email']({}); break;
     case 'emQ': GEN.email.question=t.value; RENDER['gen-email']({}); break;
     case 'emLen': GEN.email.length=t.value; RENDER['gen-email']({}); break;
+    case 'brAud': GEN.brief.audience=t.value; RENDER['gen-brief']({}); break;
+    case 'brSig': GEN.brief.signal=t.value; RENDER['gen-brief']({}); break;
+    case 'brAppendix': GEN.brief.appendix=t.checked; RENDER['gen-brief']({}); break;
   }
 });
 
@@ -4336,7 +4630,9 @@ document.addEventListener('input', function(ev){
     var n2e=el('sigQ'); if(n2e){ n2e.focus(); n2e.setSelectionRange(p2,p2); } return; }
   if (t.id==='ruleQ'){ ruleFilter.q=t.value; var p3=t.selectionStart; RENDER.rules();
     var n3=el('ruleQ'); if(n3){ n3.focus(); n3.setSelectionRange(p3,p3); } return; }
-  if (t.id==='ssTitle'){ GEN.sunday.title=t.value; return; }
+  if (t.id==='ssTitle'){ GEN.sunday.title=t.value;
+    var ssH1=el('ssOut') && el('ssOut').querySelector('.essay-title'); if(ssH1) ssH1.textContent=t.value;
+    return; }
   if (t.id==='emRecipient'){ GEN.email.recipient=t.value; var to=el('emTo'); if(to) to.textContent=t.value; return; }
   if (t.id==='emAction'){ GEN.email.action=t.value; return; }
   if (t.id==='ssDraft'){ GEN.sunday.edited=t.value; state.drafts.sunday=t.value; save(); return; }
@@ -4383,6 +4679,7 @@ document.addEventListener('click', function(ev){
     case 'btnPrint': togglePrintMenu(); break;
     case 'pmCompany':   printScoped('view-company'); break;
     case 'pmNarrative': printScoped('view-narrative'); break;
+    case 'pmBrief':     printScoped('view-gen-brief'); break;
     case 'pmSunday':    printScoped('view-gen-sunday'); break;
     case 'pmEmail':     printScoped('view-gen-email'); break;
     case 'pmLineage':   printScoped('view-lineage'); break;
@@ -4445,8 +4742,9 @@ document.addEventListener('click', function(ev){
         currentEmailSubject()+'\n\n'+currentEmailBody(), 'text/plain'); break;
     case 'emHtml':
       download('crowdstrike-update-email.html',
-        state.emailFormat==='structured' ? claimsToHtml(structuredEmail().subject, structuredEmail().sections)
-                                         : emailBodyHtml(buildCleanEmail()), 'text/html'); break;
+        state.emailFormat==='structured'
+          ? claimsToHtml(structuredEmail().subject, structuredEmail().sections, !!state.emailNotes.logo)
+          : emailBodyHtml(buildCleanEmail(), !!state.emailNotes.logo), 'text/html'); break;
     case 'emManifest':
       download('crowdstrike-email-manifest.json', JSON.stringify(
         state.emailFormat==='structured'
@@ -4455,6 +4753,21 @@ document.addEventListener('click', function(ev){
         null, 2), 'application/json'); break;
     case 'emPrint': printScoped('view-gen-email'); break;
     case 'emLineage': location.hash = '#lineage/SIG-02'; break;
+    case 'brInspect':
+      state.inspect = !state.inspect; save(); RENDER['gen-brief']({}); break;
+    case 'brCopy': copyText(briefText(buildBrief()), ev.target); announce('Brief copied.'); break;
+    case 'brMd': download('crowdstrike-executive-brief.md',
+      briefMarkdown(buildBrief()), 'text/markdown'); break;
+    case 'brHtml': download('crowdstrike-executive-brief.html',
+      briefHtml(buildBrief()), 'text/html'); break;
+    case 'brPrint': printScoped('view-gen-brief'); break;
+    case 'brManifest':
+      var BR = buildBrief();
+      var brClaims = BR.sections.reduce(function(a,s){return a.concat(s.c);},[]);
+      if (BR.appendix) brClaims = brClaims.concat([BR.appendix]);
+      download('crowdstrike-executive-brief-manifest.json',
+        JSON.stringify(brClaims, null, 2), 'application/json'); break;
+    case 'brLineage': location.hash = '#lineage/SIG-02'; break;
     case 'dlValidation':
       download('validation-report.json', JSON.stringify({
         extractionChecks: (D.validation||{}).extractionChecks || [],
@@ -4474,6 +4787,9 @@ document.addEventListener('click', function(ev){
   var m = el('printMenu');
   if (m && !m.hasAttribute('hidden') && !m.contains(ev.target) && ev.target.id !== 'btnPrint')
     closePrintMenu();
+  var c = el('createMenu');
+  if (c && !c.hasAttribute('hidden') && !c.contains(ev.target) && ev.target.id !== 'btnCreate')
+    closeCreateMenu();
 }, true);
 el('drawerScrim').addEventListener('click', function(ev){
   if (ev.target===el('drawerScrim')) closeDrawer();
@@ -4501,5 +4817,4 @@ if (state.drafts && state.drafts.sunday) GEN.sunday.edited = state.drafts.sunday
 if (state.drafts && state.drafts.email) GEN.email.edited = state.drafts.email;
 if (!location.hash) location.hash = '#company';
 renderSourcePane();
-applyMode();
 render();

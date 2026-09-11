@@ -1,10 +1,12 @@
 /* ══════════════════════════════════════════════════════════════════════════
-   print.css — dedicated print styling for the six named surfaces.
+   print.css — dedicated print styling for the seven named surfaces.
 
    Loaded with media="print", so it never affects the screen. Everything the
    reader interacts with is dropped; everything they would want on paper —
-   title, period, narrative, the visible chart, selected footnotes and the
-   Human Review status — is kept.
+   title, period, narrative, the visible chart, selected footnotes — is kept.
+   There is no global "Human Review" header warning printed on every surface:
+   the review status prints only where that output's own workflow calls for
+   it (the .review-status line on a generator draft), not as chrome.
    ══════════════════════════════════════════════════════════════════════════ */
 
 @page{ margin:14mm 13mm 15mm }
@@ -15,7 +17,7 @@ body{font:10.5pt/1.55 Georgia,"Times New Roman",serif;color:#16181C;
 
 /* the application chrome does not print */
 .app{display:block !important;height:auto !important;overflow:visible !important}
-.brandbox,.sidebar,.topbar,.navtoggle,.modeswitch,.srcstrip,.scp,.sr-panel,.drawer-scrim,
+.brandbox,.sidebar,.topbar,.navtoggle,.scp,.sr-panel,.drawer-scrim,
 .printmenu,.actbar,.filters,.lin-toolbar,.gen-controls,.tabs,.nbar,.chero-acts,.lead-acts,
 .move-acts,.fx-head,.no-print,.filtered-warn{display:none !important}
 main{grid-area:auto !important;overflow:visible !important;padding:0 !important;height:auto !important}
@@ -108,10 +110,20 @@ th{position:static !important;background:#EFECE5 !important;color:#3D4149 !impor
 th,td{padding:3pt 4pt;overflow-wrap:break-word;border-bottom:.4pt solid #DFD9CF}
 
 /* ── status chips keep their colour, because the colour is the meaning ──── */
-.tag,.lane,.oid,.needed,.hyp-bar,.word,.pill,.nc,.fxcell,.move-mini>div,.move-counter{
-  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tag,.lane,.oid,.oid-quiet,.needed,.hyp-bar,.word,.pill,.nc,.fxcell,.move-mini>div,.move-counter,
+.missing-source{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
-/* ── the human-review status prints, always ─────────────────────────────── */
+/* ── Executive Brief ────────────────────────────────────────────────────── */
+.brief-title{font-size:19pt;max-width:none}
+.brief-lede{font-size:12pt}
+
+/* ── the wordmark, wherever it appears on a printed surface ─────────────── */
+.brand-logo{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* ── review status: prints only on a generator draft, never as a global
+   header warning on every surface ──────────────────────────────────────── */
+.review-status{display:block !important;background:none !important;border:.6pt solid #B3261E !important;
+  color:#B3261E !important;font-size:8pt !important;letter-spacing:.06em;padding:4pt 8pt !important;
+  text-align:left !important;margin:0 0 10pt !important}
+
 .print-only{display:block !important}
-.hrr.print-only{display:inline-block !important;border:.6pt solid #B3261E;color:#B3261E;
-  padding:2pt 6pt;font-size:8pt;letter-spacing:.08em}

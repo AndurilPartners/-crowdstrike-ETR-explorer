@@ -79,7 +79,7 @@ NARRATIVE.companyDeck = function(){
     sign(v.ns.yyDelta) + ' against ' + (v.yearAgo.label||'a year earlier') + ', ' + moveWord(v.ns.yyDelta) +
     '. Deployment breadth rose further still, to ' + n2(v.pv.value) + ' (' + sign(v.pv.qqDelta) +
     '). The recorded reading is: “' + CALL.primarySignalText + '”',
-    'Anduril interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [sig.id || 'SIG-02'],
+    'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [sig.id || 'SIG-02'],
     ['R-004','R-005','R-008'], 'High on current raw values',
     'Spending intent and deployment breadth only. No company outcome is implied.', []);
 };
@@ -92,19 +92,20 @@ NARRATIVE.snapshot = function(){
       c: claim('company',
         'The sequential move is small and the annual move is not. Net Score rose ' +
         sign(v.ns.qqDelta) + ' against ' + (v.prior.label||'July 2026') + ' — ' +
-        moveWord(v.ns.qqDelta) + ' under R-005 — against ' + sign(v.ns.yyDelta) +
-        ' over the year, ' + moveWord(v.ns.yyDelta) + '. Pervasion moved ' + sign(v.pv.qqDelta) +
-        ' sequentially, a larger step than intent took over the same quarter.',
+        moveWord(v.ns.qqDelta) + ' under the workbook’s own movement terminology — against ' +
+        sign(v.ns.yyDelta) + ' over the year, ' + moveWord(v.ns.yyDelta) + '. Pervasion moved ' +
+        sign(v.pv.qqDelta) + ' sequentially, a larger step than intent took over the same quarter.',
         'Client-provided fact', ['ETR-OCT26-NS','ETR-OCT26-PV'], [], ['R-003','R-004','R-005','R-008'],
-        'High', 'R-005 supplies wording conventions, not significance thresholds.', []) },
+        'High', 'The movement-terminology rule supplies wording conventions, not significance ' +
+        'thresholds.', []) },
 
-    { key:'matters', label:'Why it matters', cls:'Anduril interpretation',
+    { key:'matters', label:'Why it matters', cls:'ETR interpretation',
       c: claim('company',
         'Breadth and intent moving together is the shape of a recovery that is spreading rather than ' +
         'concentrating: more accounts report the platform in use, and the accounts already there are ' +
         'not pulling back. That is a demand reading about survey respondents. It is not revenue, ' +
         'market share or retention, and the workbook records no validated path from it to any of them.',
-        'Anduril interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], ['XL-01'],
+        'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], ['XL-01'],
         ['R-013','R-015','CTX-007'], 'Medium',
         'R-015 permits directional consistency between lanes and prohibits causal assertion.', []) },
 
@@ -127,7 +128,7 @@ NARRATIVE.moves = function(){
       lrg = NCUT('Large Organizations');
   return [
     { key:'recovery', kicker:'Move one', direction:'Improving',
-      confidence:'High on current raw values', classification:'Anduril interpretation',
+      confidence:'High on current raw values', classification:'ETR interpretation',
       title:'The recovery persists, and it has slowed',
       c: claim('company',
         'Fifteen months after the outage, spending intent is still climbing: ' + n2(v.ns.value) +
@@ -136,7 +137,7 @@ NARRATIVE.moves = function(){
         moveWord(v.ns.qqDelta) + '; the annual step, ' + sign(v.ns.yyDelta) + ', is ' +
         moveWord(v.ns.yyDelta) + '. Both Z-Scores are positive, with the annual figure the higher of ' +
         'the two — consistent with the larger annual change in the base metric.',
-        'Anduril interpretation', ['ETR-OCT26-NS','ETR-OCT26-ZS'], ['SIG-02'],
+        'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-ZS'], ['SIG-02'],
         ['R-004','R-005','R-006','R-026'], 'High on current raw values',
         'Z-Score supplies deviation context only and never creates or changes the Current Call.', []),
       counter:'Replacement intent has not gone to zero: 10% held firm replacement plans as of April 2025, ' +
@@ -148,7 +149,7 @@ NARRATIVE.moves = function(){
       focus:'ETR-OCT26-NS' },
 
     { key:'enterprise', kicker:'Move two', direction:'Mixed',
-      confidence:'Medium — cohort N missing', classification:'Anduril interpretation',
+      confidence:'Medium — cohort N missing', classification:'ETR interpretation',
       title:'Enterprise strength is selective, not uniform',
       c: claim('company',
         'The indexed cohorts read above the overall number — Global 2000 at ' + orNum(g2k) +
@@ -156,7 +157,7 @@ NARRATIVE.moves = function(){
         'Organizations read below it at ' + orNum(lrg) + '. Those cuts sit inside different definitions, ' +
         'so the gap between them is a description of the sample, not a ranking of segments. None of ' +
         'them carries a citation base, which is the single largest gap in the cohort picture.',
-        'Anduril interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'],
+        'ETR interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'],
         ['SIG-05','OQ-014'], ['R-009','R-010','R-011'], 'Medium — cohort N missing',
         'No October cut carries an N (OQ-014). Cohort readings are not segment market share.',
         ['OQ-014']),
@@ -173,9 +174,9 @@ NARRATIVE.moves = function(){
       title:'Company outcomes moved the same way, on separate evidence',
       c: claim('company',
         'Company-reported net new ARR, ending ARR and RPO sit in their own lane and move in the same ' +
-        'direction as the demand reading over the same window. XL-01 records that as parallel evidence ' +
-        'and nothing more. The candidate relationship, SIG-02 to KPI-003 Net New ARR, is held at ' +
-        'Backtest Required: no lag is established, and Flex, CCP, renewal timing, new logos and ' +
+        'direction as the demand reading over the same window. The workbook’s cross-lane record treats ' +
+        'that as parallel evidence and nothing more. The candidate relationship between the demand ' +
+        'signal and Net New ARR is held at Backtest Required: no lag is established, and Flex, CCP, renewal timing, new logos and ' +
         'expansion are all named as confounders. Until BT-CRWD-OCT26 runs with an agreed lag and ' +
         'tolerance, this stays a hypothesis.',
         'Hypothesis', ['REF-E-F04','REF-E-F03','REF-E-F08'],
@@ -203,7 +204,8 @@ NARRATIVE.counterpoint = function(){
       'consolidating onto the platform. That is historical evidence, and it is the baseline the ' +
       'current numbers are climbing out of — not a reading that has been superseded.',
       'Client-provided fact', [], ['CE-001'], ['R-024','R-025'], 'High',
-      'Historical under R-025. It bounds the interpretation; it does not move the current period.', []),
+      'Treated as historical under the current-period promotion rule. It bounds the interpretation; ' +
+      'it does not move the current period.', []),
 
     claim('company',
       'Replacement intent decayed rather than disappeared. By April 2025, 10% held firm plans to ' +
@@ -231,8 +233,9 @@ NARRATIVE.watch = function(){
   return [
     { id:'OQ-002', signal:'SIG-02', status:'Critical · Open',
       title:'Whether an October data outlook is recorded at all',
-      why:'The prior Positive outlook is historical under R-025, so with nothing recorded for the ' +
-          'current period the call cannot resolve in either direction.',
+      why:'The prior Positive outlook is now treated as historical under the workbook’s current-period ' +
+          'promotion rule, so with nothing recorded for the current period the call cannot resolve in ' +
+          'either direction.',
       resolve:'An ETR Viewpoint List entry carrying a current TSIS data outlook for CrowdStrike.' },
     { id:'OQ-014', signal:'SIG-05', status:'High · Open',
       title:'Whether the October cuts arrive with citation bases',
@@ -242,7 +245,8 @@ NARRATIVE.watch = function(){
     { id:'OQ-005', signal:'SIG-02', status:'High · Open',
       title:'Whether the sequential move clears a stated-change band',
       why:'The raw Z-Scores are supplied but the approved bands are not, so the deviation numbers ' +
-          'carry no interpretation and the R-005 wording convention is doing that work alone.',
+          'carry no interpretation and the workbook’s movement-terminology convention is doing that ' +
+          'work alone.',
       resolve:'The ETR Z-Score methodology: formula, sign convention, lookback, normalization ' +
               'population and approved thresholds.' }
   ];
@@ -305,7 +309,7 @@ NARRATIVE.emailClean = function(g){
     n2(v.ns.value) + ' on ' + n2(v.n, 0) + ' citations, ' + sign(v.ns.qqDelta) + ' against ' +
     (v.prior.label||'July') + ' and ' + sign(v.ns.yyDelta) + ' against ' + (v.yearAgo.label||'last October') +
     '. Almost the whole of that improvement is the annual leg.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], [g.signal||'SIG-02'], ['R-004','R-005','R-025'],
+    'ETR interpretation', ['ETR-OCT26-NS'], [g.signal||'SIG-02'], ['R-004','R-005','R-025'],
     'High on current raw values', 'Direction only; no company outcome is implied.', []));
 
   P.push(claim('email',
@@ -323,7 +327,7 @@ NARRATIVE.emailClean = function(g){
     'above the overall number while Large Organizations read below it, and those cuts use different ' +
     'definitions, so the spread describes the sample rather than ranking the segments. It is worth ' +
     'saying plainly that none of the October cuts carries a citation base.',
-    'Anduril interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'], ['SIG-05'],
+    'ETR interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'], ['SIG-05'],
     ['R-010','R-011'], 'Medium — cohort N missing', 'No October cut carries an N (OQ-014).',
     ['OQ-014']));
 
@@ -369,7 +373,7 @@ NARRATIVE.emailAlert = function(g){
       'The sequential move is ' + moveWord(v.ns.qqDelta) + ' under the wording convention; the annual ' +
       'move is ' + moveWord(v.ns.yyDelta) + '. Breadth outpaced intent this quarter. No company ' +
       'outcome is implied and no outlook is recorded for the current period.',
-      'Anduril interpretation', ['ETR-OCT26-NS'], ['OQ-002'], ['R-005','R-015','R-025'],
+      'ETR interpretation', ['ETR-OCT26-NS'], ['OQ-002'], ['R-005','R-015','R-025'],
       'High on current raw values', 'Current Call is Source Needed pending a recorded outlook.',
       ['OQ-002'])
   ];
@@ -384,13 +388,13 @@ NARRATIVE.emailExec = function(g){
       'mostly a year in the making rather than a quarter. Spending intent is ' + n2(v.ns.value) + ', ' +
       sign(v.ns.yyDelta) + ' over the year and ' + sign(v.ns.qqDelta) + ' over the quarter, with ' +
       'deployment breadth rising faster than intent.',
-      'Anduril interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], ['SIG-02'], ['R-004','R-005','R-008'],
+      'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], ['SIG-02'], ['R-004','R-005','R-008'],
       'High on current raw values', null, []),
     claim('email',
       'What it does not tell us is anything about company results. The survey lane and the reported ' +
       'lane are parallel evidence; the relationship between them is untested and is recorded as a ' +
       'hypothesis. Treat this as monitoring context, not as a forecast input.',
-      'Anduril interpretation', [], ['XL-01','BRIDGE-SIG-02-KPI-003'], ['R-015','R-021'], 'Medium',
+      'ETR interpretation', [], ['XL-01','BRIDGE-SIG-02-KPI-003'], ['R-015','R-021'], 'Medium',
       'Hypothesis — Backtest Required.', []),
     claim('email',
       'Three gaps are worth knowing about: no outlook is recorded for the current period, no October ' +
@@ -428,7 +432,10 @@ NARRATIVE.sunday = function(style, length, opts){
   opts = opts || {};
   var v = NV(), B = [];
   var brief = (length === 'brief'), extended = (length === 'extended');
+  var note = (style === 'note');
   var sig = OBJ[opts.signal || 'SIG-02'] || {};
+  var aud = (typeof AUDIENCES !== 'undefined' ? AUDIENCES : []).filter(function(a){
+    return a.id === opts.audience; })[0] || null;
   var extra = (opts.evidence || []).filter(function(id){
     return ['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-INTENT','ETR-OCT26-ZS'].indexOf(id) < 0 && OBJ[id];
   });
@@ -436,16 +443,16 @@ NARRATIVE.sunday = function(style, length, opts){
   var qs = (opts.questions || []).filter(function(id){ return OBJ[id]; });
 
   /* ── opening ─────────────────────────────────────────────────────────── */
-  B.push({ c: claim('sunday',
+  B.push({ essential:true, c: claim('sunday',
     'It has been fifteen months since the outage, and the question that keeps getting asked about ' +
     'CrowdStrike is whether the recovery in spending intent is real or whether it has simply run out ' +
     'of room. The ' + v.period + ' survey period gives the clearest answer so far, and it is a ' +
     'qualified one: the recovery is real, it is still building, and it has slowed sharply.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], [sig.id || 'SIG-02'],
+    'ETR interpretation', ['ETR-OCT26-NS'], [sig.id || 'SIG-02'],
     ['R-002','R-004','R-005','R-025'], 'High on current raw values',
     'Direction only. No company outcome is implied.', []) });
 
-  B.push({ c: claim('sunday',
+  B.push({ essential:true, c: claim('sunday',
     'Net Score reads ' + n2(v.ns.value) + ' on ' + n2(v.n,0) + ' citations. Against ' +
     (v.prior.label||'July 2026') + ' that is ' + sign(v.ns.qqDelta) + ', which the workbook’s own ' +
     'wording convention calls ' + moveWord(v.ns.qqDelta) + '. Against ' + (v.yearAgo.label||'October 2025') +
@@ -455,8 +462,25 @@ NARRATIVE.sunday = function(style, length, opts){
     'Client-provided fact', ['ETR-OCT26-NS'], [], ['R-004','R-005','R-009'], 'High',
     'These are wording conventions, not statistical-significance thresholds.', []) });
 
+  /* ── primary signal in focus — changes with the "Primary signal" control ── */
+  if (sig.id) B.push({ essential:true, c: claim('sunday',
+    'The reading this piece is built around is “' + (sig.title || 'the recorded signal') +
+    '.” As the workbook states it: “' + (sig.statement || 'no statement is recorded') + '” Recorded ' +
+    'direction is ' + (sig.direction || 'Source Needed') + ' at ' +
+    (sig.confidence || 'Source Needed') + ' confidence.',
+    sig.classification || 'Client-provided fact', [], [sig.id], ['R-009'], sig.confidence,
+    sig.caveat || 'This is the signal selected for this piece; it does not change the Current Call.', []) });
+
+  /* ── who this is for — changes with the "Audience" control ─────────────── */
+  if (aud) B.push({ essential:true, c: claim('sunday',
+    'For ' + aud.label + ', the question in front of this reading is: ' + aud.q + ' ' + aud.t + ' ' +
+    (typeof audienceWhy === 'function' ? audienceWhy(aud) : ''),
+    'ETR interpretation', aud.emph.slice(0,2), [], ['R-013'], null,
+    'Framed for ' + aud.label + '; the underlying facts, values and confidence are unchanged by the ' +
+    'framing.', []) });
+
   /* ── body ────────────────────────────────────────────────────────────── */
-  var subA = (style === 'exec' || brief) ? null : 'What the October data shows';
+  var subA = (style === 'exec' || (brief && !note)) ? null : 'What the October data shows';
   B.push({ sub: subA, c: claim('sunday',
     'The more interesting movement is in breadth rather than level. Pervasion — the share of ' +
     'respondents reporting the platform in use — rose to ' + n2(v.pv.value) + ', up ' +
@@ -468,14 +492,14 @@ NARRATIVE.sunday = function(style, length, opts){
     'Client-provided fact', ['ETR-OCT26-PV','ETR-OCT26-INTENT'], [], ['R-008','R-009'], 'High',
     'Pervasion is breadth, not revenue or market share.', []) });
 
-  if (!brief) B.push({ c: claim('sunday',
+  if (!brief || note) B.push({ c: claim('sunday',
     'Where the reading is strongest is in the largest accounts, and where it is weakest is in the ' +
     'confidence we can attach to that. The indexed cohorts read above the overall number while Large ' +
     'Organizations read below it — and those two cuts use different definitions, so the gap ' +
     'describes the sample rather than ranking the segments. Geographically the October cuts run wide, ' +
     'from APAC at the top to EMEA at the bottom. Not one of these cuts arrives with a citation base, ' +
     'which is the single largest gap in the package.',
-    'Anduril interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE','ETR-OCT26-REGION'],
+    'ETR interpretation', ['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE','ETR-OCT26-REGION'],
     ['SIG-05','SIG-07','OQ-014'], ['R-010','R-011','R-024'], 'Medium — N missing throughout',
     'Do not read a regional survey cut as regional revenue.', ['OQ-014']) });
 
@@ -494,7 +518,7 @@ NARRATIVE.sunday = function(style, length, opts){
     'Client-provided fact', ['ETR-OCT26-ADOPT'], [], ['R-013'], 'Medium — reason N missing',
     'Reasons are not causal explanations of a metric movement.', ['OQ-014']) });
 
-  var subB = (style === 'exec' || brief) ? null : 'What it does not establish';
+  var subB = (style === 'exec' || (brief && !note)) ? null : 'What it does not establish';
   B.push({ sub: subB, c: claim('sunday',
     'This is the point at which the numbers stop and the discipline starts. The deviation figures are ' +
     'supplied — Q/Q ' + n2(v.z.qqZ, 6) + ' and Y/Y ' + n2(v.z.yyZ, 6) + ', both positive, with the ' +
@@ -511,12 +535,12 @@ NARRATIVE.sunday = function(style, length, opts){
     'as directional consistency and explicitly prohibits reading anything causal into it. The ' +
     'candidate relationship — the demand signal to net new ARR — is held at Backtest ' +
     'Required, with no established lag and a named list of confounders.',
-    'Anduril interpretation', ['ETR-OCT26-NS'], ['XL-01','BRIDGE-SIG-02-KPI-003','KPI-003','BT-CRWD-OCT26'],
+    'ETR interpretation', ['ETR-OCT26-NS'], ['XL-01','BRIDGE-SIG-02-KPI-003','KPI-003','BT-CRWD-OCT26'],
     ['R-013','R-015','R-016','R-021','CTX-007'], 'Medium',
     'Hypothesis — Backtest Required. Not a validated predictive relationship.',
     ['Expected lag','Tolerance']) });
 
-  if (!brief) {
+  if (!brief || note) {
     var cList = counter.length ? counter : ['CE-001','CE-002'];
     var first = OBJ[cList[0]] || {}, second = OBJ[cList[1]] || null;
     B.push({ c: claim('sunday',
@@ -526,11 +550,12 @@ NARRATIVE.sunday = function(style, length, opts){
       'is refreshed in the October export set, which is exactly why they bound the interpretation ' +
       'rather than settle it.',
       'Client-provided fact', [], cList.slice(0, 2), ['R-024','R-025'], first.confidence || 'Medium',
-      'Historical evidence under R-025. It does not move the current period.', []) });
+      'Historical evidence under the current-period promotion rule. It does not move the current ' +
+      'period.', []) });
   }
 
   /* ── closing ─────────────────────────────────────────────────────────── */
-  var subC = (style === 'exec' || brief) ? null : 'What to watch next';
+  var subC = (style === 'exec' || (brief && !note)) ? null : 'What to watch next';
   var watchText = 'Three things would change how firmly any of this can be put. Whether the sequential ' +
     'move clears a stated-change band once approved Z-Score bands exist. Whether the October cohort ' +
     'and regional cuts arrive with citation bases. And whether an ETR data outlook is recorded for the ' +
@@ -539,10 +564,24 @@ NARRATIVE.sunday = function(style, length, opts){
   if (qs.length) {
     watchText += ' The open questions carried here are ' + qs.join(', ') + '.';
   }
-  B.push({ sub: subC, c: claim('sunday', watchText, 'Recommended action', [],
+  if (aud) watchText += ' For ' + aud.label + ', the recommended next step is: ' + aud.action;
+  B.push({ essential:true, sub: subC, c: claim('sunday', watchText, 'Recommended action', [],
     unique(['OQ-002','OQ-005','OQ-014'].concat(qs)), ['R-005','R-007','R-019','R-025'], null,
     'Each has a named expected source recorded against it.',
     unique(['OQ-002','OQ-005','OQ-014'].concat(qs))) });
+
+  if (note) {
+    /* Research Note keeps the three live open items in view explicitly,
+       structurally, rather than only when the reader happens to select them. */
+    B.push({ c: claim('sunday',
+      'Carried open in this note, regardless of what is selected above: whether the current-period ' +
+      'ETR data outlook is recorded, whether the Z-Score bands are approved, and whether the cohort ' +
+      'and regional cuts arrive with a citation base. None of the three is resolved by this reading.',
+      'Open question', [], ['OQ-002','OQ-005','OQ-014'],
+      ['R-002','R-005','R-024'], null,
+      'These stay open until the workbook records a resolution — nothing here resolves them.',
+      ['OQ-002','OQ-005','OQ-014']) });
+  }
 
   if (style === 'data') {
     /* readings first: move the two data paragraphs to the front, keep the rest in order */
@@ -551,7 +590,9 @@ NARRATIVE.sunday = function(style, length, opts){
     B = head.concat(tail);
   }
   if (style === 'exec') {
-    B = B.filter(function(b, i){ return i < 3 || /Nor does any of it|Three things would/.test(b.c.text); });
+    /* short and decision-facing: the opening, the raw numbers, the selected signal and
+       audience framing, the discipline paragraph and the closing action — nothing else. */
+    B = B.filter(function(b){ return b.essential || /Nor does any of it/.test(b.c.text); });
   }
   return B;
 };
