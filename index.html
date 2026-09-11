@@ -7,40 +7,40 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="print.css" media="print">
 </head>
-<body class="mode-narrative">
+<body>
 <a class="sr" href="#main">Skip to main content</a>
 <div id="liveRegion" class="sr" role="status" aria-live="polite"></div>
 
 <div class="app">
 
   <div class="brandbox">
-    <span class="bm">CrowdStrike</span><span class="bt">CRWD</span>
+    <img class="brand-logo" src="assets/crowdstrike-logo.png" alt="CrowdStrike"
+         onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+    <span class="bm" hidden>CrowdStrike</span>
   </div>
 
   <header class="topbar" role="banner">
-    <div class="modeswitch" role="group" aria-label="Reading mode">
-      <button type="button" class="modebtn on" data-mode="narrative" aria-pressed="true">Narrative</button>
-      <button type="button" class="modebtn" data-mode="research" aria-pressed="false">Research</button>
+    <div class="tb-company"><span class="bm2">CrowdStrike</span><span class="bt">CRWD</span></div>
+    <div class="tb-right">
+      <div class="tb-stat"><span class="k">Research period</span><span class="v" id="tbPeriod">—</span></div>
+      <div class="tb-stat"><span class="k">Last updated</span><span class="v" id="tbUpdated">—</span></div>
+      <div class="search-wrap">
+        <label class="sr" for="globalSearch">Global search</label>
+        <input id="globalSearch" type="search" placeholder="Search IDs, evidence, rules…  ( / )"
+               autocomplete="off" aria-controls="searchPanel">
+      </div>
+      <button class="tb-btn" id="btnSources" aria-expanded="false" aria-controls="sourcePane">
+        Source controls<span class="badge-count" id="filterCount">0</span></button>
+      <button class="tb-btn" id="btnPrint" aria-haspopup="true" aria-expanded="false">Print</button>
+      <button class="tb-btn" id="btnCreate" data-create aria-haspopup="true" aria-expanded="false">Create</button>
     </div>
-    <div class="tb-stat"><span class="k">Current TSIS</span><span class="v" id="tbPeriod">—</span></div>
-    <div class="tb-stat tb-grow"><span class="k">Primary signal</span><span class="v" id="tbSignal">—</span></div>
-    <div class="search-wrap">
-      <label class="sr" for="globalSearch">Global search</label>
-      <input id="globalSearch" type="search" placeholder="Search IDs, evidence, rules…  ( / )"
-             autocomplete="off" aria-controls="searchPanel">
-    </div>
-    <button class="tb-btn" id="btnSources" aria-expanded="false" aria-controls="sourcePane">
-      Source controls<span class="badge-count" id="filterCount">0</span></button>
-    <button class="tb-btn" id="btnPrint" aria-haspopup="true" aria-expanded="false">Print</button>
-    <span class="hrr" title="R-020: analyst approval is a precondition of external distribution">
-      Human review required</span>
   </header>
 
   <nav class="sidebar" role="navigation" aria-label="Application views">
     <button type="button" class="navtoggle" id="navToggle" aria-expanded="false" aria-controls="navGroups">
       Menu</button>
     <div id="navGroups">
-      <div class="grp">Primary</div>
+      <div class="grp">Explore</div>
       <a href="#company" data-view="company"><span class="ico" aria-hidden="true">◧</span>Company</a>
       <a href="#narrative" data-view="narrative"><span class="ico" aria-hidden="true">▤</span>Narrative</a>
       <a href="#signals" data-view="signals"><span class="ico" aria-hidden="true">◆</span>Signals<span class="n" id="nSignals"></span></a>
@@ -59,11 +59,11 @@
       <a href="#generator/sunday-signal" data-view="gen-sunday"><span class="ico" aria-hidden="true">✎</span>Sunday Signal</a>
       <a href="#generator/update-email" data-view="gen-email"><span class="ico" aria-hidden="true">✉</span>Update Email</a>
       <a href="#audience" data-view="audience"><span class="ico" aria-hidden="true">◑</span>Audience Translator</a>
+      <a href="#generator/executive-brief" data-view="gen-brief"><span class="ico" aria-hidden="true">▣</span>Executive Brief</a>
     </div>
   </nav>
 
   <main id="main" role="main">
-    <div class="srcstrip research-only" id="srcStrip" aria-label="Evidence lanes in view"></div>
     <div id="filteredWarn" class="filtered-warn" hidden></div>
 
     <section class="view" id="view-company"     aria-label="Company"></section>
@@ -79,6 +79,7 @@
     <section class="view" id="view-audience"    aria-label="Audience Translator"></section>
     <section class="view" id="view-gen-sunday"  aria-label="Sunday Signal Generator"></section>
     <section class="view" id="view-gen-email"   aria-label="Update Email Generator"></section>
+    <section class="view" id="view-gen-brief"   aria-label="Executive Brief Generator"></section>
     <section class="view" id="view-methodology" aria-label="Methodology and Validation"></section>
   </main>
 </div>
@@ -122,6 +123,7 @@
 
 <script src="reveal-data.js"></script>
 <script src="narrative-templates.js"></script>
+<script src="storage-migration.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

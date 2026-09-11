@@ -8,7 +8,7 @@ window.REVEAL_DATA = {
   "application": "CrowdStrike REVEAL Company Explorer",
   "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
   "workbookVersion": "V3.5",
-  "generatedAt": "2026-09-11T11:27:58",
+  "generatedAt": "2026-09-11T16:08:28",
   "authorizedWorksheets": [
    "V3.5 Update Summary",
    "OCT26 Current TSIS",
@@ -101,6 +101,7 @@ window.REVEAL_DATA = {
   "shortLabel": "Oct 2026",
   "isCurrent": true,
   "exportTimestampNote": "Survey labels read October 2026 while the source export filenames are dated 2026-09-10. OQ-015 keeps both labels; this application does not reconcile them.",
+  "exportTimestamp": "2026-09-10",
   "netScore": {
    "value": 37.14285714,
    "metric": "Net Score",
@@ -6577,7 +6578,7 @@ window.REVEAL_DATA = {
    "title": "Platform Consolidation Accelerating via Falcon Flex",
    "statement": "Enterprise customers are consolidating security spend onto the Falcon platform through the Flex subscription model producing measurable uplift in per-customer ARR and multi-module adoption rates.",
    "description": "Enterprise customers are consolidating security spend onto the Falcon platform through the Flex subscription model producing measurable uplift in per-customer ARR and multi-module adoption rates.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6635,7 +6636,7 @@ window.REVEAL_DATA = {
    "title": "Post-Outage Spending Recovery in ETR TSIS Data",
    "statement": "CrowdStrike spending intent recovered from the post-outage trough and persisted through October 2026: Net Score 37.14 (+0.69 vs Jul 2026; +10.54 vs Oct 2025), Pervasion 40.90, with Q/Q Z 0.129 and Y/Y Z 0.892.",
    "description": "CrowdStrike spending intent recovered from the post-outage trough and persisted through October 2026: Net Score 37.14 (+0.69 vs Jul 2026; +10.54 vs Oct 2025), Pervasion 40.90, with Q/Q Z 0.129 and Y/Y Z 0.892.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6697,7 +6698,7 @@ window.REVEAL_DATA = {
    "title": "Net New ARR Reacceleration Cycle",
    "statement": "CrowdStrike quarterly net new ARR troughed at $153M (Q3 FY2025) and reaccelerated in every subsequent quarter to a record $333M (Q2 FY2027 +51% YoY) with management raising FY2027 growth guidance by 630 basis points.",
    "description": "CrowdStrike quarterly net new ARR troughed at $153M (Q3 FY2025) and reaccelerated in every subsequent quarter to a record $333M (Q2 FY2027 +51% YoY) with management raising FY2027 growth guidance by 630 basis points.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6753,7 +6754,7 @@ window.REVEAL_DATA = {
    "title": "AI Security (Mythos Moment) as New Demand Vector",
    "statement": "The emergence of AI agent threats and the Mythos moment created a new category of security demand (AIDR) with CrowdStrike positioning Falcon as the governance and trust layer for enterprise AI adoption.",
    "description": "The emergence of AI agent threats and the Mythos moment created a new category of security demand (AIDR) with CrowdStrike positioning Falcon as the governance and trust layer for enterprise AI adoption.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6804,7 +6805,7 @@ window.REVEAL_DATA = {
    "title": "Enterprise Cohort Dominance (G2000 / Fortune 500)",
    "statement": "October 2026 select indexed enterprise cohorts were above overall Net Score: G2000 42.61 and F500 42.68 versus 37.14; Large Organizations were 35.82, so strength was selective.",
    "description": "October 2026 select indexed enterprise cohorts were above overall Net Score: G2000 42.61 and F500 42.68 versus 37.14; Large Organizations were 35.82, so strength was selective.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6863,7 +6864,7 @@ window.REVEAL_DATA = {
    "title": "Competitive Moat Resilience Despite Outage",
    "statement": "Despite July 2024 outage impacting 96% of surveyed customers CrowdStrike maintained 97% gross retention reduced replacement intent from 44% to 10% firm within 9 months recovered Pervasion and reaccelerated net new ARR to all-time records.",
    "description": "Despite July 2024 outage impacting 96% of surveyed customers CrowdStrike maintained 97% gross retention reduced replacement intent from 44% to 10% firm within 9 months recovered Pervasion and reaccelerated net new ARR to all-time records.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -6922,7 +6923,7 @@ window.REVEAL_DATA = {
    "title": "Geographic Recovery Divergence",
    "statement": "October 2026 regional Net Score varied from APAC 54.29 to EMEA 27.27, with North America 37.14 and International 33.33.",
    "description": "October 2026 regional Net Score varied from APAC 54.29 to EMEA 27.27.",
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -9547,7 +9548,7 @@ window.REVEAL_DATA = {
    "title": "Net Score determines directional spend-intent signal",
    "statement": "Net Score observation",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR Analysis.docx; ETR_MCP_Skill_System_Report.pdf",
@@ -9657,7 +9658,7 @@ window.REVEAL_DATA = {
    "title": "Z-Score modifies unusualness, not direction",
    "statement": "Z-Score is available with a directional base metric",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR Analysis.docx; ETR Engagement — July 23 Weekly Operating Deck.pptx",
@@ -9767,7 +9768,7 @@ window.REVEAL_DATA = {
    "title": "Pervasion supplies breadth and maturity context",
    "statement": "Pervasion used in a signal",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR_MCP_Skill_System_Report.pdf; ETR-MCP-GTM-Package.docx",
@@ -9932,7 +9933,7 @@ window.REVEAL_DATA = {
    "title": "Signal strength and confidence remain separate",
    "statement": "Any signal call",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR Analysis.docx; ETR_MCP_Skill_System_Report.pdf",
@@ -10097,7 +10098,7 @@ window.REVEAL_DATA = {
    "title": "Map ETR entity to company economic entity before KPI linkage",
    "statement": "Company; product/use case; ETR category; reported segment; KPI definition; period",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": null,
@@ -10207,7 +10208,7 @@ window.REVEAL_DATA = {
    "title": "Every bridge requires mechanism, lag, and confounders",
    "statement": "Creation of a Signal→KPI bridge",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR Engagement — July 23 Weekly Operating Deck.pptx; ETR_v0.8_LATEST_FULL_Evidence_Proof_Case.xlsx",
@@ -10262,7 +10263,7 @@ window.REVEAL_DATA = {
    "title": "Forecaster is forward-expectation context, not realized outcome",
    "statement": "Model vintage; target; horizon; baseline; actual later outcome",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": null,
@@ -10647,7 +10648,7 @@ window.REVEAL_DATA = {
    "title": "Disagreement remains visible",
    "statement": "ETR and external evidence diverge",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "ETR_MCP_Skill_System_Report.pdf; ETR Analysis.docx",
@@ -10757,7 +10758,7 @@ window.REVEAL_DATA = {
    "title": "Use actual CrowdStrike Survey Z-Scores as bounded context",
    "statement": "CrowdStrike Z-Score is displayed",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "rules",
    "sourceType": null,
    "sourceName": "Crowdstrike survey_z_score_20260910_201831.csv",
@@ -11536,7 +11537,7 @@ window.REVEAL_DATA = {
    "title": "Demand trajectory",
    "statement": "Oct 2026 Net Score 37.14 is only 0.69 points above Jul 2026 but 10.54 points above Oct 2025. Sequential movement is relatively flat; the year-over-year recovery is material.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -11586,7 +11587,7 @@ window.REVEAL_DATA = {
    "title": "Breadth",
    "statement": "Pervasion rose to 40.90, from 38.38 in Jul 2026 and 38.49 in Oct 2025. Breadth continued to expand.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -11632,7 +11633,7 @@ window.REVEAL_DATA = {
    "title": "Z-Score",
    "statement": "Q/Q Z-Score 0.129 and Y/Y Z-Score 0.892 are both positive; the Y/Y model output is higher, matching the larger Y/Y base-metric change.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -11679,7 +11680,7 @@ window.REVEAL_DATA = {
    "title": "Enterprise cohorts",
    "statement": "Global 2000 (42.61) and Fortune 500 (42.68) Net Scores exceed overall (37.14), while Large Organizations (35.82) are below overall. Enterprise strength is selective.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -11728,7 +11729,7 @@ window.REVEAL_DATA = {
    "title": "Geography",
    "statement": "APAC (54.29) leads the supplied regional cuts, while EMEA (27.27) trails. Recovery is geographically uneven.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -11775,7 +11776,7 @@ window.REVEAL_DATA = {
    "title": "Adoption drivers",
    "statement": "Technical capabilities and product security are the two highest percentages among the supplied Oct 26 adoption-reason rows; Feature Breadth declined versus Jul 26.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "interpretation",
    "sourceType": null,
    "sourceName": null,
@@ -14242,7 +14243,7 @@ window.REVEAL_DATA = {
    "title": "Geographic demand divergence",
    "statement": "October regional Net Scores vary materially across the supplied cuts.",
    "description": null,
-   "classification": "Anduril interpretation",
+   "classification": "ETR interpretation",
    "sourceLane": "crosslane",
    "sourceType": null,
    "sourceName": null,
@@ -22168,7 +22169,7 @@ window.REVEAL_DATA = {
    "SIG-09"
   ],
   "unresolvedReferenceCount": 114,
-  "generatedAt": "2026-09-11T11:27:58",
+  "generatedAt": "2026-09-11T16:08:28",
   "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
   "extractionChecks": [
    {
@@ -22355,7 +22356,7 @@ window.REVEAL_DATA = {
    },
    {
     "id": "V-29",
-    "check": "Human Review Required is persistently visible",
+    "check": "Human Review status appears in generator chrome, not a global badge",
     "result": "RUNTIME",
     "detail": "Verified in the browser; see Methodology & Validation."
    }
@@ -22788,570 +22789,870 @@ window.REVEAL_DATA = {
    },
    {
     "id": "UX-03",
-    "check": "Narrative Mode is the default mode",
+    "check": "there is no mode toggle anywhere in the document",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-04",
-    "check": "the sidebar opens with the Primary group",
+    "check": "the sidebar opens with the Explore group, Company first",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-05",
-    "check": "the company name leads the page",
-    "result": "PASS",
-    "detail": "CrowdStrike"
-   },
-   {
-    "id": "UX-06",
-    "check": "the hero carries the primary signal",
-    "result": "PASS",
-    "detail": "Post-Outage Spending Recovery in ETR TSIS Data"
-   },
-   {
-    "id": "UX-07",
-    "check": "the hero carries one narrative headline and a deck",
-    "result": "PASS",
-    "detail": "397 chars of deck"
-   },
-   {
-    "id": "UX-08",
-    "check": "the first viewport is signal-led, not methodology-led",
+    "check": "a saved legacy \"mode\" value from an earlier build is silently dropped",
     "result": "PASS",
     "detail": ""
    },
    {
+    "id": "UX-06",
+    "check": "after reload, no mode field survives and the lane selection did",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-07",
+    "check": "the header carries the CrowdStrike wordmark image",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-08",
+    "check": "the header identifies the company",
+    "result": "PASS",
+    "detail": "CrowdStrikeCRWD"
+   },
+   {
     "id": "UX-09",
-    "check": "one lead chart appears near the top",
+    "check": "the header shows the research period and a Last updated value, never invented text",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-10",
-    "check": "the lead chart precedes the first data table",
+    "check": "Source controls, Search and Create are all reachable from the header",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-11",
-    "check": "Research Foundation sits below the main narrative",
+    "check": "there is no global Human Review Required badge in the header or top-level chrome",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-11C",
+    "check": "the header no longer carries the \"REVEAL Company Explorer\" wordmark text",
+    "result": "PASS",
+    "detail": "\n    \n    CrowdStrike\n  "
+   },
+   {
+    "id": "UX-11D",
+    "check": "the persistent header logo renders larger than the prior compact size",
+    "result": "PASS",
+    "detail": "35.125px tall"
+   },
+   {
+    "id": "UX-11E",
+    "check": "there is no source-lane strip anywhere in the document (removed from every view)",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-12",
-    "check": "the Current Call is a restrained status chip, not a panel",
+    "check": "the company name leads the page",
     "result": "PASS",
-    "detail": "9988px²"
+    "detail": "CrowdStrike"
    },
    {
     "id": "UX-13",
-    "check": "Source Needed offers a route to the question behind it",
+    "check": "the hero carries the primary signal",
+    "result": "PASS",
+    "detail": "Post-Outage Spending Recovery in ETR TSIS Data"
+   },
+   {
+    "id": "UX-14",
+    "check": "the hero carries one narrative headline and a deck",
+    "result": "PASS",
+    "detail": "397 chars of deck"
+   },
+   {
+    "id": "UX-15",
+    "check": "the first viewport is signal-led, not methodology-led",
     "result": "PASS",
     "detail": ""
    },
    {
-    "id": "UX-14",
-    "check": "the lead chart uses only supplied observations",
+    "id": "UX-15B",
+    "check": "Key metrics sit under the heading and above the lead chart",
     "result": "PASS",
-    "detail": "intent 3/12, breadth polyline 12 points"
-   },
-   {
-    "id": "UX-15",
-    "check": "missing Net Score periods are not interpolated",
-    "result": "PASS",
-    "detail": "1 solid intent segment (only the one adjacent pair), gap named in the chart"
+    "detail": "hero 88 / rail 652 / chart 780"
    },
    {
     "id": "UX-16",
-    "check": "the chart has a title, a description and a data-table toggle",
+    "check": "one lead chart appears near the top",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-17",
-    "check": "every chart point is keyboard-reachable and opens an object",
+    "check": "the lead chart precedes the first data table",
     "result": "PASS",
-    "detail": "15 points"
+    "detail": ""
    },
    {
     "id": "UX-18",
-    "check": "the current period and the historical comparison are both identified",
+    "check": "Research Foundation sits below the main narrative",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-19",
-    "check": "the data table shows unsupplied periods as not supplied",
+    "check": "the CrowdStrike wordmark is visible while on the Company page",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-20",
-    "check": "clicking a chart point opens the correct evidence object",
+    "check": "the Current Call is a restrained status chip, not a panel",
     "result": "PASS",
-    "detail": "ETR-OCT26-NS"
+    "detail": "9988px²"
    },
    {
     "id": "UX-21",
-    "check": "the research question is prominent and reads as a question",
-    "result": "PASS",
-    "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
-   },
-   {
-    "id": "UX-22",
-    "check": "the short answer is cohesive prose and follows the question",
+    "check": "Source Needed offers a route to the question behind it",
     "result": "PASS",
     "detail": ""
    },
    {
-    "id": "UX-23",
-    "check": "the narrative runs the full ten-part flow",
+    "id": "UX-21B",
+    "check": "the hero status row is Current call, Direction, Conviction, Evidence confidence, Current period",
     "result": "PASS",
-    "detail": "10 sections"
+    "detail": "Current call · Direction · Conviction · Evidence confidence · Current period"
+   },
+   {
+    "id": "UX-21C",
+    "check": "Human Review Required does not appear in the hero status row",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-22",
+    "check": "the lead chart uses only supplied observations",
+    "result": "PASS",
+    "detail": "intent 3/12, breadth polyline 12 points"
+   },
+   {
+    "id": "UX-23",
+    "check": "missing Net Score periods are not interpolated",
+    "result": "PASS",
+    "detail": "1 solid intent segment (only the one adjacent pair), gap named in the chart"
    },
    {
     "id": "UX-24",
-    "check": "Research Foundation is below the narrative, not in the opening viewport",
+    "check": "the chart has a title, a description and a data-table toggle",
     "result": "PASS",
-    "detail": "foundation at 4717px"
+    "detail": ""
    },
    {
     "id": "UX-25",
-    "check": "the narrative keeps a reading width",
+    "check": "every chart point is keyboard-reachable and opens an object",
     "result": "PASS",
-    "detail": "545px"
+    "detail": "15 points"
    },
    {
     "id": "UX-26",
-    "check": "switching to Research Mode preserves the current route",
+    "check": "the current period and the historical comparison are both identified",
     "result": "PASS",
-    "detail": "#signals"
+    "detail": ""
    },
    {
     "id": "UX-27",
-    "check": "Research Mode changes nothing in the data",
+    "check": "the data table shows unsupplied periods as not supplied",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-28",
-    "check": "Research Mode reveals the source strip that Narrative Mode hides",
+    "check": "clicking a chart point opens the correct evidence object",
     "result": "PASS",
-    "detail": ""
+    "detail": "ETR-OCT26-NS"
    },
    {
     "id": "UX-29",
-    "check": "the mode is persisted for the next session",
+    "check": "the research question is prominent and reads as a question",
     "result": "PASS",
-    "detail": ""
+    "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
    },
    {
     "id": "UX-30",
-    "check": "Clean email is the default format",
+    "check": "the short answer is cohesive prose and follows the question",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-31",
-    "check": "Clean email is cohesive prose, four to six paragraphs plus greeting and close",
+    "check": "the narrative runs the full ten-part flow",
     "result": "PASS",
-    "detail": "7 paragraphs"
+    "detail": "10 sections"
    },
    {
     "id": "UX-32",
-    "check": "Clean email shows no section headings",
+    "check": "Research Foundation is below the narrative, not in the opening viewport",
     "result": "PASS",
-    "detail": ""
+    "detail": "foundation at 4708px"
    },
    {
     "id": "UX-33",
-    "check": "Clean email carries no inline claim, evidence or rule IDs in the body",
+    "check": "the narrative container spans most of the available content width (LAYOUT-001)",
     "result": "PASS",
-    "detail": ""
+    "detail": "1144px of 1264px main"
    },
    {
     "id": "UX-34",
-    "check": "all four footnote toggles default to off",
+    "check": "the Narrative page carries the CrowdStrike wordmark",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-35",
-    "check": "the subject line is built from the reading",
+    "check": "no object ID appears in the default Company reading path",
     "result": "PASS",
-    "detail": "CrowdStrike signal update — October 2026 TSIS"
+    "detail": ""
    },
    {
     "id": "UX-36",
-    "check": "the copied body contains only email content, with no manifest metadata",
+    "check": "no object ID appears in the default Narrative reading path",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-37",
-    "check": "the copied body carries no Human Review line by default",
+    "check": "citations still reach their evidence, just without literal ID text",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-38",
-    "check": "the Human Review status still shows in the application chrome",
+    "check": "the default narrative reading path uses the Missing source component, not bare text",
     "result": "PASS",
-    "detail": ""
+    "detail": "3 components"
    },
    {
     "id": "UX-39",
-    "check": "every generated paragraph still carries a complete claim manifest",
-    "result": "PASS",
-    "detail": "5 manifests"
-   },
-   {
-    "id": "UX-40",
-    "check": "Inspect claims reveals paragraph manifests",
+    "check": "Clean email is the default format",
     "result": "PASS",
     "detail": ""
    },
    {
+    "id": "UX-40",
+    "check": "Clean email is cohesive prose, four to six paragraphs plus greeting and close",
+    "result": "PASS",
+    "detail": "7 paragraphs"
+   },
+   {
     "id": "UX-41",
-    "check": "Inspect claims changes neither the rendered prose nor what is copied",
+    "check": "Clean email shows no section headings",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-42",
-    "check": "switching format keeps every selection",
+    "check": "Clean email carries no inline claim, evidence or rule IDs in the body",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-43",
-    "check": "the executive note is three paragraphs plus greeting and close",
-    "result": "PASS",
-    "detail": "5"
-   },
-   {
-    "id": "UX-44",
-    "check": "Sunday Signal defaults to Cohesive Signal at Standard length",
+    "check": "the four content footnote toggles default to off, and the logo toggle exists and defaults on",
     "result": "PASS",
     "detail": ""
    },
    {
-    "id": "UX-45",
-    "check": "it reads as one piece: a title, a deck and connected paragraphs",
+    "id": "UX-44",
+    "check": "the subject line is built from the reading",
     "result": "PASS",
-    "detail": "8 paragraphs"
+    "detail": "CrowdStrike signal update — October 2026 TSIS"
+   },
+   {
+    "id": "UX-45",
+    "check": "the copied body contains only email content, with no manifest metadata",
+    "result": "PASS",
+    "detail": ""
    },
    {
     "id": "UX-46",
-    "check": "Standard length uses no more than three visible subheads",
+    "check": "the copied body carries no Human Review line by default",
     "result": "PASS",
-    "detail": "3 subheads"
+    "detail": ""
    },
    {
     "id": "UX-47",
-    "check": "the prose carries no inline IDs",
+    "check": "the Human Review status shows in the generator chrome, not a global badge",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-48",
-    "check": "every Sunday Signal paragraph still carries a claim manifest",
+    "check": "every generated paragraph still carries a complete claim manifest",
     "result": "PASS",
-    "detail": "8 manifests"
+    "detail": "5 manifests"
    },
    {
     "id": "UX-49",
-    "check": "copied prose excludes footnotes unless asked for",
+    "check": "Inspect claims reveals paragraph manifests",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-50",
-    "check": "Brief length shortens the piece and drops every subhead",
+    "check": "Inspect claims changes neither the rendered prose nor what is copied",
     "result": "PASS",
-    "detail": "6 paragraphs, 0 subheads"
+    "detail": ""
    },
    {
     "id": "UX-51",
-    "check": "the translator is a three-column split screen",
+    "check": "the emailed HTML version includes the logo when the toggle is on",
     "result": "PASS",
-    "detail": "3 columns"
+    "detail": ""
    },
    {
     "id": "UX-52",
-    "check": "changing audience changes the translation",
+    "check": "switching format keeps every selection",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-53",
-    "check": "changing audience changes no fact and nothing in the fixed panel",
+    "check": "the executive note is three paragraphs plus greeting and close",
     "result": "PASS",
-    "detail": ""
+    "detail": "5"
    },
    {
     "id": "UX-54",
-    "check": "the translator can feed both generators",
+    "check": "Sunday Signal defaults to Cohesive Signal at Standard length",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-55",
-    "check": "the handoff opens the Sunday Signal with that audience selected",
+    "check": "it reads as one piece: a title, a deck and connected paragraphs",
     "result": "PASS",
-    "detail": ""
+    "detail": "10 paragraphs"
    },
    {
     "id": "UX-56",
-    "check": "signals are grouped and the recorded primary signal leads",
+    "check": "Standard length uses no more than three visible subheads",
     "result": "PASS",
-    "detail": "#signal/SIG-02"
+    "detail": "3 subheads"
    },
    {
     "id": "UX-57",
-    "check": "every signal row carries its principal caveat",
+    "check": "the prose carries no inline IDs",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-58",
-    "check": "Evidence defaults to a concise list and expands to a table",
+    "check": "a \"preview as branded newsletter\" control exists",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-59",
-    "check": "the table view still works",
+    "check": "the branded newsletter preview shows the logo",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-60",
-    "check": "the lineage narrative path offers a plain-language explanation",
+    "check": "every Sunday Signal paragraph still carries a claim manifest",
     "result": "PASS",
-    "detail": "7 steps"
+    "detail": "10 manifests"
    },
    {
     "id": "UX-61",
-    "check": "the explanation introduces no causal language",
+    "check": "copied prose excludes footnotes unless asked for",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-62",
-    "check": "Sources leads with source-family summary cards",
+    "check": "Brief length shortens the piece and drops every subhead",
+    "result": "PASS",
+    "detail": "8 paragraphs, 0 subheads"
+   },
+   {
+    "id": "UX-62B",
+    "check": "Cohesive Signal and Research Note render different prose",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62C",
+    "check": "Executive Signal is a distinctly shorter cut than Cohesive Signal",
+    "result": "PASS",
+    "detail": "3330 vs 5155"
+   },
+   {
+    "id": "UX-62D",
+    "check": "Data-Led Signal reorders the piece so the raw readings lead the body",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62E",
+    "check": "Research Note explicitly keeps the open items in view even when nothing else does",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62F",
+    "check": "every style produces a genuinely distinct rendering (no two are identical)",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62G",
+    "check": "changing Audience visibly changes the generated Sunday Signal",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62H",
+    "check": "changing Primary signal visibly changes the generated Sunday Signal, with no inline ID",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62I",
+    "check": "\"Edit draft locally\" freezes the draft",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62J",
+    "check": "changing a control while editing locally discards the frozen draft",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62K",
+    "check": "Regenerate produces fresh prose that reflects the current selections",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62M",
+    "check": "\"Use this audience in Sunday Signal\" lands on the generator with that audience applied",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-62N",
+    "check": "the handed-off Sunday Signal reflects the Sell-Side Analyst framing",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-63",
-    "check": "Rules defaults to the rules affecting the current narrative",
+    "check": "the Executive Brief is a distinct route with its own research question",
     "result": "PASS",
-    "detail": ""
+    "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
    },
    {
     "id": "UX-64",
-    "check": "View all rules restores the full registry",
+    "check": "the Executive Brief carries the CrowdStrike wordmark",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-65",
-    "check": "Risks defaults to a Most important now view built from recorded priority",
+    "check": "the Executive Brief covers bottom line through methodology in named sections",
+    "result": "PASS",
+    "detail": "7 sections"
+   },
+   {
+    "id": "UX-66",
+    "check": "the Executive Brief shows review status in its own chrome, not the global header",
     "result": "PASS",
     "detail": ""
    },
    {
-    "id": "UX-66",
-    "check": "a source control changes what is shown",
-    "result": "PASS",
-    "detail": "105 → 102"
-   },
-   {
     "id": "UX-67",
-    "check": "the Current Call remains reviewer-controlled and does not move",
+    "check": "no object ID appears in the Executive Brief body by default",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-68",
-    "check": "switching the lane back on restores the evidence",
+    "check": "the Executive Brief has audience, signal and appendix controls",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-69",
-    "check": "no causal wording links ETR evidence to company results",
-    "result": "PASS",
-    "detail": "223 sentences scanned"
-   },
-   {
-    "id": "UX-70",
-    "check": "no prohibited Z-Score language appears",
+    "check": "turning on the evidence appendix adds an appendix section",
     "result": "PASS",
     "detail": ""
    },
    {
+    "id": "UX-70",
+    "check": "every Executive Brief section carries a complete claim manifest",
+    "result": "PASS",
+    "detail": "10 manifests"
+   },
+   {
     "id": "UX-71",
-    "check": "no investment recommendation, rating or price target",
+    "check": "the Executive Brief can be exported as Markdown, HTML and plain text",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-72",
-    "check": "July 2026 is never presented as the current period",
+    "check": "the translator is a three-column split screen",
     "result": "PASS",
-    "detail": ""
+    "detail": "3 columns"
    },
    {
     "id": "UX-73",
-    "check": "Source Needed is shown rather than filled",
+    "check": "changing audience changes the translation",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-74",
-    "check": "no unsupported company profile data is introduced",
+    "check": "changing audience changes no fact and nothing in the fixed panel",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-75",
-    "check": "every prior route still works",
+    "check": "the translator feeds all three generators",
     "result": "PASS",
-    "detail": ""
+    "detail": "3 handoffs"
    },
    {
     "id": "UX-76",
-    "check": "the print menu offers every named surface",
-    "result": "PASS",
-    "detail": "pmCompany, pmNarrative, pmSunday, pmEmail, pmLineage, pmEvidence, pmCurrent"
-   },
-   {
-    "id": "UX-77",
-    "check": "the Print Brief validation check passes",
-    "result": "PASS",
-    "detail": "narrative brief rendered (18854 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
-   },
-   {
-    "id": "UX-78",
-    "check": "print scoping isolates a single surface",
+    "check": "the Sunday Signal handoff opens with that audience selected",
     "result": "PASS",
     "detail": ""
    },
    {
+    "id": "UX-77",
+    "check": "the Executive Brief handoff opens with that audience selected",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-78",
+    "check": "signals are grouped and the recorded primary signal leads",
+    "result": "PASS",
+    "detail": "#signal/SIG-02"
+   },
+   {
     "id": "UX-79",
-    "check": "a dedicated print stylesheet is loaded",
+    "check": "every signal row carries its principal caveat",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-80",
-    "check": "every extraction check still passes",
+    "check": "Evidence defaults to a concise list and expands to a table",
     "result": "PASS",
-    "detail": "17 checks; failing: "
+    "detail": ""
    },
    {
     "id": "UX-81",
-    "check": "every runtime check still passes",
+    "check": "the table view still works",
     "result": "PASS",
-    "detail": "14 checks; failing: "
+    "detail": ""
    },
    {
-    "id": "UX-82.1500#company",
-    "check": "no horizontal overflow at 1500px (desktop)",
+    "id": "UX-82",
+    "check": "the lineage narrative path offers a plain-language explanation",
     "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.1500#narrative",
-    "check": "no horizontal overflow at 1500px (desktop)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.1500#generator/update-email",
-    "check": "no horizontal overflow at 1500px (desktop)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.1024#company",
-    "check": "no horizontal overflow at 1024px (tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.1024#narrative",
-    "check": "no horizontal overflow at 1024px (tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.1024#generator/update-email",
-    "check": "no horizontal overflow at 1024px (tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.834#company",
-    "check": "no horizontal overflow at 834px (small tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.834#narrative",
-    "check": "no horizontal overflow at 834px (small tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.834#generator/update-email",
-    "check": "no horizontal overflow at 834px (small tablet)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.390#company",
-    "check": "no horizontal overflow at 390px (phone)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.390#narrative",
-    "check": "no horizontal overflow at 390px (phone)",
-    "result": "PASS",
-    "detail": "0px"
-   },
-   {
-    "id": "UX-82.390#generator/update-email",
-    "check": "no horizontal overflow at 390px (phone)",
-    "result": "PASS",
-    "detail": "0px"
+    "detail": "7 steps"
    },
    {
     "id": "UX-83",
-    "check": "the phone layout collapses the menu behind a toggle and scrolls the metric rail",
+    "check": "the explanation introduces no causal language",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-84",
-    "check": "no external asset is requested",
+    "check": "Sources leads with source-family summary cards",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-85",
-    "check": "the application runs under file://",
+    "check": "Rules defaults to the rules affecting the current narrative",
     "result": "PASS",
     "detail": ""
    },
    {
     "id": "UX-86",
+    "check": "View all rules restores the full registry",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-87",
+    "check": "Risks defaults to a Most important now view built from recorded priority",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-88",
+    "check": "a source control changes what is shown",
+    "result": "PASS",
+    "detail": "105 → 102"
+   },
+   {
+    "id": "UX-89",
+    "check": "the Current Call remains reviewer-controlled and does not move",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-90",
+    "check": "switching the lane back on restores the evidence",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-91",
+    "check": "no causal wording links ETR evidence to company results",
+    "result": "PASS",
+    "detail": "274 sentences scanned"
+   },
+   {
+    "id": "UX-92",
+    "check": "no prohibited Z-Score language appears",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-93",
+    "check": "no investment recommendation, rating or price target",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-94",
+    "check": "July 2026 is never presented as the current period",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-95",
+    "check": "no unsupported company profile data is introduced",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-96",
+    "check": "the legacy claim-classification label does not appear anywhere in the rendered application",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-97",
+    "check": "the canonical ETR interpretation label is used instead",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-98",
+    "check": "every route still works, including the new Executive Brief route",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-99",
+    "check": "the print menu offers every named surface, including the Executive Brief",
+    "result": "PASS",
+    "detail": "pmCompany, pmNarrative, pmBrief, pmSunday, pmEmail, pmLineage, pmEvidence, pmCurrent"
+   },
+   {
+    "id": "UX-100",
+    "check": "the Create menu offers all four generator destinations",
+    "result": "PASS",
+    "detail": "Sunday Signal, Update Email, Audience Translator, Executive Brief"
+   },
+   {
+    "id": "UX-101",
+    "check": "the Print Brief validation check passes",
+    "result": "PASS",
+    "detail": "narrative brief rendered (24954 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
+   },
+   {
+    "id": "UX-102",
+    "check": "print scoping isolates a single surface",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-103",
+    "check": "a dedicated print stylesheet is loaded",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-104",
+    "check": "every extraction check still passes",
+    "result": "PASS",
+    "detail": "17 checks; failing: "
+   },
+   {
+    "id": "UX-105",
+    "check": "every runtime check still passes",
+    "result": "PASS",
+    "detail": "14 checks; failing: "
+   },
+   {
+    "id": "UX-106",
+    "check": "the main content area spans most of a ≥1500px viewport (LAYOUT-001)",
+    "result": "PASS",
+    "detail": "main 1264px of 1500px viewport"
+   },
+   {
+    "id": "UX-107.1500#company",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1500#narrative",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1500#generator/update-email",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1500#generator/executive-brief",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1024#company",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1024#narrative",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1024#generator/update-email",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.1024#generator/executive-brief",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.834#company",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.834#narrative",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.834#generator/update-email",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.834#generator/executive-brief",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.390#company",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.390#narrative",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.390#generator/update-email",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-107.390#generator/executive-brief",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+   },
+   {
+    "id": "UX-108",
+    "check": "the phone layout collapses the menu behind a toggle and scrolls the metric rail",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-109",
+    "check": "the header collapses secondary actions on narrow viewports while keeping identity and search",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-110",
+    "check": "every CrowdStrike wordmark image loads successfully (no broken image)",
+    "result": "PASS",
+    "detail": "crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px"
+   },
+   {
+    "id": "UX-111",
+    "check": "the wordmark is sourced from the local assets directory, not a remote URL",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-112",
+    "check": "no external asset is requested",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-113",
+    "check": "the application runs under file://",
+    "result": "PASS",
+    "detail": ""
+   },
+   {
+    "id": "UX-114",
     "check": "the page ran clean, with no console or page errors",
     "result": "PASS",
     "detail": ""

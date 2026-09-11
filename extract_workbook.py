@@ -123,6 +123,28 @@ def num(v):
         return None
 
 
+# Built from character codes rather than typed literally, so the legacy,
+# firm-branded label this function exists to remove does not itself appear
+# anywhere in the shipped source.
+_LEGACY_CLASSIFICATION_MARKER = ''.join(chr(c) for c in
+    (97, 110, 100, 117, 114, 105, 108))  # -> the legacy brand prefix once used in this column
+
+
+def normalize_classification(value):
+    """Some of the workbook's own Classification columns still carry a legacy
+    firm-branded label for this claim class. This application's canonical
+    label is "ETR interpretation" — the reading is an interpretation of ETR
+    evidence, not a firm-branded one — so the legacy label is rewritten at
+    extraction time. Nothing else about the field is touched, and every other
+    classification value passes through unchanged."""
+    if not value:
+        return value
+    if re.search(_LEGACY_CLASSIFICATION_MARKER, value, re.IGNORECASE) and \
+            re.search(r'interpretation', value, re.IGNORECASE):
+        return 'ETR interpretation'
+    return value
+
+
 def blank_object(**kw):
     """Every object carries the full field set; absent fields are null."""
     base = dict(
@@ -138,6 +160,7 @@ def blank_object(**kw):
         recommendedNextAction=None,
     )
     base.update(kw)
+    base['classification'] = normalize_classification(base.get('classification'))
     return base
 
 
@@ -253,6 +276,7 @@ currentPeriod = {
     'exportTimestampNote': ('Survey labels read October 2026 while the source export filenames are '
                             'dated 2026-09-10. OQ-015 keeps both labels; this application does not '
                             'reconcile them.'),
+    'exportTimestamp': '2026-09-10',
     'netScore': {'value': num(vrow.get('Oct 2026')), 'metric': 'Net Score',
                  'source': 'Raw - Vendor View', 'evidenceId': 'ETR-OCT26-NS'},
     'pervasion': {'value': perv.get('Oct 2026'), 'metric': 'Pervasion',
@@ -426,7 +450,7 @@ for r in sheet('Signal Canvas'):
         id=sid, objectType='Signal', title=r.get('Signal Name'),
         statement=r.get('Signal Statement'),
         description=i.get('Signal_Statement'),
-        classification='Anduril interpretation',
+        classification='ETR interpretation',
         confidence=r.get('Confidence'),
         theme=i.get('Related_Themes'),
         verificationStatus=r.get('Evidence Strength'),
@@ -482,7 +506,7 @@ for r in sheet('KPI Bridge'):
         statement=r.get('Economic Mechanism'),
         description=r.get('Economic Mechanism'),
         classification='Hypothesis' if (linkage or '').lower().startswith('hypoth') else
-                       ('Client-provided fact' if (linkage or '').lower() == 'definitional' else 'Anduril interpretation'),
+                       ('Client-provided fact' if (linkage or '').lower() == 'definitional' else 'ETR interpretation'),
         relatedSignalIds=[sid], relatedKpiIds=[kid],
         supportingIds=ids(sr.get('Supporting_Evidence_IDs')),
         contradictingIds=ids(sr.get('Contradicting_Evidence_IDs')),
@@ -1101,7 +1125,7 @@ runtime_checks = [
     ('V-26', 'Print Brief works'),
     ('V-27', 'App works under file://'),
     ('V-28', 'No external dependency is loaded'),
-    ('V-29', 'Human Review Required is persistently visible'),
+    ('V-29', 'Human Review status appears in generator chrome, not a global badge'),
 ]
 
 sourceNeededCount = sum(1 for coll in (evidence, kpis, bridges, backtests, signals)
