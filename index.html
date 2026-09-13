@@ -43,17 +43,21 @@
       <div class="grp">Explore</div>
       <a href="#company" data-view="company"><span class="ico" aria-hidden="true">◧</span>Company</a>
       <a href="#narrative" data-view="narrative"><span class="ico" aria-hidden="true">▤</span>Narrative</a>
+      <a href="#charlotte" data-view="charlotte"><span class="ico" aria-hidden="true">◈</span>Charlotte AI<span class="n" id="nAi"></span></a>
       <a href="#signals" data-view="signals"><span class="ico" aria-hidden="true">◆</span>Signals<span class="n" id="nSignals"></span></a>
       <a href="#evidence" data-view="evidence"><span class="ico" aria-hidden="true">▪</span>Evidence<span class="n" id="nEvidence"></span></a>
-      <a href="#lineage" data-view="lineage"><span class="ico" aria-hidden="true">⌗</span>Lineage<span class="n" id="nRels"></span></a>
+      <a href="#trace" data-view="trace"><span class="ico" aria-hidden="true">⇢</span>Lineage trace</a>
+      <a href="#lineage" data-view="lineage"><span class="ico" aria-hidden="true">⌗</span>Lineage graph<span class="n" id="nRels"></span></a>
 
       <div class="grp">Research</div>
+      <a href="#how" data-view="how"><span class="ico" aria-hidden="true">✦</span>How the Research Works</a>
       <a href="#kpis" data-view="kpis"><span class="ico" aria-hidden="true">⬡</span>KPI Bridges<span class="n" id="nBridges"></span></a>
       <a href="#sources" data-view="sources"><span class="ico" aria-hidden="true">▤</span>Sources<span class="n" id="nSources"></span></a>
       <a href="#risks" data-view="risks"><span class="ico" aria-hidden="true">◇</span>Risks &amp; Questions<span class="n" id="nRisks"></span></a>
       <a href="#rules" data-view="rules"><span class="ico" aria-hidden="true">▬</span>Rules<span class="n" id="nRules"></span></a>
       <a href="#cohorts" data-view="cohorts"><span class="ico" aria-hidden="true">▦</span>Cohorts &amp; Regions</a>
       <a href="#methodology" data-view="methodology"><span class="ico" aria-hidden="true">✓</span>Methodology</a>
+      <a href="#archive" data-view="archive"><span class="ico" aria-hidden="true">▧</span>Archive<span class="n" id="nArchive"></span></a>
 
       <div class="grp">Create</div>
       <a href="#generator/sunday-signal" data-view="gen-sunday"><span class="ico" aria-hidden="true">✎</span>Sunday Signal</a>
@@ -68,6 +72,11 @@
 
     <section class="view" id="view-company"     aria-label="Company"></section>
     <section class="view" id="view-narrative"   aria-label="Narrative brief"></section>
+    <section class="view" id="view-charlotte"   aria-label="CrowdStrike Charlotte AI"></section>
+    <section class="view" id="view-trace"       aria-label="Research lineage trace"></section>
+    <section class="view" id="view-how"         aria-label="How the Research Works"></section>
+    <section class="view" id="view-kpiplan"     aria-label="KPI bridge research plan"></section>
+    <section class="view" id="view-archive"     aria-label="Archive of superseded records"></section>
     <section class="view" id="view-signals"     aria-label="Signal Explorer"></section>
     <section class="view" id="view-evidence"    aria-label="Evidence Explorer"></section>
     <section class="view" id="view-lineage"     aria-label="Lineage Explorer"></section>
@@ -90,8 +99,9 @@
     <h3>Source controls</h3>
     <button class="btn" id="scpClose" aria-label="Close source controls">Close</button>
   </div>
-  <p class="note">Controls change what the application shows. They never change the approved
-     Current Call — that is a reviewer decision recorded in the workbook.</p>
+  <p class="note">Every control starts enabled. Turning one off changes the evidence, counts,
+     charts and lineage shown here; the reviewer's recorded Current Call is a workbook field and
+     is not recomputed from this panel.</p>
   <div id="scpBody"></div>
 </aside>
 

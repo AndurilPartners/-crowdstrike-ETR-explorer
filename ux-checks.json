@@ -31,7 +31,13 @@
   },
   {
     "id": "UX-06",
-    "check": "after reload, no mode field survives and the lane selection did",
+    "check": "the migration keeps every other saved preference",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-06B",
+    "check": "a filter selection saved against a different workbook is reconciled, not left empty",
     "result": "PASS",
     "detail": ""
   },
@@ -99,7 +105,7 @@
     "id": "UX-14",
     "check": "the hero carries one narrative headline and a deck",
     "result": "PASS",
-    "detail": "397 chars of deck"
+    "detail": "450 chars of deck"
   },
   {
     "id": "UX-15",
@@ -111,7 +117,7 @@
     "id": "UX-15B",
     "check": "Key metrics sit under the heading and above the lead chart",
     "result": "PASS",
-    "detail": "hero 88 / rail 652 / chart 780"
+    "detail": "hero 88 / rail 721 / chart 849"
   },
   {
     "id": "UX-16",
@@ -141,13 +147,13 @@
     "id": "UX-20",
     "check": "the Current Call is a restrained status chip, not a panel",
     "result": "PASS",
-    "detail": "9988px²"
+    "detail": "8192px²"
   },
   {
     "id": "UX-21",
-    "check": "Source Needed offers a route to the question behind it",
+    "check": "the Current Call chip routes to the open question that governs it",
     "result": "PASS",
-    "detail": ""
+    "detail": "Current callPositive (inherited)Why?"
   },
   {
     "id": "UX-21B",
@@ -163,45 +169,87 @@
   },
   {
     "id": "UX-22",
-    "check": "the lead chart uses only supplied observations",
+    "check": "the chart is titled for the two series it plots",
     "result": "PASS",
-    "detail": "intent 3/12, breadth polyline 12 points"
+    "detail": "CrowdStrike TSIS: Spending Intent and Deployment Breadth"
   },
   {
     "id": "UX-23",
-    "check": "missing Net Score periods are not interpolated",
+    "check": "every supplied TSIS period is plotted once, in survey order",
     "result": "PASS",
-    "detail": "1 solid intent segment (only the one adjacent pair), gap named in the chart"
+    "detail": "12 periods, Net Score 12, Deployment Breadth 12"
   },
   {
     "id": "UX-24",
+    "check": "both series are drawn from supplied values only, with no interpolated vertex",
+    "result": "PASS",
+    "detail": "2 polylines of 12 and 12 supplied points"
+  },
+  {
+    "id": "UX-25",
+    "check": "the canonical metric name is kept alongside the presentation wording",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-26",
     "check": "the chart has a title, a description and a data-table toggle",
     "result": "PASS",
     "detail": ""
   },
   {
-    "id": "UX-25",
-    "check": "every chart point is keyboard-reachable and opens an object",
-    "result": "PASS",
-    "detail": "15 points"
-  },
-  {
-    "id": "UX-26",
-    "check": "the current period and the historical comparison are both identified",
-    "result": "PASS",
-    "detail": ""
-  },
-  {
     "id": "UX-27",
-    "check": "the data table shows unsupplied periods as not supplied",
+    "check": "every chart point is keyboard-reachable, labelled, and opens an object",
     "result": "PASS",
-    "detail": ""
+    "detail": "24 points — 12 periods × 2 series, with nothing superseded plotted"
   },
   {
     "id": "UX-28",
-    "check": "clicking a chart point opens the correct evidence object",
+    "check": "the accessible table carries value, base, respondent cut and source for every period",
     "result": "PASS",
-    "detail": "ETR-OCT26-NS"
+    "detail": "12 rows"
+  },
+  {
+    "id": "UX-29",
+    "check": "the superseded October 2026 reading is absent from the active table",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-30",
+    "check": "exactly one active October 2026 observation exists, and it is the API reading",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-31",
+    "check": "the earlier reading is archived as superseded, inactive in every respect",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-32",
+    "check": "the chart says what it measures and what it does not prove",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-33",
+    "check": "the CSV carries the active series only, and matches the plotted rows",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-34",
+    "check": "the resolved provenance is stated as provenance, not as a live conflict",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-35",
+    "check": "clicking a chart point opens the evidence object behind it",
+    "result": "PASS",
+    "detail": "TSIS-2024-01"
   },
   {
     "id": "UX-29",
@@ -225,7 +273,7 @@
     "id": "UX-32",
     "check": "Research Foundation is below the narrative, not in the opening viewport",
     "result": "PASS",
-    "detail": "foundation at 4708px"
+    "detail": "foundation at 4580px"
   },
   {
     "id": "UX-33",
@@ -238,6 +286,12 @@
     "check": "the Narrative page carries the CrowdStrike wordmark",
     "result": "PASS",
     "detail": ""
+  },
+  {
+    "id": "UX-34B",
+    "check": "the Company page opens with the wordmark, at reading size",
+    "result": "PASS",
+    "detail": "190×34px"
   },
   {
     "id": "UX-35",
@@ -363,7 +417,7 @@
     "id": "UX-55",
     "check": "it reads as one piece: a title, a deck and connected paragraphs",
     "result": "PASS",
-    "detail": "10 paragraphs"
+    "detail": "11 paragraphs"
   },
   {
     "id": "UX-56",
@@ -393,7 +447,7 @@
     "id": "UX-60",
     "check": "every Sunday Signal paragraph still carries a claim manifest",
     "result": "PASS",
-    "detail": "10 manifests"
+    "detail": "11 manifests"
   },
   {
     "id": "UX-61",
@@ -405,7 +459,7 @@
     "id": "UX-62",
     "check": "Brief length shortens the piece and drops every subhead",
     "result": "PASS",
-    "detail": "8 paragraphs, 0 subheads"
+    "detail": "9 paragraphs, 0 subheads"
   },
   {
     "id": "UX-62B",
@@ -417,7 +471,7 @@
     "id": "UX-62C",
     "check": "Executive Signal is a distinctly shorter cut than Cohesive Signal",
     "result": "PASS",
-    "detail": "3330 vs 5155"
+    "detail": "4458 vs 6283"
   },
   {
     "id": "UX-62D",
@@ -579,7 +633,7 @@
     "id": "UX-79",
     "check": "every signal row carries its principal caveat",
     "result": "PASS",
-    "detail": ""
+    "detail": "9 signal rows"
   },
   {
     "id": "UX-80",
@@ -597,7 +651,7 @@
     "id": "UX-82",
     "check": "the lineage narrative path offers a plain-language explanation",
     "result": "PASS",
-    "detail": "7 steps"
+    "detail": "4 steps for a 5-node recorded path"
   },
   {
     "id": "UX-83",
@@ -633,7 +687,7 @@
     "id": "UX-88",
     "check": "a source control changes what is shown",
     "result": "PASS",
-    "detail": "105 → 102"
+    "detail": "AI Product Series: 117 → 113"
   },
   {
     "id": "UX-89",
@@ -651,7 +705,7 @@
     "id": "UX-91",
     "check": "no causal wording links ETR evidence to company results",
     "result": "PASS",
-    "detail": "274 sentences scanned"
+    "detail": "293 sentences scanned"
   },
   {
     "id": "UX-92",
@@ -699,7 +753,7 @@
     "id": "UX-99",
     "check": "the print menu offers every named surface, including the Executive Brief",
     "result": "PASS",
-    "detail": "pmCompany, pmNarrative, pmBrief, pmSunday, pmEmail, pmLineage, pmEvidence, pmCurrent"
+    "detail": "pmCompany, pmNarrative, pmBrief, pmSunday, pmEmail, pmLineage, pmEvidence, pmCharlotte, pmHow, pmArchive, pmCurrent"
   },
   {
     "id": "UX-100",
@@ -711,7 +765,7 @@
     "id": "UX-101",
     "check": "the Print Brief validation check passes",
     "result": "PASS",
-    "detail": "narrative brief rendered (24954 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
+    "detail": "narrative brief rendered (24906 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
   },
   {
     "id": "UX-102",
@@ -729,7 +783,7 @@
     "id": "UX-104",
     "check": "every extraction check still passes",
     "result": "PASS",
-    "detail": "17 checks; failing: "
+    "detail": "31 checks; failing: "
   },
   {
     "id": "UX-105",
@@ -742,6 +796,138 @@
     "check": "the main content area spans most of a ≥1500px viewport (LAYOUT-001)",
     "result": "PASS",
     "detail": "main 1264px of 1500px viewport"
+  },
+  {
+    "id": "UX-107.1920#company",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#narrative",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#generator/update-email",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#generator/executive-brief",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#charlotte",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#how",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#kpiplan",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#archive",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#trace",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#cohorts",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1920#methodology",
+    "check": "no horizontal overflow at 1920px (wide desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#company",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#narrative",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#generator/update-email",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#generator/executive-brief",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#charlotte",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#how",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#kpiplan",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#archive",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#trace",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#cohorts",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1440#methodology",
+    "check": "no horizontal overflow at 1440px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
   },
   {
     "id": "UX-107.1500#company",
@@ -763,6 +949,48 @@
   },
   {
     "id": "UX-107.1500#generator/executive-brief",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#charlotte",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#how",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#kpiplan",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#archive",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#trace",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#cohorts",
+    "check": "no horizontal overflow at 1500px (desktop)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1500#methodology",
     "check": "no horizontal overflow at 1500px (desktop)",
     "result": "PASS",
     "detail": "0px"
@@ -792,6 +1020,48 @@
     "detail": "0px"
   },
   {
+    "id": "UX-107.1024#charlotte",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#how",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#kpiplan",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#archive",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#trace",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#cohorts",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.1024#methodology",
+    "check": "no horizontal overflow at 1024px (tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
     "id": "UX-107.834#company",
     "check": "no horizontal overflow at 834px (small tablet)",
     "result": "PASS",
@@ -811,6 +1081,48 @@
   },
   {
     "id": "UX-107.834#generator/executive-brief",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#charlotte",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#how",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#kpiplan",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#archive",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#trace",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#cohorts",
+    "check": "no horizontal overflow at 834px (small tablet)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.834#methodology",
     "check": "no horizontal overflow at 834px (small tablet)",
     "result": "PASS",
     "detail": "0px"
@@ -840,6 +1152,48 @@
     "detail": "0px"
   },
   {
+    "id": "UX-107.390#charlotte",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#how",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#kpiplan",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#archive",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#trace",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#cohorts",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
+    "id": "UX-107.390#methodology",
+    "check": "no horizontal overflow at 390px (phone)",
+    "result": "PASS",
+    "detail": "0px"
+  },
+  {
     "id": "UX-108",
     "check": "the phone layout collapses the menu behind a toggle and scrolls the metric rail",
     "result": "PASS",
@@ -855,11 +1209,419 @@
     "id": "UX-110",
     "check": "every CrowdStrike wordmark image loads successfully (no broken image)",
     "result": "PASS",
-    "detail": "crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px"
+    "detail": "crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px"
   },
   {
     "id": "UX-111",
     "check": "the wordmark is sourced from the local assets directory, not a remote URL",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-115",
+    "check": "all five registered Charlotte AI metric groups are present",
+    "result": "PASS",
+    "detail": "Usage of AI Features · Feature Value Among Current Users · Impact on Continual Usage Among Current Users · Willingness to Pay Among Current Users · Consumption Portion of Cost"
+  },
+  {
+    "id": "UX-116",
+    "check": "every group renders its own panel, with period, base, cut and verification",
+    "result": "PASS",
+    "detail": "5 panels"
+  },
+  {
+    "id": "UX-117",
+    "check": "Charlotte AI values are reproduced exactly as the workbook states them",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-118",
+    "check": "each response category keeps its own row across each survey period",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-119",
+    "check": "a registered group with no supplied rows says so instead of showing a figure",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-120",
+    "check": "every Charlotte AI panel offers an accessible table and a CSV download",
+    "result": "PASS",
+    "detail": "9 CSV buttons, 4 captions"
+  },
+  {
+    "id": "UX-121",
+    "check": "the Charlotte AI CSV matches the rows the table displays",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-122",
+    "check": "combined categories are labelled as the workbook’s own summary, not recomputed",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-123",
+    "check": "stated survey responses are never restated as observed outcomes",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-124",
+    "check": "How the Research Works walks all six stages, in order",
+    "result": "PASS",
+    "detail": "Raw Source → Observation → Evidence Object → Signal → Interpretation → Output"
+  },
+  {
+    "id": "UX-125",
+    "check": "every stage carries a classification, a transformation and a limit",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-126",
+    "check": "every stage names the workbook object it came from",
+    "result": "PASS",
+    "detail": "6 of 6 stages carry an object ID"
+  },
+  {
+    "id": "UX-127",
+    "check": "the page ends at a blocked KPI bridge rather than at a conclusion",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-128",
+    "check": "the five research classifications are explained on the page",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-129",
+    "check": "lineage is shown as a plain Evidence → Signal → KPI candidate → Output stepper",
+    "result": "PASS",
+    "detail": "Evidence → Signal → KPI candidate → Output"
+  },
+  {
+    "id": "UX-130",
+    "check": "the stepper is backed by the recorded lineage rows, with review status",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-131",
+    "check": "pre-V5 lineage IDs are shown as unresolved rather than re-pointed",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-132",
+    "check": "the application is built from the V5 workbook",
+    "result": "PASS",
+    "detail": "CrowdStrike_ETR_V5_Full_Rebuild.xlsx (V5.0)"
+  },
+  {
+    "id": "UX-133",
+    "check": "every V5 evidence lane survives the rebuild",
+    "result": "PASS",
+    "detail": "120 evidence, 33 Reflexivity, 22 company/fundamental"
+  },
+  {
+    "id": "UX-134",
+    "check": "external and analyst research is still present",
+    "result": "PASS",
+    "detail": "6 external/research-classified objects"
+  },
+  {
+    "id": "UX-135",
+    "check": "signals, lineage, KPI bridges, queue, rules and sources all carried through",
+    "result": "PASS",
+    "detail": "9 signals, 91 lineage rows, 15 bridges, 54 queue items, 26 rules, 60 sources"
+  },
+  {
+    "id": "UX-136",
+    "check": "dataset coverage and the source-to-output research trace are both generated",
+    "result": "PASS",
+    "detail": "8 raw datasets reconciled, 6 trace stages"
+  },
+  {
+    "id": "UX-137",
+    "check": "the October 2026 provenance issue is recorded as resolved, with both readings kept",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-138",
+    "check": "the Evidence Library offers all eleven structured filters",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-139",
+    "check": "a structured filter narrows the library and clears cleanly",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-140",
+    "check": "evidence detail shows every field the reader needs to weigh it",
+    "result": "PASS",
+    "detail": "ETR EVIDENCE ETR / OCT26 CURRENT PRIMARY CURRENT · OCT 2026 "
+  },
+  {
+    "id": "UX-141",
+    "check": "the signal workspace shows strength, gaps, reviewer decision and human-review status",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-142",
+    "check": "every archived October value on an active view declares its provenance",
+    "result": "PASS",
+    "detail": "none unmarked"
+  },
+  {
+    "id": "UX-143",
+    "check": "the canonical reading is the one the active views show",
+    "result": "PASS",
+    "detail": "company, narrative, signals, evidence, how, cohorts, methodology, generator/sunday-signal, generator/update-email, generator/executive-brief"
+  },
+  {
+    "id": "UX-144",
+    "check": "period comparisons are computed from the canonical series",
+    "result": "PASS",
+    "detail": "Q/Q 1.59, Y/Y 11.44; breadth Q/Q 2.84, Y/Y 2.73"
+  },
+  {
+    "id": "UX-145",
+    "check": "the hero and the metric rail read from the canonical observation",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-146",
+    "check": "a superseded record contributes to no active count and no search result",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-147",
+    "check": "a search for the period answers with the active observation, not the archived one",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-148",
+    "check": "the archive states the supersession and keeps the original wording",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-149",
+    "check": "a clean load starts with every source control enabled",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-150",
+    "check": "a clean load shows no filtered-view notice",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-151",
+    "check": "the badge shows nothing rather than a zero when nothing is excluded",
+    "result": "PASS",
+    "detail": "badge \"\""
+  },
+  {
+    "id": "UX-152",
+    "check": "excluding a source shows an informational notice, in plain words",
+    "result": "PASS",
+    "detail": "FILTERED RESEARCH VIEWOne source is excluded. Visible counts, evidence, charts and lineage"
+  },
+  {
+    "id": "UX-153",
+    "check": "the notice is informational styling, not an error",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-154",
+    "check": "re-enabling every source clears the notice",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-155",
+    "check": "the panel offers a reset that restores every source",
+    "result": "PASS",
+    "detail": "2 excluded → 0"
+  },
+  {
+    "id": "UX-156",
+    "check": "a source-control selection saved by an older build cannot reopen filtered",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-157",
+    "check": "the workflow opens with the statement of what it is for",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-158",
+    "check": "a progression ribbon names every stage and shows the blocked step",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-159",
+    "check": "every stage carries a research-gate row",
+    "result": "PASS",
+    "detail": "6 gate rows"
+  },
+  {
+    "id": "UX-160",
+    "check": "the KPI bridge is shown blocked and labelled a hypothesis",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-161",
+    "check": "all eight gating conditions are listed, each with its state",
+    "result": "PASS",
+    "detail": "8 gates"
+  },
+  {
+    "id": "UX-162",
+    "check": "the panel separates what is supported from what is not",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-163",
+    "check": "unlocking the bridge is stated as recommended actions, not findings",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-164",
+    "check": "a research plan opens, with nothing pre-filled that is not supplied",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-165",
+    "check": "a chart is drawn for every group with supplied rows, and none for the empty group",
+    "result": "PASS",
+    "detail": "Charlotte AI adoption status over time · Perceived feature value among current users · Reported impact on continued usage · Willingness to pay among current users"
+  },
+  {
+    "id": "UX-166",
+    "check": "the usage chart plots the three supplied categories at their exact values",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-167",
+    "check": "the feature-value chart shows 40.8, 45.1 and 57.1",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-168",
+    "check": "the continued-usage chart shows 34.6, 35.3 and 50.0",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-169",
+    "check": "the willingness-to-pay chart uses the source’s own category labels",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-170",
+    "check": "the current-user charts carry their N=42 caveat",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-171",
+    "check": "every chart is described for a screen reader and reachable by keyboard",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-172",
+    "check": "every chart offers its source table and names its source",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-173",
+    "check": "chart and table agree exactly",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-174",
+    "check": "no chart implies a period the source did not supply",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-175",
+    "check": "search answers on ID, metric, period and source",
+    "result": "PASS",
+    "detail": "id 9, metric 40, period 18, source 15"
+  },
+  {
+    "id": "UX-176",
+    "check": "a query with no match says so in plain words rather than showing an empty panel",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-177",
+    "check": "a search result opens the object it names",
+    "result": "PASS",
+    "detail": "REF-SIG-02"
+  },
+  {
+    "id": "UX-178",
+    "check": "no view renders empty or near-empty",
+    "result": "PASS",
+    "detail": "every view renders substantive content"
+  },
+  {
+    "id": "UX-179",
+    "check": "the cohort CSV carries the canonical observation in its header",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-180",
+    "check": "the cohort CSV labels the export’s own All Respondents line as archived, not dropped",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-181",
+    "check": "the regional CSV names the canonical reading and invents no base",
+    "result": "PASS",
+    "detail": "6 regional rows"
+  },
+  {
+    "id": "UX-182",
+    "check": "each newly named print surface scopes to one view and carries content",
     "result": "PASS",
     "detail": ""
   },
@@ -872,6 +1634,12 @@
   {
     "id": "UX-113",
     "check": "the application runs under file://",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "UX-113B",
+    "check": "every element the suite reaches for exists",
     "result": "PASS",
     "detail": ""
   },

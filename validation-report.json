@@ -1,1514 +1,2116 @@
 {
-  "unresolvedWorksheetReferences": [
-    "KPI-ARR",
-    "KPI-C",
-    "KPI-L",
-    "KPI-M",
-    "KPI-NRR",
-    "KPI-R",
-    "OI-001",
-    "OI-002",
-    "SIG-001",
-    "SIG-002",
-    "SIG-003",
-    "SIG-004",
-    "SIG-005",
-    "SIG-006",
-    "SIG-007",
-    "SIG-008",
-    "SIG-009",
-    "SIG-010",
-    "SIG-011",
-    "SIG-09"
-  ],
-  "unresolvedReferenceCount": 114,
-  "generatedAt": "2026-09-11T16:08:28",
-  "workbook": "CrowdStrike_REVEAL_V3_5_Oct2026_TSIS_Integrated.xlsx",
-  "extractionChecks": [
-    {
-      "id": "V-01",
-      "check": "Every authorized worksheet read is listed",
-      "result": "PASS",
-      "detail": "31 of 31 authorized worksheets read: all"
-    },
-    {
-      "id": "V-02",
-      "check": "No unauthorized worksheet contributed data",
-      "result": "PASS",
-      "detail": "10 present-but-unread sheets: Executive View, Rule Registry Dashboard, Backtest Results, Home, Add Evidence, Guide, Reflexivity Evidence, Evidence Inventory, Metrics Register, _Rule Lists"
-    },
-    {
-      "id": "V-03",
-      "check": "October 2026 is the current period",
-      "result": "PASS",
-      "detail": "currentPeriod.label = October 2026 (R-025)"
-    },
-    {
-      "id": "V-04",
-      "check": "July 2026 is historical",
-      "result": "PASS",
-      "detail": "July 2026 present only in historicalPeriods and historical evidence"
-    },
-    {
-      "id": "V-05",
-      "check": "Net Score extraction matches the workbook",
-      "result": "PASS",
-      "detail": "Oct 37.14285714 / Jul 36.45621181 / Oct25 26.60714286"
-    },
-    {
-      "id": "V-06",
-      "check": "Pervasion extraction matches the workbook",
-      "result": "PASS",
-      "detail": "Oct 40.8997955 / Jul 38.3805668 / Oct25 38.48973607"
-    },
-    {
-      "id": "V-07",
-      "check": "Q/Q and Y/Y Z-Scores match the workbook",
-      "result": "PASS",
-      "detail": "metric 37.14285714; Q/Q Δ 0.68664533; Y/Y Δ 10.53571429; Q/Q Z 0.129243494; Y/Y Z 0.892193894; N 420.0"
-    },
-    {
-      "id": "V-08",
-      "check": "Every displayed evidence ID exists",
-      "result": "PASS",
-      "detail": "105 evidence objects"
-    },
-    {
-      "id": "V-09",
-      "check": "Every displayed signal ID exists",
-      "result": "PASS",
-      "detail": "7 signals, SIG-01..SIG-07"
-    },
-    {
-      "id": "V-10",
-      "check": "Every KPI ID exists",
-      "result": "PASS",
-      "detail": "9 KPI objects"
-    },
-    {
-      "id": "V-11",
-      "check": "Every rule ID exists",
-      "result": "PASS",
-      "detail": "26 rules, 13 context rules"
-    },
-    {
-      "id": "V-12",
-      "check": "Every relationship in the graph has valid nodes",
-      "result": "PASS",
-      "detail": "477 edges, all endpoints resolve. 114 worksheet references could not be resolved to an object and were excluded from the graph rather than rewritten: KPI-ARR, KPI-C, KPI-L, KPI-M, KPI-NRR, KPI-R, OI-001, OI-002, SIG-001, SIG-002 …"
-    },
-    {
-      "id": "V-13",
-      "check": "No causal language links ETR to company KPIs",
-      "result": "PASS",
-      "detail": "clean"
-    },
-    {
-      "id": "V-14",
-      "check": "No Z-Score strength band was invented",
-      "result": "PASS",
-      "detail": "bandStatus = Source Needed; no band language in extracted objects"
-    },
-    {
-      "id": "V-15",
-      "check": "Cohort and regional Ns remain Source Needed when absent",
-      "result": "PASS",
-      "detail": "5 current objects carry an unresolved N: ETR-OCT26-G2K, ETR-OCT26-F500, ETR-OCT26-LARGE, ETR-OCT26-REGION, ETR-OCT26-ADOPT"
-    },
-    {
-      "id": "V-30",
-      "check": "Source-label / export-timestamp issue is preserved",
-      "result": "PASS",
-      "detail": "OQ-015 present as an open question and as a data conflict"
-    },
-    {
-      "id": "V-31",
-      "check": "Data conflicts are preserved rather than averaged",
-      "result": "PASS",
-      "detail": "25 conflicts recorded, none averaged"
-    }
-  ],
-  "runtimeChecks": [
-    {
-      "id": "V-16",
-      "check": "Current-period filters affect evidence and lineage",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-17",
-      "check": "The Current Call does not change when filters change",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-18",
-      "check": "Global search works",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-19",
-      "check": "Deep links work",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-20",
-      "check": "Drawers work",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-21",
-      "check": "Lineage traversal works forward and backward",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-22",
-      "check": "Sunday Signal Generator works",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-23",
-      "check": "Update Email Generator works",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-24",
-      "check": "Generated claims include manifests",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-25",
-      "check": "Copy and download actions work",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-26",
-      "check": "Print Brief works",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-27",
-      "check": "App works under file://",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-28",
-      "check": "No external dependency is loaded",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    },
-    {
-      "id": "V-29",
-      "check": "Human Review status appears in generator chrome, not a global badge",
-      "result": "RUNTIME",
-      "detail": "Verified in the browser; see Methodology & Validation."
-    }
-  ],
-  "targets": {
-    "netScoreOct2026": 37.14285714,
-    "netScoreJul2026": 36.45621181,
-    "netScoreOct2025": 26.60714286,
-    "pervasionOct2026": 40.8997955,
-    "pervasionJul2026": 38.3805668,
-    "pervasionOct2025": 38.48973607,
-    "zMetricValue": 37.14285714,
-    "zQQChange": 0.68664533,
-    "zYYChange": 10.53571429,
-    "zQQ": 0.129243494,
-    "zYY": 0.892193894,
-    "zN": 420
+ "generatedAt": "2026-09-13T13:52:04+00:00",
+ "workbook": "CrowdStrike_ETR_V5_Full_Rebuild.xlsx",
+ "workbookVersion": "V5.0",
+ "workbookSha": "",
+ "extractionChecks": [
+  {
+   "id": "V5-01",
+   "name": "Workbook opened and every worksheet read",
+   "result": "PASS",
+   "detail": "24 worksheets (10 hidden)"
   },
-  "conflicts": [
-    {
-      "id": "CONF-001",
-      "objectId": "ETR-OCT26-NS",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 95,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 10,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-002",
-      "objectId": "ETR-OCT26-PV",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 96,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 11,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-003",
-      "objectId": "ETR-OCT26-INTENT",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 97,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 12,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-004",
-      "objectId": "ETR-OCT26-G2K",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 98,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 13,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-005",
-      "objectId": "ETR-OCT26-F500",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 99,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 14,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-006",
-      "objectId": "ETR-OCT26-LARGE",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 100,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 15,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-007",
-      "objectId": "ETR-OCT26-REGION",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 101,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 16,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-008",
-      "objectId": "ETR-OCT26-ADOPT",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 102,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 17,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-009",
-      "objectId": "ETR-OCT26-JOBS",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 103,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 18,
-      "periodA": "Oct 2026 export context",
-      "periodB": "Oct 2026 export context",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-010",
-      "objectId": "ETR-OCT26-ZS",
-      "field": "classification",
-      "valueA": "ETR evidence",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 104,
-      "valueB": "Client-provided fact",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 19,
-      "periodA": "Oct 2026 associated current export",
-      "periodB": "Oct 2026 associated current export",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-011",
-      "objectId": "ETR-OCT26-ZS",
-      "field": "sourceLane",
-      "valueA": "zscore",
-      "sheetA": "Combined Evidence Library",
-      "rowA": 104,
-      "valueB": "oct26",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 19,
-      "periodA": "Oct 2026 associated current export",
-      "periodB": "Oct 2026 associated current export",
-      "roundingCouldExplain": null,
-      "resolution": "Preserved. Higher-precedence worksheet is displayed; both values retained."
-    },
-    {
-      "id": "CONF-012",
-      "objectId": "ETR-CUR-001",
-      "field": "caveat",
-      "valueA": "Current-period corroboration for demand-recovery review; does not establish causation with company KPIs. | Historical comparison in V3.5; not current.",
-      "sheetA": "Current ETR Addendum",
-      "rowA": 5,
-      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 5,
-      "periodA": "JUL26",
-      "periodB": "Oct 2026 is current (R-025)",
-      "roundingCouldExplain": false,
-      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
-    },
-    {
-      "id": "CONF-013",
-      "objectId": "ETR-CUR-002",
-      "field": "caveat",
-      "valueA": "Resolves the current Pervasion source gap in the supplied master package. | Historical comparison in V3.5; not current.",
-      "sheetA": "Current ETR Addendum",
-      "rowA": 6,
-      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 6,
-      "periodA": "JUL26",
-      "periodB": "Oct 2026 is current (R-025)",
-      "roundingCouldExplain": false,
-      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
-    },
-    {
-      "id": "CONF-014",
-      "objectId": "ETR-CUR-005",
-      "field": "caveat",
-      "valueA": "Resolves the current-outlook question in the supplied package. | Historical comparison in V3.5; not current.",
-      "sheetA": "Current ETR Addendum",
-      "rowA": 9,
-      "valueB": "Source Lane now reads 'ETR / historical context' with period JUL26",
-      "sheetB": "Current ETR Addendum",
-      "rowB": 9,
-      "periodA": "JUL26",
-      "periodB": "Oct 2026 is current (R-025)",
-      "roundingCouldExplain": false,
-      "resolution": "Caveat text still calls this object current-period while V3.5 relabels it historical. Both preserved; R-025 governs the period label."
-    },
-    {
-      "id": "CONF-015",
-      "objectId": "R-014",
-      "field": "Permitted / Prohibited",
-      "valueA": "Link broad company-level TSIS data to a narrow product KPI without a mapping note.",
-      "sheetA": "Interpretation Rules",
-      "rowA": 19,
-      "valueB": "Poor segment fit lowers confidence or blocks proof-case use.",
-      "sheetB": "Interpretation Rules",
-      "rowB": 19,
-      "periodA": null,
-      "periodB": null,
-      "roundingCouldExplain": false,
-      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
-    },
-    {
-      "id": "CONF-016",
-      "objectId": "R-017",
-      "field": "Permitted / Prohibited",
-      "valueA": "Treat forecast as fact or substitute it for actual KPI results.",
-      "sheetA": "Interpretation Rules",
-      "rowA": 22,
-      "valueB": "Confidence depends on historical backtest and target definition.",
-      "sheetB": "Interpretation Rules",
-      "rowB": 22,
-      "periodA": null,
-      "periodB": null,
-      "roundingCouldExplain": false,
-      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
-    },
-    {
-      "id": "CONF-017",
-      "objectId": "R-021",
-      "field": "Permitted / Prohibited",
-      "valueA": "Claim current ETR recovery caused the 51% YoY Net New ARR result.",
-      "sheetA": "Interpretation Rules",
-      "rowA": 26,
-      "valueB": "Flex, CCP, renewal timing, new logos, and expansion are material confounders.",
-      "sheetB": "Interpretation Rules",
-      "rowB": 26,
-      "periodA": null,
-      "periodB": null,
-      "roundingCouldExplain": false,
-      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
-    },
-    {
-      "id": "CONF-018",
-      "objectId": "R-022",
-      "field": "Permitted / Prohibited",
-      "valueA": "Claim Flex caused overall module adoption from aggregate timing alone.",
-      "sheetA": "Interpretation Rules",
-      "rowA": 27,
-      "valueB": "Selection effects, product improvement, reclassification, and contract restructuring.",
-      "sheetB": "Interpretation Rules",
-      "rowB": 27,
-      "periodA": null,
-      "periodB": null,
-      "roundingCouldExplain": false,
-      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
-    },
-    {
-      "id": "CONF-019",
-      "objectId": "R-023",
-      "field": "Permitted / Prohibited",
-      "valueA": "Infer material ARR contribution from nearly tripled growth on an undisclosed base.",
-      "sheetA": "Interpretation Rules",
-      "rowA": 28,
-      "valueB": "Bundling, Flex allocation, denominator effects, and budget reallocation.",
-      "sheetB": "Interpretation Rules",
-      "rowB": 28,
-      "periodA": null,
-      "periodB": null,
-      "roundingCouldExplain": false,
-      "resolution": "Fields from Enforcement rightward appear shifted one column, so the Permitted cell holds prohibition text. The canonical prohibition in R-015 governs; flagged for workbook repair, not repaired here."
-    },
-    {
-      "id": "CONF-020",
-      "objectId": "ETR-OCT26-G2K",
-      "field": "nBase",
-      "valueA": "Source file does not include cohort N",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": 9,
-      "valueB": "R-009 requires N with every ETR percentage",
-      "sheetB": "Interpretation Rules",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": false,
-      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
-    },
-    {
-      "id": "CONF-021",
-      "objectId": "ETR-OCT26-F500",
-      "field": "nBase",
-      "valueA": "Source file does not include cohort N",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": 10,
-      "valueB": "R-009 requires N with every ETR percentage",
-      "sheetB": "Interpretation Rules",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": false,
-      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
-    },
-    {
-      "id": "CONF-022",
-      "objectId": "ETR-OCT26-LARGE",
-      "field": "nBase",
-      "valueA": "Source file does not include cohort N",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": 11,
-      "valueB": "R-009 requires N with every ETR percentage",
-      "sheetB": "Interpretation Rules",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": false,
-      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
-    },
-    {
-      "id": "CONF-023",
-      "objectId": "ETR-OCT26-REGION",
-      "field": "nBase",
-      "valueA": "Regional N not supplied",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": 12,
-      "valueB": "R-009 requires N with every ETR percentage",
-      "sheetB": "Interpretation Rules",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": false,
-      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
-    },
-    {
-      "id": "CONF-024",
-      "objectId": "ETR-OCT26-ADOPT",
-      "field": "nBase",
-      "valueA": "Reason-response N not supplied",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": 13,
-      "valueB": "R-009 requires N with every ETR percentage",
-      "sheetB": "Interpretation Rules",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "Oct 2026",
-      "roundingCouldExplain": false,
-      "resolution": "Displayed as Source Needed. OQ-014 tracks the missing cut-level Ns."
-    },
-    {
-      "id": "CONF-025",
-      "objectId": "OQ-015",
-      "field": "period label",
-      "valueA": "Survey labels read October 2026",
-      "sheetA": "OCT26 Current TSIS",
-      "rowA": null,
-      "valueB": "Source export filenames are dated 2026-09-10",
-      "sheetB": "Source Register",
-      "rowB": null,
-      "periodA": "Oct 2026",
-      "periodB": "2026-09-10 export",
-      "roundingCouldExplain": false,
-      "resolution": "Both preserved. OQ-015 is open; this application does not reconcile them."
-    }
-  ],
-  "counts": {
-    "evidence": 105,
-    "signals": 7,
-    "kpis": 9,
-    "bridges": 15,
-    "risks": 10,
-    "openQuestions": 15,
-    "rules": 26,
-    "contextRules": 13,
-    "sources": 41,
-    "relationships": 477,
-    "crossLaneLinks": 7,
-    "backtests": 6,
-    "calibrationCases": 9,
-    "reviewItems": 27,
-    "interpretations": 7,
-    "rawTables": 8,
-    "rawNodes": 8,
-    "conflicts": 25
+  {
+   "id": "V5-02",
+   "name": "Every canonical V5 worksheet is present",
+   "result": "PASS",
+   "detail": "Home, Sources, Evidence Library, Signal Builder, Research Lineage, KPI Bridge, Research Queue, Rules & Methodology"
   },
-  "sourceNeededCount": 64,
-  "humanReviewRequired": true,
-  "uxChecks": [
-    {
-      "id": "UX-01",
-      "check": "a cold start lands on Company",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-02",
-      "check": "Company is the visible view",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-03",
-      "check": "there is no mode toggle anywhere in the document",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-04",
-      "check": "the sidebar opens with the Explore group, Company first",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-05",
-      "check": "a saved legacy \"mode\" value from an earlier build is silently dropped",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-06",
-      "check": "after reload, no mode field survives and the lane selection did",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-07",
-      "check": "the header carries the CrowdStrike wordmark image",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-08",
-      "check": "the header identifies the company",
-      "result": "PASS",
-      "detail": "CrowdStrikeCRWD"
-    },
-    {
-      "id": "UX-09",
-      "check": "the header shows the research period and a Last updated value, never invented text",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-10",
-      "check": "Source controls, Search and Create are all reachable from the header",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-11",
-      "check": "there is no global Human Review Required badge in the header or top-level chrome",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-11C",
-      "check": "the header no longer carries the \"REVEAL Company Explorer\" wordmark text",
-      "result": "PASS",
-      "detail": "\n    \n    CrowdStrike\n  "
-    },
-    {
-      "id": "UX-11D",
-      "check": "the persistent header logo renders larger than the prior compact size",
-      "result": "PASS",
-      "detail": "35.125px tall"
-    },
-    {
-      "id": "UX-11E",
-      "check": "there is no source-lane strip anywhere in the document (removed from every view)",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-12",
-      "check": "the company name leads the page",
-      "result": "PASS",
-      "detail": "CrowdStrike"
-    },
-    {
-      "id": "UX-13",
-      "check": "the hero carries the primary signal",
-      "result": "PASS",
-      "detail": "Post-Outage Spending Recovery in ETR TSIS Data"
-    },
-    {
-      "id": "UX-14",
-      "check": "the hero carries one narrative headline and a deck",
-      "result": "PASS",
-      "detail": "397 chars of deck"
-    },
-    {
-      "id": "UX-15",
-      "check": "the first viewport is signal-led, not methodology-led",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-15B",
-      "check": "Key metrics sit under the heading and above the lead chart",
-      "result": "PASS",
-      "detail": "hero 88 / rail 652 / chart 780"
-    },
-    {
-      "id": "UX-16",
-      "check": "one lead chart appears near the top",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-17",
-      "check": "the lead chart precedes the first data table",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-18",
-      "check": "Research Foundation sits below the main narrative",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-19",
-      "check": "the CrowdStrike wordmark is visible while on the Company page",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-20",
-      "check": "the Current Call is a restrained status chip, not a panel",
-      "result": "PASS",
-      "detail": "9988px²"
-    },
-    {
-      "id": "UX-21",
-      "check": "Source Needed offers a route to the question behind it",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-21B",
-      "check": "the hero status row is Current call, Direction, Conviction, Evidence confidence, Current period",
-      "result": "PASS",
-      "detail": "Current call · Direction · Conviction · Evidence confidence · Current period"
-    },
-    {
-      "id": "UX-21C",
-      "check": "Human Review Required does not appear in the hero status row",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-22",
-      "check": "the lead chart uses only supplied observations",
-      "result": "PASS",
-      "detail": "intent 3/12, breadth polyline 12 points"
-    },
-    {
-      "id": "UX-23",
-      "check": "missing Net Score periods are not interpolated",
-      "result": "PASS",
-      "detail": "1 solid intent segment (only the one adjacent pair), gap named in the chart"
-    },
-    {
-      "id": "UX-24",
-      "check": "the chart has a title, a description and a data-table toggle",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-25",
-      "check": "every chart point is keyboard-reachable and opens an object",
-      "result": "PASS",
-      "detail": "15 points"
-    },
-    {
-      "id": "UX-26",
-      "check": "the current period and the historical comparison are both identified",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-27",
-      "check": "the data table shows unsupplied periods as not supplied",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-28",
-      "check": "clicking a chart point opens the correct evidence object",
-      "result": "PASS",
-      "detail": "ETR-OCT26-NS"
-    },
-    {
-      "id": "UX-29",
-      "check": "the research question is prominent and reads as a question",
-      "result": "PASS",
-      "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
-    },
-    {
-      "id": "UX-30",
-      "check": "the short answer is cohesive prose and follows the question",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-31",
-      "check": "the narrative runs the full ten-part flow",
-      "result": "PASS",
-      "detail": "10 sections"
-    },
-    {
-      "id": "UX-32",
-      "check": "Research Foundation is below the narrative, not in the opening viewport",
-      "result": "PASS",
-      "detail": "foundation at 4708px"
-    },
-    {
-      "id": "UX-33",
-      "check": "the narrative container spans most of the available content width (LAYOUT-001)",
-      "result": "PASS",
-      "detail": "1144px of 1264px main"
-    },
-    {
-      "id": "UX-34",
-      "check": "the Narrative page carries the CrowdStrike wordmark",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-35",
-      "check": "no object ID appears in the default Company reading path",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-36",
-      "check": "no object ID appears in the default Narrative reading path",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-37",
-      "check": "citations still reach their evidence, just without literal ID text",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-38",
-      "check": "the default narrative reading path uses the Missing source component, not bare text",
-      "result": "PASS",
-      "detail": "3 components"
-    },
-    {
-      "id": "UX-39",
-      "check": "Clean email is the default format",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-40",
-      "check": "Clean email is cohesive prose, four to six paragraphs plus greeting and close",
-      "result": "PASS",
-      "detail": "7 paragraphs"
-    },
-    {
-      "id": "UX-41",
-      "check": "Clean email shows no section headings",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-42",
-      "check": "Clean email carries no inline claim, evidence or rule IDs in the body",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-43",
-      "check": "the four content footnote toggles default to off, and the logo toggle exists and defaults on",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-44",
-      "check": "the subject line is built from the reading",
-      "result": "PASS",
-      "detail": "CrowdStrike signal update — October 2026 TSIS"
-    },
-    {
-      "id": "UX-45",
-      "check": "the copied body contains only email content, with no manifest metadata",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-46",
-      "check": "the copied body carries no Human Review line by default",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-47",
-      "check": "the Human Review status shows in the generator chrome, not a global badge",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-48",
-      "check": "every generated paragraph still carries a complete claim manifest",
-      "result": "PASS",
-      "detail": "5 manifests"
-    },
-    {
-      "id": "UX-49",
-      "check": "Inspect claims reveals paragraph manifests",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-50",
-      "check": "Inspect claims changes neither the rendered prose nor what is copied",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-51",
-      "check": "the emailed HTML version includes the logo when the toggle is on",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-52",
-      "check": "switching format keeps every selection",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-53",
-      "check": "the executive note is three paragraphs plus greeting and close",
-      "result": "PASS",
-      "detail": "5"
-    },
-    {
-      "id": "UX-54",
-      "check": "Sunday Signal defaults to Cohesive Signal at Standard length",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-55",
-      "check": "it reads as one piece: a title, a deck and connected paragraphs",
-      "result": "PASS",
-      "detail": "10 paragraphs"
-    },
-    {
-      "id": "UX-56",
-      "check": "Standard length uses no more than three visible subheads",
-      "result": "PASS",
-      "detail": "3 subheads"
-    },
-    {
-      "id": "UX-57",
-      "check": "the prose carries no inline IDs",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-58",
-      "check": "a \"preview as branded newsletter\" control exists",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-59",
-      "check": "the branded newsletter preview shows the logo",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-60",
-      "check": "every Sunday Signal paragraph still carries a claim manifest",
-      "result": "PASS",
-      "detail": "10 manifests"
-    },
-    {
-      "id": "UX-61",
-      "check": "copied prose excludes footnotes unless asked for",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62",
-      "check": "Brief length shortens the piece and drops every subhead",
-      "result": "PASS",
-      "detail": "8 paragraphs, 0 subheads"
-    },
-    {
-      "id": "UX-62B",
-      "check": "Cohesive Signal and Research Note render different prose",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62C",
-      "check": "Executive Signal is a distinctly shorter cut than Cohesive Signal",
-      "result": "PASS",
-      "detail": "3330 vs 5155"
-    },
-    {
-      "id": "UX-62D",
-      "check": "Data-Led Signal reorders the piece so the raw readings lead the body",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62E",
-      "check": "Research Note explicitly keeps the open items in view even when nothing else does",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62F",
-      "check": "every style produces a genuinely distinct rendering (no two are identical)",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62G",
-      "check": "changing Audience visibly changes the generated Sunday Signal",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62H",
-      "check": "changing Primary signal visibly changes the generated Sunday Signal, with no inline ID",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62I",
-      "check": "\"Edit draft locally\" freezes the draft",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62J",
-      "check": "changing a control while editing locally discards the frozen draft",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62K",
-      "check": "Regenerate produces fresh prose that reflects the current selections",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62M",
-      "check": "\"Use this audience in Sunday Signal\" lands on the generator with that audience applied",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-62N",
-      "check": "the handed-off Sunday Signal reflects the Sell-Side Analyst framing",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-63",
-      "check": "the Executive Brief is a distinct route with its own research question",
-      "result": "PASS",
-      "detail": "Is CrowdStrike’s post-outage recovery still building, or has it flattened out a year on?"
-    },
-    {
-      "id": "UX-64",
-      "check": "the Executive Brief carries the CrowdStrike wordmark",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-65",
-      "check": "the Executive Brief covers bottom line through methodology in named sections",
-      "result": "PASS",
-      "detail": "7 sections"
-    },
-    {
-      "id": "UX-66",
-      "check": "the Executive Brief shows review status in its own chrome, not the global header",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-67",
-      "check": "no object ID appears in the Executive Brief body by default",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-68",
-      "check": "the Executive Brief has audience, signal and appendix controls",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-69",
-      "check": "turning on the evidence appendix adds an appendix section",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-70",
-      "check": "every Executive Brief section carries a complete claim manifest",
-      "result": "PASS",
-      "detail": "10 manifests"
-    },
-    {
-      "id": "UX-71",
-      "check": "the Executive Brief can be exported as Markdown, HTML and plain text",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-72",
-      "check": "the translator is a three-column split screen",
-      "result": "PASS",
-      "detail": "3 columns"
-    },
-    {
-      "id": "UX-73",
-      "check": "changing audience changes the translation",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-74",
-      "check": "changing audience changes no fact and nothing in the fixed panel",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-75",
-      "check": "the translator feeds all three generators",
-      "result": "PASS",
-      "detail": "3 handoffs"
-    },
-    {
-      "id": "UX-76",
-      "check": "the Sunday Signal handoff opens with that audience selected",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-77",
-      "check": "the Executive Brief handoff opens with that audience selected",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-78",
-      "check": "signals are grouped and the recorded primary signal leads",
-      "result": "PASS",
-      "detail": "#signal/SIG-02"
-    },
-    {
-      "id": "UX-79",
-      "check": "every signal row carries its principal caveat",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-80",
-      "check": "Evidence defaults to a concise list and expands to a table",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-81",
-      "check": "the table view still works",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-82",
-      "check": "the lineage narrative path offers a plain-language explanation",
-      "result": "PASS",
-      "detail": "7 steps"
-    },
-    {
-      "id": "UX-83",
-      "check": "the explanation introduces no causal language",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-84",
-      "check": "Sources leads with source-family summary cards",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-85",
-      "check": "Rules defaults to the rules affecting the current narrative",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-86",
-      "check": "View all rules restores the full registry",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-87",
-      "check": "Risks defaults to a Most important now view built from recorded priority",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-88",
-      "check": "a source control changes what is shown",
-      "result": "PASS",
-      "detail": "105 → 102"
-    },
-    {
-      "id": "UX-89",
-      "check": "the Current Call remains reviewer-controlled and does not move",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-90",
-      "check": "switching the lane back on restores the evidence",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-91",
-      "check": "no causal wording links ETR evidence to company results",
-      "result": "PASS",
-      "detail": "274 sentences scanned"
-    },
-    {
-      "id": "UX-92",
-      "check": "no prohibited Z-Score language appears",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-93",
-      "check": "no investment recommendation, rating or price target",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-94",
-      "check": "July 2026 is never presented as the current period",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-95",
-      "check": "no unsupported company profile data is introduced",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-96",
-      "check": "the legacy claim-classification label does not appear anywhere in the rendered application",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-97",
-      "check": "the canonical ETR interpretation label is used instead",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-98",
-      "check": "every route still works, including the new Executive Brief route",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-99",
-      "check": "the print menu offers every named surface, including the Executive Brief",
-      "result": "PASS",
-      "detail": "pmCompany, pmNarrative, pmBrief, pmSunday, pmEmail, pmLineage, pmEvidence, pmCurrent"
-    },
-    {
-      "id": "UX-100",
-      "check": "the Create menu offers all four generator destinations",
-      "result": "PASS",
-      "detail": "Sunday Signal, Update Email, Audience Translator, Executive Brief"
-    },
-    {
-      "id": "UX-101",
-      "check": "the Print Brief validation check passes",
-      "result": "PASS",
-      "detail": "narrative brief rendered (24954 chars), print scope isolates it to one view, and the question and short answer survive the scoping"
-    },
-    {
-      "id": "UX-102",
-      "check": "print scoping isolates a single surface",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-103",
-      "check": "a dedicated print stylesheet is loaded",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-104",
-      "check": "every extraction check still passes",
-      "result": "PASS",
-      "detail": "17 checks; failing: "
-    },
-    {
-      "id": "UX-105",
-      "check": "every runtime check still passes",
-      "result": "PASS",
-      "detail": "14 checks; failing: "
-    },
-    {
-      "id": "UX-106",
-      "check": "the main content area spans most of a ≥1500px viewport (LAYOUT-001)",
-      "result": "PASS",
-      "detail": "main 1264px of 1500px viewport"
-    },
-    {
-      "id": "UX-107.1500#company",
-      "check": "no horizontal overflow at 1500px (desktop)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1500#narrative",
-      "check": "no horizontal overflow at 1500px (desktop)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1500#generator/update-email",
-      "check": "no horizontal overflow at 1500px (desktop)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1500#generator/executive-brief",
-      "check": "no horizontal overflow at 1500px (desktop)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1024#company",
-      "check": "no horizontal overflow at 1024px (tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1024#narrative",
-      "check": "no horizontal overflow at 1024px (tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1024#generator/update-email",
-      "check": "no horizontal overflow at 1024px (tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.1024#generator/executive-brief",
-      "check": "no horizontal overflow at 1024px (tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.834#company",
-      "check": "no horizontal overflow at 834px (small tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.834#narrative",
-      "check": "no horizontal overflow at 834px (small tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.834#generator/update-email",
-      "check": "no horizontal overflow at 834px (small tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.834#generator/executive-brief",
-      "check": "no horizontal overflow at 834px (small tablet)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.390#company",
-      "check": "no horizontal overflow at 390px (phone)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.390#narrative",
-      "check": "no horizontal overflow at 390px (phone)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.390#generator/update-email",
-      "check": "no horizontal overflow at 390px (phone)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-107.390#generator/executive-brief",
-      "check": "no horizontal overflow at 390px (phone)",
-      "result": "PASS",
-      "detail": "0px"
-    },
-    {
-      "id": "UX-108",
-      "check": "the phone layout collapses the menu behind a toggle and scrolls the metric rail",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-109",
-      "check": "the header collapses secondary actions on narrow viewports while keeping identity and search",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-110",
-      "check": "every CrowdStrike wordmark image loads successfully (no broken image)",
-      "result": "PASS",
-      "detail": "crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px, crowdstrike-logo.png:1707px"
-    },
-    {
-      "id": "UX-111",
-      "check": "the wordmark is sourced from the local assets directory, not a remote URL",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-112",
-      "check": "no external asset is requested",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-113",
-      "check": "the application runs under file://",
-      "result": "PASS",
-      "detail": ""
-    },
-    {
-      "id": "UX-114",
-      "check": "the page ran clean, with no console or page errors",
-      "result": "PASS",
-      "detail": ""
-    }
-  ]
+  {
+   "id": "V5-03",
+   "name": "Workbook self-identifies as V5",
+   "result": "PASS",
+   "detail": "CrowdStrike REVEAL V5.0 — Research Lineage Workbench"
+  },
+  {
+   "id": "V5-04",
+   "name": "Source register parsed",
+   "result": "PASS",
+   "detail": "60 sources"
+  },
+  {
+   "id": "V5-05",
+   "name": "Evidence Library parsed",
+   "result": "PASS",
+   "detail": "120 evidence objects"
+  },
+  {
+   "id": "V5-06",
+   "name": "TSIS history covers every supplied period in order",
+   "result": "PASS",
+   "detail": "12 periods: Jan 2024 → Oct 2026"
+  },
+  {
+   "id": "V5-07",
+   "name": "Every TSIS period carries both Net Score and Pervasion",
+   "result": "PASS",
+   "detail": "both series supplied for all periods"
+  },
+  {
+   "id": "V5-08",
+   "name": "Exactly one active observation per company, metric family, cut and period",
+   "result": "PASS",
+   "detail": "12 active observations across 12 periods; 1 superseded record(s) archived"
+  },
+  {
+   "id": "V5-08B",
+   "name": "A reading without a respondent base never supersedes one with a base",
+   "result": "PASS",
+   "detail": "Oct 2026: TSIS-API-2026-09-12 (N 452) supersedes TSIS-USER-SNAPSHOT (N Not supplied)"
+  },
+  {
+   "id": "V5-11",
+   "name": "Signal Builder parsed",
+   "result": "PASS",
+   "detail": "9 signals"
+  },
+  {
+   "id": "V5-12",
+   "name": "Research Lineage parsed and every row names an evidence object",
+   "result": "PASS",
+   "detail": "91 lineage rows (6 record evidence that is not yet attached to a signal); blank template rows are not counted"
+  },
+  {
+   "id": "V5-13",
+   "name": "KPI Bridge parsed",
+   "result": "PASS",
+   "detail": "15 bridges across 7 KPI candidates"
+  },
+  {
+   "id": "V5-14",
+   "name": "Research Queue parsed",
+   "result": "PASS",
+   "detail": "54 items: 30 questions, 10 risks, 14 other"
+  },
+  {
+   "id": "V5-15",
+   "name": "Rule registry parsed",
+   "result": "PASS",
+   "detail": "26 rules"
+  },
+  {
+   "id": "V5-16",
+   "name": "Every registered raw dataset matches its parsed row count",
+   "result": "PASS",
+   "detail": "8 raw datasets reconcile"
+  },
+  {
+   "id": "V5-17",
+   "name": "Every graph edge resolves to two workbook objects",
+   "result": "PASS",
+   "detail": "254 edges kept, 322 unresolved references excluded"
+  },
+  {
+   "id": "V5-19",
+   "name": "Cross-references resolve, or are reported rather than silently dropped",
+   "result": "PASS",
+   "detail": "177 unresolved references recorded as warnings"
+  },
+  {
+   "id": "V5-23",
+   "name": "No active object quotes a superseded October 2026 reading",
+   "result": "PASS",
+   "detail": "10 object(s) archived as authored-against-superseded; 117 active evidence objects remain"
+  },
+  {
+   "id": "V5-18",
+   "name": "The source-to-output research trace is complete",
+   "result": "PASS",
+   "detail": "6 of 6 stages carry workbook content"
+  },
+  {
+   "id": "V5-22",
+   "name": "The default lineage path is a real chain of recorded edges",
+   "result": "PASS",
+   "detail": "TSIS-API-2026-09-12 → TSIS-2026-10 → SIG-02 → BRIDGE-SIG-02-KPI-003 → KPI-003"
+  },
+  {
+   "id": "V5-24",
+   "name": "Every reference this build generates resolves to an active object",
+   "result": "PASS",
+   "detail": "266 active objects; no generated reference is broken"
+  },
+  {
+   "id": "V5-24B",
+   "name": "Workbook references to objects it does not contain are reported, not repaired",
+   "result": "PASS",
+   "detail": "62 workbook-level reference gap(s) recorded as warnings (pre-V5 signal IDs); none is repointed at a V5 object"
+  },
+  {
+   "id": "V5-25",
+   "name": "No missing value was coerced to zero",
+   "result": "PASS",
+   "detail": "every plotted value is a supplied reading"
+  },
+  {
+   "id": "V5-26",
+   "name": "Superseded records contribute to nothing active",
+   "result": "PASS",
+   "detail": "1 archived observation(s), 10 archived object(s)"
+  },
+  {
+   "id": "V5-27",
+   "name": "Period comparisons are computed from the canonical series",
+   "result": "PASS",
+   "detail": "Net Score Q/Q +1.59, Y/Y +11.44; Deployment Breadth Q/Q +2.84, Y/Y +2.73"
+  },
+  {
+   "id": "V5-29",
+   "name": "Charlotte AI groups are registered from the source register",
+   "result": "PASS",
+   "detail": "AIPS-WIDGET-USAGE (9 reading(s)); AIPS-WIDGET-VALUE (3 reading(s)); AIPS-WIDGET-IMPACT (3 reading(s)); AIPS-WIDGET-WTP (6 reading(s)); AIPS-WIDGET-COST (0 reading(s))"
+  },
+  {
+   "id": "V5-30",
+   "name": "No Charlotte AI reading is invented for a period the source omits",
+   "result": "PASS",
+   "detail": "21 category readings, every one inside its group's registered periods"
+  },
+  {
+   "id": "V5-31",
+   "name": "No active object carries an unresolved conflict flag",
+   "result": "PASS",
+   "detail": "the only Conflicting record is the archived October observation, and its flag is shown as the workbook recorded it"
+  },
+  {
+   "id": "V5-28",
+   "name": "Every charted Charlotte AI group names its source",
+   "result": "PASS",
+   "detail": "Usage of AI Features ← AIPS-WIDGET-USAGE; Feature Value Among Current Users ← AIPS-WIDGET-VALUE; Impact on Continual Usage Among Current Users ← AIPS-WIDGET-IMPACT; Willingness to Pay Among Current Users ← AIPS-WIDGET-WTP"
+  },
+  {
+   "id": "V5-20",
+   "name": "Spending-intent composition is not carried across from an archived reading",
+   "result": "PASS",
+   "detail": "Shown as Not supplied for the canonical observation; the archived split stays with TSIS-USER-SNAPSHOT"
+  },
+  {
+   "id": "V5-21",
+   "name": "Current call is taken from the workbook, not assembled here",
+   "result": "PASS",
+   "detail": "Call: Positive — last resolved Outlook in JUL26; no separate OCT26 Outlook f · Direction: Improving Y/Y; relatively flat sequentia"
+  }
+ ],
+ "checkSummary": {
+  "total": 31,
+  "passed": 31,
+  "failed": 0
+ },
+ "blockingErrors": [],
+ "warnings": [
+  "Provenance resolved: Oct 2026 TSIS-USER-SNAPSHOT (Net Score 37.14, no supplied base) is archived as superseded by TSIS-2026-10 · TSIS-API-2026-09-12. It is inactive: not plotted, not counted, not selectable as evidence.",
+  "Lineage RL-0014 records PV-004 (Open Question) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "Lineage RL-0022 records EC-003 (Supporting) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "Lineage RL-0024 records EC-005 (Supporting) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "Lineage RL-0025 records EC-006 (Supporting) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "Lineage RL-0028 records SA-002 (Open Question) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "Lineage RL-0061 records OA-004 (Open Question) with no signal attached — shown as an unattached research item, not inferred onto a signal.",
+  "322 relationship endpoints named in the workbook do not resolve to an object in it. They are excluded from the graph and listed in validation-report.json rather than being invented.",
+  "177 workbook cross-references name an object that is not in this workbook (legacy SIG-001-style IDs and pre-V5 evidence). They are listed in validation-report.json and excluded from the graph.",
+  "EV-007 (evidence, active) carries workbook status 'Needs Validation' — displayed as recorded.",
+  "TSIS-2026-10#2 (evidence, archived as superseded) carries workbook status 'Conflicting' — displayed as recorded.",
+  "ETR-OA-004 (evidence, active) carries workbook status 'Source Needed' — displayed as recorded.",
+  "ETR-PV-004 (evidence, active) carries workbook status 'Source Needed' — displayed as recorded.",
+  "ETR-SA-002 (evidence, active) carries workbook status 'Source Needed' — displayed as recorded.",
+  "REF-E-O05 (evidence, active) carries workbook status 'Source Needed' — displayed as recorded.",
+  "62 evidence rows name a signal under the pre-V5 ID convention (signal SIG-001, signal SIG-002, signal SIG-003, signal SIG-004, signal SIG-005, signal SIG-006). They are shown as unresolved rather than matched to a V5 signal, because matching them is a research decision."
+ ],
+ "counts": {
+  "sources": 60,
+  "evidence": 120,
+  "signals": 9,
+  "lineage": 91,
+  "bridges": 15,
+  "kpis": 7,
+  "researchQueue": 54,
+  "rules": 26,
+  "relationships": 254,
+  "tsisHistory": 12,
+  "aiProductSeries": 5,
+  "interpretations": 7,
+  "crossLaneLinks": 7
+ },
+ "datasetCoverage": {
+  "rawDatasets": [
+   {
+    "dataset": "Raw - Z Score",
+    "sheet": "_Raw_Z_Score",
+    "registeredRows": 1,
+    "parsedRows": 1,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Pervasion Trend",
+    "sheet": "_Raw_Pervasion_Trend",
+    "registeredRows": 12,
+    "parsedRows": 12,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Region",
+    "sheet": "_Raw_Region",
+    "registeredRows": 6,
+    "parsedRows": 6,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Subsample Cuts",
+    "sheet": "_Raw_Subsample_Cuts",
+    "registeredRows": 46,
+    "parsedRows": 46,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Vendor View",
+    "sheet": "_Raw_Vendor_View",
+    "registeredRows": 1,
+    "parsedRows": 1,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Peer Trends",
+    "sheet": "_Raw_Peer_Trends",
+    "registeredRows": 84,
+    "parsedRows": 84,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Adoption Reasons",
+    "sheet": "_Raw_Adoption_Reasons",
+    "registeredRows": 11,
+    "parsedRows": 11,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   },
+   {
+    "dataset": "Raw - Job Titles",
+    "sheet": "_Raw_Job_Titles",
+    "registeredRows": 3,
+    "parsedRows": 3,
+    "match": true,
+    "treatment": "Exact imported rows",
+    "location": "Hidden system sheet in this workbook"
+   }
+  ],
+  "evidenceByLane": [
+   {
+    "lane": "AI Product Series",
+    "count": 4
+   },
+   {
+    "lane": "ETR / Claude package",
+    "count": 57
+   },
+   {
+    "lane": "ETR / OCT26 current primary",
+    "count": 10
+   },
+   {
+    "lane": "ETR API",
+    "count": 13
+   },
+   {
+    "lane": "Edge",
+    "count": 1
+   },
+   {
+    "lane": "Reflexivity",
+    "count": 33
+   },
+   {
+    "lane": "TSIS",
+    "count": 2
+   }
+  ],
+  "evidenceByDataset": [
+   {
+    "dataset": "2025 Endpoint Observatory",
+    "count": 1
+   },
+   {
+    "dataset": "2025 Tech Trends Panel",
+    "count": 1
+   },
+   {
+    "dataset": "2025 Tech Trends panel",
+    "count": 1
+   },
+   {
+    "dataset": "AI Product Series",
+    "count": 4
+   },
+   {
+    "dataset": "Breaking Analysis",
+    "count": 1
+   },
+   {
+    "dataset": "Company data",
+    "count": 1
+   },
+   {
+    "dataset": "EPP Observatory",
+    "count": 3
+   },
+   {
+    "dataset": "ETR Observatory for EPP",
+    "count": 1
+   },
+   {
+    "dataset": "ETS + TSIS cross-reference",
+    "count": 1
+   },
+   {
+    "dataset": "Earnings",
+    "count": 7
+   },
+   {
+    "dataset": "Earnings + Commentary",
+    "count": 1
+   },
+   {
+    "dataset": "Earnings + Primary research",
+    "count": 1
+   },
+   {
+    "dataset": "Earnings Call",
+    "count": 1
+   },
+   {
+    "dataset": "Earnings presentation",
+    "count": 4
+   },
+   {
+    "dataset": "Edge",
+    "count": 1
+   },
+   {
+    "dataset": "FY2025 Guidance",
+    "count": 1
+   },
+   {
+    "dataset": "Flash Survey",
+    "count": 1
+   },
+   {
+    "dataset": "Interview #415",
+    "count": 1
+   },
+   {
+    "dataset": "Market analysis",
+    "count": 1
+   },
+   {
+    "dataset": "Market research",
+    "count": 2
+   },
+   {
+    "dataset": "Product announcements",
+    "count": 1
+   },
+   {
+    "dataset": "Q1 FY2026 Earnings",
+    "count": 1
+   },
+   {
+    "dataset": "RSAC analysis",
+    "count": 2
+   },
+   {
+    "dataset": "Recognition",
+    "count": 1
+   },
+   {
+    "dataset": "Reflexivity / company evidence",
+    "count": 33
+   },
+   {
+    "dataset": "Shared Accounts",
+    "count": 2
+   },
+   {
+    "dataset": "TSIS",
+    "count": 37
+   },
+   {
+    "dataset": "TSIS + Follow-up surveys",
+    "count": 1
+   },
+   {
+    "dataset": "TSIS Viewpoint List",
+    "count": 3
+   },
+   {
+    "dataset": "TSIS survey + qualitative",
+    "count": 1
+   },
+   {
+    "dataset": "TSIS time series",
+    "count": 1
+   },
+   {
+    "dataset": "TSIS — G2000 cohort",
+    "count": 2
+   }
+  ],
+  "sourcesRegistered": 60,
+  "note": "Counts of objects present in the workbook. No weighting scheme is supplied by the workbook, so no composite score is computed."
+ },
+ "supersededObservations": [
+  {
+   "period": "Oct 2026",
+   "sortKey": [
+    2026,
+    10
+   ],
+   "netScore": 37.14,
+   "pervasion": 40.9,
+   "nBase": "Not supplied",
+   "respondentCut": "Not supplied",
+   "source": "TSIS-USER-SNAPSHOT",
+   "sourceName": "User workbook screenshot",
+   "sourceLocation": "crowdstrike_tsis_history.csv",
+   "snapshotNote": "Contains earlier Oct 2026 values: NS=37.14, DB=40.90",
+   "verification": "Conflicting",
+   "evidenceId": "TSIS-2026-10#2",
+   "workbookId": "TSIS-2026-10",
+   "conflictFlag": true,
+   "status": "superseded",
+   "active": false,
+   "plotted": false,
+   "selectableAsEvidence": false,
+   "contributesToCounts": false,
+   "reason": "Superseded by the more recent API observation with a supplied respondent base",
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "supersededByEvidenceId": "TSIS-2026-10",
+   "resolvedAt": "V5 canonicalisation"
+  }
+ ],
+ "provenanceResolutions": [
+  {
+   "id": "RESOLVED-Oct2026-TSIS-USER-SNAPSHOT",
+   "period": "Oct 2026",
+   "metricFamily": "Net Score / Deployment Breadth (Pervasion)",
+   "respondentCut": "Not supplied",
+   "activeValue": "Net Score 38.05, Deployment Breadth 41.22, N 452",
+   "activeSource": "TSIS-API-2026-09-12",
+   "supersededValue": "Net Score 37.14, Deployment Breadth 40.9, N Not supplied",
+   "supersededSource": "TSIS-USER-SNAPSHOT",
+   "reason": "Superseded by the more recent API observation with a supplied respondent base",
+   "status": "Resolved — provenance, not an open analytical conflict",
+   "resolvedBy": "Canonicalisation rule: one active observation per company, metric family, respondent cut and survey period; a reading without a supplied base cannot supersede one with a base."
+  }
+ ],
+ "unresolvedReferences": [
+  "ETR-CP-001 → signal SIG-007",
+  "ETR-CP-002 → signal SIG-007",
+  "ETR-CP-003 → signal SIG-007",
+  "ETR-CP-004 → signal SIG-008",
+  "ETR-CP-005 → signal SIG-008",
+  "ETR-CP-006 → signal SIG-008",
+  "ETR-CP-007 → signal SIG-001",
+  "ETR-CP-008 → signal SIG-001",
+  "ETR-CP-009 → signal SIG-007",
+  "ETR-CP-010 → signal SIG-007",
+  "ETR-CP-011 → signal SIG-007",
+  "ETR-CP-012 → signal SIG-007",
+  "ETR-EC-001 → signal SIG-005",
+  "ETR-EC-002 → signal SIG-005",
+  "ETR-EC-003 → signal —",
+  "ETR-EC-004 → signal SIG-005",
+  "ETR-EC-005 → signal —",
+  "ETR-EC-006 → signal —",
+  "ETR-NS-001 → signal SIG-001",
+  "ETR-NS-001 → signal SIG-003",
+  "ETR-NS-002 → signal SIG-002",
+  "ETR-NS-002 → signal SIG-003",
+  "ETR-NS-003 → signal SIG-001",
+  "ETR-NS-004 → signal SIG-001",
+  "ETR-NS-005 → signal SIG-002",
+  "ETR-NS-005 → signal SIG-003",
+  "ETR-NS-006 → signal SIG-001",
+  "ETR-NS-007 → signal SIG-003",
+  "ETR-OA-001 → signal SIG-001",
+  "ETR-OA-002 → signal SIG-002",
+  "ETR-OA-002 → signal SIG-003",
+  "ETR-OA-003 → signal SIG-003",
+  "ETR-OA-004 → signal —",
+  "ETR-OA-005 → signal SIG-003",
+  "ETR-PP-001 → signal SIG-004",
+  "ETR-PP-002 → signal SIG-004",
+  "ETR-PP-003 → signal SIG-009",
+  "ETR-PP-004 → signal SIG-009",
+  "ETR-PP-005 → signal SIG-009",
+  "ETR-PP-006 → signal SIG-001",
+  "ETR-PP-007 → signal SIG-010",
+  "ETR-PP-008 → signal SIG-010",
+  "ETR-PP-009 → signal SIG-010",
+  "ETR-PP-010 → signal SIG-010",
+  "ETR-PP-011 → signal SIG-010",
+  "ETR-PP-012 → signal SIG-010",
+  "ETR-PP-013 → signal SIG-010",
+  "ETR-PP-014 → signal SIG-011",
+  "ETR-PP-015 → signal SIG-011",
+  "ETR-PP-016 → signal SIG-011",
+  "ETR-PV-001 → signal SIG-001",
+  "ETR-PV-002 → signal SIG-003",
+  "ETR-PV-003 → signal SIG-001",
+  "ETR-PV-004 → signal SIG-003",
+  "ETR-SA-001 → signal SIG-001",
+  "ETR-SA-001 → signal SIG-006",
+  "ETR-SA-002 → signal —",
+  "ETR-SI-001 → signal SIG-001",
+  "ETR-SI-002 → signal SIG-004",
+  "ETR-SI-003 → signal SIG-002",
+  "ETR-SI-004 → signal SIG-003",
+  "ETR-SI-005 → signal SIG-003",
+  "RL-0001 → evidence NS-001",
+  "RL-0001 → signal SIG-001",
+  "RL-0002 → evidence NS-001",
+  "RL-0002 → signal SIG-003",
+  "RL-0003 → evidence NS-002",
+  "RL-0003 → signal SIG-002",
+  "RL-0004 → evidence NS-002",
+  "RL-0004 → signal SIG-003",
+  "RL-0005 → evidence NS-003",
+  "RL-0005 → signal SIG-001",
+  "RL-0006 → evidence NS-004",
+  "RL-0006 → signal SIG-001",
+  "RL-0007 → evidence NS-005",
+  "RL-0007 → signal SIG-002",
+  "RL-0008 → evidence NS-005",
+  "RL-0008 → signal SIG-003",
+  "RL-0009 → evidence NS-006",
+  "RL-0009 → signal SIG-001",
+  "RL-0010 → signal SIG-003",
+  "RL-0011 → evidence PV-001",
+  "RL-0011 → signal SIG-001",
+  "RL-0012 → evidence PV-002",
+  "RL-0012 → signal SIG-003",
+  "RL-0013 → evidence PV-003",
+  "RL-0013 → signal SIG-001",
+  "RL-0015 → evidence SI-001",
+  "RL-0015 → signal SIG-001",
+  "RL-0016 → evidence SI-002",
+  "RL-0016 → signal SIG-004",
+  "RL-0017 → evidence SI-003",
+  "RL-0017 → signal SIG-002",
+  "RL-0018 → evidence SI-004",
+  "RL-0018 → signal SIG-003",
+  "RL-0019 → evidence SI-005",
+  "RL-0019 → signal SIG-003",
+  "RL-0020 → evidence EC-001",
+  "RL-0020 → signal SIG-005",
+  "RL-0021 → evidence EC-002",
+  "RL-0021 → signal SIG-005",
+  "RL-0022 → evidence EC-003",
+  "RL-0023 → evidence EC-004",
+  "RL-0023 → signal SIG-005",
+  "RL-0024 → evidence EC-005",
+  "RL-0025 → evidence EC-006",
+  "RL-0026 → evidence SA-001",
+  "RL-0026 → signal SIG-001",
+  "RL-0027 → evidence SA-001",
+  "RL-0027 → signal SIG-006",
+  "RL-0029 → evidence CP-001",
+  "RL-0029 → signal SIG-007",
+  "RL-0030 → evidence CP-002",
+  "RL-0030 → signal SIG-007",
+  "RL-0031 → evidence CP-003",
+  "RL-0031 → signal SIG-007",
+  "RL-0032 → evidence CP-004",
+  "RL-0032 → signal SIG-008",
+  "RL-0033 → evidence CP-005",
+  "RL-0033 → signal SIG-008",
+  "RL-0034 → evidence CP-006",
+  "RL-0034 → signal SIG-008",
+  "RL-0035 → evidence CP-007",
+  "RL-0035 → signal SIG-001",
+  "RL-0036 → evidence CP-008",
+  "RL-0036 → signal SIG-001",
+  "RL-0037 → evidence CP-009",
+  "RL-0037 → signal SIG-007",
+  "RL-0038 → evidence CP-010",
+  "RL-0038 → signal SIG-007",
+  "RL-0039 → evidence CP-011",
+  "RL-0039 → signal SIG-007",
+  "RL-0040 → evidence CP-012",
+  "RL-0040 → signal SIG-007",
+  "RL-0041 → evidence PP-001",
+  "RL-0041 → signal SIG-004",
+  "RL-0042 → evidence PP-002",
+  "RL-0042 → signal SIG-004",
+  "RL-0043 → evidence PP-003",
+  "RL-0043 → signal SIG-009",
+  "RL-0044 → evidence PP-004",
+  "RL-0044 → signal SIG-009",
+  "RL-0045 → evidence PP-005",
+  "RL-0045 → signal SIG-009",
+  "RL-0046 → evidence PP-006",
+  "RL-0046 → signal SIG-001",
+  "RL-0047 → evidence PP-007",
+  "RL-0047 → signal SIG-010",
+  "RL-0048 → evidence PP-008",
+  "RL-0048 → signal SIG-010",
+  "RL-0049 → evidence PP-009",
+  "RL-0049 → signal SIG-010",
+  "RL-0050 → evidence PP-010",
+  "RL-0050 → signal SIG-010",
+  "RL-0051 → evidence PP-011",
+  "RL-0051 → signal SIG-010",
+  "RL-0052 → evidence PP-012",
+  "RL-0052 → signal SIG-010",
+  "RL-0053 → signal SIG-010",
+  "RL-0054 → evidence PP-014",
+  "RL-0054 → signal SIG-011",
+  "RL-0055 → evidence PP-015",
+  "RL-0055 → signal SIG-011",
+  "RL-0056 → evidence PP-016",
+  "RL-0056 → signal SIG-011",
+  "RL-0057 → evidence OA-001",
+  "RL-0057 → signal SIG-001",
+  "RL-0058 → evidence OA-002",
+  "RL-0058 → signal SIG-002",
+  "RL-0059 → evidence OA-002",
+  "RL-0059 → signal SIG-003",
+  "RL-0060 → evidence OA-003",
+  "RL-0060 → signal SIG-003",
+  "RL-0062 → evidence OA-005",
+  "RL-0062 → signal SIG-003",
+  "RL-0068 → signal PP-007",
+  "RL-0069 → signal PP-011"
+ ],
+ "droppedEdges": [
+  {
+   "from": "AIPS-REPORT-JUL26",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "AIPS-WIDGET-COST",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "AIPS-WIDGET-IMPACT",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "AIPS-WIDGET-USAGE",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "AIPS-WIDGET-VALUE",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "AIPS-WIDGET-WTP",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "EDGE-CRWD-AUG26",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-001",
+   "to": "NS-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-001",
+   "to": "NS-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-001",
+   "to": "NS-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-001",
+   "to": "PV-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-001",
+   "to": "OA-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "NS-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "PV-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "SI-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "SA-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "CP-007",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-002",
+   "to": "CP-008",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-003",
+   "to": "NS-004",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-003",
+   "to": "PV-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-004",
+   "to": "NS-006",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-004",
+   "to": "PP-006",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-004",
+   "to": "CP-006",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-004",
+   "to": "CP-009",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-005",
+   "to": "EC-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-006",
+   "to": "EC-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-006",
+   "to": "EC-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-007",
+   "to": "EC-004",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-008",
+   "to": "EC-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-009",
+   "to": "EC-006",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-010",
+   "to": "CP-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-011",
+   "to": "CP-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-012",
+   "to": "CP-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-012",
+   "to": "CP-011",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-013",
+   "to": "CP-004",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-014",
+   "to": "CP-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-014",
+   "to": "PP-008",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-015",
+   "to": "CP-010",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-015",
+   "to": "OA-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-016",
+   "to": "CP-012",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-017",
+   "to": "PP-001",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-017",
+   "to": "PP-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-018",
+   "to": "PP-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-018",
+   "to": "SI-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-019",
+   "to": "PP-004",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-020",
+   "to": "PP-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-021",
+   "to": "PP-007",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-021",
+   "to": "PP-009",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-021",
+   "to": "PP-011",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-021",
+   "to": "PP-014",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-022",
+   "to": "PP-010",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-023",
+   "to": "PP-012",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-023",
+   "to": "PP-015",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-025",
+   "to": "PP-016",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-026",
+   "to": "OA-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-027",
+   "to": "OA-005",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-028",
+   "to": "SI-004",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-029",
+   "to": "SI-003",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-030",
+   "to": "SI-002",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "SRC-OCT26-39",
+   "to": "Peer-context raw file",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "TSIS-API-2026-09-12",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "TSIS-USER-SNAPSHOT",
+   "to": "V5 Import",
+   "type": "SOURCE_OF",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Sources"
+  },
+  {
+   "from": "NS-001",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-001",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-002",
+   "to": "SIG-002",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-002",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-003",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-004",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-005",
+   "to": "SIG-002",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-005",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-006",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "NS-007",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PV-001",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-CustomerCount",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PV-002",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-CustomerCount",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PV-003",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-CustomerCount",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SI-001",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SI-002",
+   "to": "SIG-004",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-004",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SI-003",
+   "to": "SIG-002",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SI-004",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SI-005",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "EC-001",
+   "to": "SIG-005",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-005",
+   "to": "KPI-LargeCustomerGrowth",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "EC-002",
+   "to": "SIG-005",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-005",
+   "to": "KPI-LargeCustomerGrowth",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "EC-004",
+   "to": "SIG-005",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-005",
+   "to": "KPI-LargeCustomerGrowth",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SA-001",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SA-001",
+   "to": "SIG-006",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-006",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-001",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-002",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-003",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-004",
+   "to": "SIG-008",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-008",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-005",
+   "to": "SIG-008",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-008",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-006",
+   "to": "SIG-008",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-008",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-007",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-008",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-CustomerCount",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-009",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-010",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-011",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CP-012",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-007",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-001",
+   "to": "SIG-004",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-004",
+   "to": "KPI-ModuleAdoption",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-002",
+   "to": "SIG-004",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-004",
+   "to": "KPI-ModuleAdoption",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-003",
+   "to": "SIG-009",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-009",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-009",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-004",
+   "to": "SIG-009",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-009",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-005",
+   "to": "SIG-009",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-009",
+   "to": "KPI-NRR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-009",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-006",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-007",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "KPI-ARR (Cloud)",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-008",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-009",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "KPI-ARR (Identity)",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-010",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-011",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "KPI-ARR (SIEM)",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-012",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "KPI-ARR (SIEM)",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-013",
+   "to": "SIG-010",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-010",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-014",
+   "to": "SIG-011",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-011",
+   "to": "KPI-ARR (AIDR)",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-015",
+   "to": "SIG-011",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-011",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-016",
+   "to": "SIG-011",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-011",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "OA-001",
+   "to": "SIG-001",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-001",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "OA-002",
+   "to": "SIG-002",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-002",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "OA-002",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Churn",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "OA-003",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-ARR",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "OA-005",
+   "to": "SIG-003",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-003",
+   "to": "KPI-Revenue",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-01",
+   "to": "KPI-MarketShare",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CE-004",
+   "to": "PP-007",
+   "type": "CONTRADICTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-007",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "CE-005",
+   "to": "PP-011",
+   "type": "CONTRADICTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "PP-011",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-01",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-05",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-03",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-04",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-01",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-04",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-03",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "SIG-03",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Research Lineage"
+  },
+  {
+   "from": "ETR-CP-001",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Evidence Library"
+  },
+  {
+   "from": "ETR-CP-001",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Evidence Library"
+  },
+  {
+   "from": "ETR-CP-002",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Evidence Library"
+  },
+  {
+   "from": "ETR-CP-002",
+   "to": "—",
+   "type": "INFORMS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Evidence Library"
+  },
+  {
+   "from": "ETR-CP-003",
+   "to": "SIG-007",
+   "type": "SUPPORTS",
+   "reason": "endpoint not present in the workbook",
+   "origin": "Evidence Library"
+  }
+ ],
+ "generatedFiles": [
+  "data/generated/sources.json",
+  "data/generated/evidence.json",
+  "data/generated/signals.json",
+  "data/generated/lineage.json",
+  "data/generated/kpiBridges.json",
+  "data/generated/researchQueue.json",
+  "data/generated/tsisHistory.json",
+  "data/generated/aiProductSeries.json",
+  "data/generated/rules.json",
+  "data/generated/datasetCoverage.json",
+  "data/generated/researchTrace.json",
+  "data/generated/interpretations.json",
+  "data/generated/crossLaneLinks.json",
+  "data/generated/relationships.json",
+  "data/generated/normalizedMetrics.json",
+  "data/generated/outputs.json",
+  "data/generated/workbookMetadata.json"
+ ]
 }

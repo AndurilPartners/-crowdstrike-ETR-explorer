@@ -1,0 +1,212 @@
+[
+ {
+  "id": "INTP-01",
+  "objectType": "Interpretation",
+  "rank": 1,
+  "title": "Demand trajectory",
+  "statement": "Oct 2026 Net Score 37.14 is only 0.69 points above Jul 2026 but 10.54 points above Oct 2025. Sequential movement is relatively flat; the year-over-year recovery is material.",
+  "supportingIds": [
+   "ETR-OCT26-NS",
+   "ETR-OCT26-ZS"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Demand trajectory",
+  "interpretation": "Oct 2026 Net Score 37.14 is only 0.69 points above Jul 2026 but 10.54 points above Oct 2025. Sequential movement is relatively flat; the year-over-year recovery is material.",
+  "supportingEvidence": [
+   "ETR-OCT26-NS",
+   "ETR-OCT26-ZS"
+  ],
+  "doesNotProve": "Revenue, ARR, market share, or future performance.",
+  "confidence": "High on current raw values",
+  "ruleIds": [
+   "R-002",
+   "R-003",
+   "R-004",
+   "R-005",
+   "R-009"
+  ],
+  "status": "superseded",
+  "sourceRow": 20,
+  "active": false,
+  "staleProvenance": {
+   "reason": "This reviewer reading quotes the archived October 2026 values. It is kept verbatim for audit and is not shown as a current interpretation.",
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ },
+ {
+  "id": "INTP-02",
+  "objectType": "Interpretation",
+  "rank": 2,
+  "title": "Breadth",
+  "statement": "Pervasion rose to 40.90, from 38.38 in Jul 2026 and 38.49 in Oct 2025. Breadth continued to expand.",
+  "supportingIds": [
+   "ETR-OCT26-PV"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Breadth",
+  "interpretation": "Pervasion rose to 40.90, from 38.38 in Jul 2026 and 38.49 in Oct 2025. Breadth continued to expand.",
+  "supportingEvidence": [
+   "ETR-OCT26-PV"
+  ],
+  "doesNotProve": "Revenue, dollars, or market share.",
+  "confidence": "High",
+  "ruleIds": [
+   "R-008",
+   "R-009"
+  ],
+  "status": "superseded",
+  "sourceRow": 21,
+  "active": false,
+  "staleProvenance": {
+   "reason": "This reviewer reading quotes the archived October 2026 values. It is kept verbatim for audit and is not shown as a current interpretation.",
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ },
+ {
+  "id": "INTP-03",
+  "objectType": "Interpretation",
+  "rank": 3,
+  "title": "Z-Score",
+  "statement": "Q/Q Z-Score 0.129 and Y/Y Z-Score 0.892 are both positive; the Y/Y model output is higher, matching the larger Y/Y base-metric change.",
+  "supportingIds": [
+   "ETR-OCT26-ZS"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Z-Score",
+  "interpretation": "Q/Q Z-Score 0.129 and Y/Y Z-Score 0.892 are both positive; the Y/Y model output is higher, matching the larger Y/Y base-metric change.",
+  "supportingEvidence": [
+   "ETR-OCT26-ZS"
+  ],
+  "doesNotProve": "Statistical significance, approved strength band, economic relevance, or prediction.",
+  "confidence": "Medium — values available; bands absent",
+  "ruleIds": [
+   "R-006",
+   "R-007",
+   "R-026"
+  ],
+  "status": "Provisional / Method Source Needed",
+  "sourceRow": 22,
+  "active": true
+ },
+ {
+  "id": "INTP-04",
+  "objectType": "Interpretation",
+  "rank": 4,
+  "title": "Enterprise cohorts",
+  "statement": "Global 2000 (42.61) and Fortune 500 (42.68) Net Scores exceed overall (37.14), while Large Organizations (35.82) are below overall. Enterprise strength is selective.",
+  "supportingIds": [
+   "ETR-OCT26-G2K",
+   "ETR-OCT26-F500",
+   "ETR-OCT26-LARGE"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Enterprise cohorts",
+  "interpretation": "Global 2000 (42.61) and Fortune 500 (42.68) Net Scores exceed overall (37.14), while Large Organizations (35.82) are below overall. Enterprise strength is selective.",
+  "supportingEvidence": [
+   "ETR-OCT26-G2K",
+   "ETR-OCT26-F500",
+   "ETR-OCT26-LARGE"
+  ],
+  "doesNotProve": "Broad enterprise dominance or company large-customer revenue.",
+  "confidence": "Medium — cohort N missing",
+  "ruleIds": [
+   "R-010",
+   "R-011",
+   "R-024"
+  ],
+  "status": "superseded",
+  "sourceRow": 23,
+  "active": false,
+  "staleProvenance": {
+   "reason": "This reviewer reading quotes the archived October 2026 values. It is kept verbatim for audit and is not shown as a current interpretation.",
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ },
+ {
+  "id": "INTP-05",
+  "objectType": "Interpretation",
+  "rank": 5,
+  "title": "Geography",
+  "statement": "APAC (54.29) leads the supplied regional cuts, while EMEA (27.27) trails. Recovery is geographically uneven.",
+  "supportingIds": [
+   "ETR-OCT26-REGION"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Geography",
+  "interpretation": "APAC (54.29) leads the supplied regional cuts, while EMEA (27.27) trails. Recovery is geographically uneven.",
+  "supportingEvidence": [
+   "ETR-OCT26-REGION"
+  ],
+  "doesNotProve": "Regional revenue performance or causal explanation.",
+  "confidence": "Medium — regional N missing",
+  "ruleIds": [
+   "R-010",
+   "R-011",
+   "R-024"
+  ],
+  "status": "Provisional",
+  "sourceRow": 24,
+  "active": true
+ },
+ {
+  "id": "INTP-06",
+  "objectType": "Interpretation",
+  "rank": 6,
+  "title": "Adoption drivers",
+  "statement": "Technical capabilities and product security are the two highest percentages among the supplied Oct 26 adoption-reason rows; Feature Breadth declined versus Jul 26.",
+  "supportingIds": [
+   "ETR-OCT26-ADOPT"
+  ],
+  "classification": "ETR Interpretation",
+  "theme": "Adoption drivers",
+  "interpretation": "Technical capabilities and product security are the two highest percentages among the supplied Oct 26 adoption-reason rows; Feature Breadth declined versus Jul 26.",
+  "supportingEvidence": [
+   "ETR-OCT26-ADOPT"
+  ],
+  "doesNotProve": "That those reasons caused overall Net Score or company KPI performance.",
+  "confidence": "Medium — reason N missing",
+  "ruleIds": [
+   "R-013",
+   "R-019"
+  ],
+  "status": "Provisional",
+  "sourceRow": 25,
+  "active": true
+ },
+ {
+  "id": "INTP-07",
+  "objectType": "Interpretation",
+  "rank": 7,
+  "title": "Signal → KPI",
+  "statement": "October demand persistence and positive Z-Score context are directionally consistent with the existing demand-recovery thesis, but demand → Net New ARR remains unvalidated.",
+  "supportingIds": [
+   "ETR-OCT26-NS",
+   "ETR-OCT26-PV",
+   "ETR-OCT26-ZS",
+   "REF-E-F04"
+  ],
+  "classification": "Hypothesis",
+  "theme": "Signal → KPI",
+  "interpretation": "October demand persistence and positive Z-Score context are directionally consistent with the existing demand-recovery thesis, but demand → Net New ARR remains unvalidated.",
+  "supportingEvidence": [
+   "ETR-OCT26-NS",
+   "ETR-OCT26-PV",
+   "ETR-OCT26-ZS",
+   "REF-E-F04"
+  ],
+  "doesNotProve": "Causation, lag, or incremental explanatory power.",
+  "confidence": "Medium",
+  "ruleIds": [
+   "R-015",
+   "R-016",
+   "R-021",
+   "R-026"
+  ],
+  "status": "Backtest Required",
+  "sourceRow": 26,
+  "active": true
+ }
+]

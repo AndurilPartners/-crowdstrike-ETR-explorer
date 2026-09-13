@@ -1236,7 +1236,7 @@ print(f'  worksheets read     {len(READ_SHEETS)} of {len(AUTHORIZED)} authorized
       f'({len(SKIPPED)} present but not read)')
 print(f'  current period      {currentPeriod["label"]}   '
       f'Net Score {currentPeriod["netScore"]["value"]}   Pervasion {currentPeriod["pervasion"]["value"]}')
-print(f'  historical periods  ' + ', '.join(f'{h["label"]} ({h["netScore"]})' for h in historicalPeriods))
+print('  historical periods  ' + ', '.join(f'{h["label"]} ({h["netScore"]})' for h in historicalPeriods))
 print(f'  Z-Score             Q/Q {z["qqZ"]}   Y/Y {z["yyZ"]}   N {z["citations"]}   bands {z["bandStatus"]}')
 print('  object counts       ' + ', '.join(f'{k} {v}' for k, v in validation['counts'].items()))
 from collections import Counter

@@ -1,0 +1,66 @@
+{
+ "example": "October 2026 TSIS demand reading",
+ "stages": [
+  {
+   "stage": "1. Raw Source",
+   "objectId": "TSIS-API-2026-09-12",
+   "content": "CrowdStrike TSIS Company Metrics — https://new.etr.ai/analyze/company?name=CrowdStrike",
+   "transformation": "Retrieved from the ETR package and registered in the Source register with its access status and period range.",
+   "classification": "Client-provided fact",
+   "doesNotProve": "A registered source proves only that the data was retrieved, not that any reading follows from it.",
+   "detail": "All Respondents cut, 12 survey periods"
+  },
+  {
+   "stage": "2. Observation",
+   "objectId": "TSIS-2026-10",
+   "content": "Oct 2026: Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452",
+   "transformation": "One survey period recorded exactly as supplied, with its base and respondent cut. No rounding, no interpolation.",
+   "classification": "Client-provided fact",
+   "doesNotProve": "A single period is a measurement, not a trend, and not a company outcome.",
+   "detail": "Respondent cut: All Respondents"
+  },
+  {
+   "stage": "3. Evidence Object",
+   "objectId": "TSIS-2026-10",
+   "content": "Oct 2026 Net Score 38.05 and Pervasion 41.22",
+   "transformation": "The observation is qualified: given an ID, a confidence, a verification status and a recorded caveat, and linked to the signal it can inform.",
+   "classification": "Client-provided fact",
+   "doesNotProve": "Qualifying evidence does not establish causation or any company financial result.",
+   "detail": "Integrated TSIS history"
+  },
+  {
+   "stage": "4. Signal",
+   "objectId": "SIG-02",
+   "content": "Post-Outage Spending Recovery in ETR TSIS Data — current reading: Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents",
+   "transformation": "Evidence is assembled into a reviewable signal candidate with an explicit confidence, evidence strength and a named list of source gaps.",
+   "classification": "Signal object",
+   "doesNotProve": "Z-Score method bands; cohort/region N; current retention; current shared accounts",
+   "detail": "Reviewer decision: Pending Review. The recorded signal statement quotes the archived October reading and is kept in the archive; the reading above is the one in force."
+  },
+  {
+   "stage": "5. Interpretation",
+   "objectId": "Interpretation rank 3",
+   "content": "Q/Q Z-Score 0.129 and Y/Y Z-Score 0.892 are both positive; the Y/Y model output is higher, matching the larger Y/Y base-metric change.",
+   "transformation": "A reviewer states what the evidence means, under named interpretation rules, with the confidence recorded.",
+   "classification": "ETR Interpretation",
+   "doesNotProve": "Statistical significance, approved strength band, economic relevance, or prediction.",
+   "detail": "Rules applied: R-006, R-007, R-026"
+  },
+  {
+   "stage": "6. Output",
+   "objectId": "Sunday Signal — Headline",
+   "content": "CrowdStrike’s October demand signal holds: breadth expands while sequential momentum levels off.",
+   "transformation": "Reviewed research is drafted into an external-facing piece, carrying its classification, evidence IDs and rule IDs.",
+   "classification": "ETR Interpretation",
+   "doesNotProve": "A draft is not an approved output: R-020 makes human review a precondition of distribution.",
+   "detail": "Evidence: ETR-OCT26-NS; ETR-OCT26-PV · Rules: R-004; R-008 · Human Review Required"
+  }
+ ],
+ "kpiCandidate": {
+  "id": "KPI-003",
+  "name": "Net New ARR",
+  "linkageType": "Hypothesized",
+  "lagSupported": "No",
+  "confounders": "Falcon Flex; CCP; renewals; new logos; expansion; period alignment"
+ }
+}

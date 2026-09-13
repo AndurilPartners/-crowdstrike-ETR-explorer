@@ -1,0 +1,1232 @@
+{
+ "zScore": {
+  "sheet": "_Raw_Z_Score",
+  "importNote": "Raw Import — Crowdstrike survey_z_score_20260910_201831.csv",
+  "columns": [
+   "Ticker",
+   "Company",
+   "Citations",
+   "Metric Value",
+   "Q/Q Change",
+   "Y/Y Change",
+   "Q/Q Z-Score",
+   "Y/Y Z-Score"
+  ],
+  "rows": [
+   {
+    "Ticker": "CRWD US",
+    "Company": "CrowdStrike",
+    "Citations": "420",
+    "Metric Value": "37.14285714",
+    "Q/Q Change": "0.68664533",
+    "Y/Y Change": "10.53571429",
+    "Q/Q Z-Score": "0.129243494",
+    "Y/Y Z-Score": "0.892193894"
+   }
+  ]
+ },
+ "pervasionTrend": {
+  "sheet": "_Raw_Pervasion_Trend",
+  "importNote": "Raw Import — single_vendor_aggregate_pervasion_chart_2026-09-10T20_29_23.484Z.csv",
+  "columns": [
+   "Category",
+   "Pervasion"
+  ],
+  "rows": [
+   {
+    "Category": "Jan 2024",
+    "Pervasion": "31.01214575"
+   },
+   {
+    "Category": "Apr 2024",
+    "Pervasion": "31.42235123"
+   },
+   {
+    "Category": "Jul 2024",
+    "Pervasion": "31.01071975"
+   },
+   {
+    "Category": "Oct 2024",
+    "Pervasion": "28.99318698"
+   },
+   {
+    "Category": "Jan 2025",
+    "Pervasion": "33.99122807"
+   },
+   {
+    "Category": "Apr 2025",
+    "Pervasion": "35.79902303"
+   },
+   {
+    "Category": "Jul 2025",
+    "Pervasion": "35.10638297999999"
+   },
+   {
+    "Category": "Oct 2025",
+    "Pervasion": "38.48973607"
+   },
+   {
+    "Category": "Jan 2026",
+    "Pervasion": "35.74144487"
+   },
+   {
+    "Category": "Apr 2026",
+    "Pervasion": "37.46376812"
+   },
+   {
+    "Category": "Jul 2026",
+    "Pervasion": "38.3805668"
+   },
+   {
+    "Category": "Oct 2026",
+    "Pervasion": "40.8997955"
+   }
+  ]
+ },
+ "region": {
+  "sheet": "_Raw_Region",
+  "importNote": "Raw Import — respondent_subsample_region_2026-09-10T20_29_20.341Z.csv",
+  "columns": [
+   "Category",
+   "Oct 2026",
+   "Jul 2026",
+   "Oct 2025"
+  ],
+  "rows": [
+   {
+    "Category": "APAC",
+    "Oct 2026": "54.28571429",
+    "Jul 2026": "45",
+    "Oct 2025": "38.46153846"
+   },
+   {
+    "Category": "EMEA",
+    "Oct 2026": "27.27272727",
+    "Jul 2026": "32.8358209",
+    "Oct 2025": "30.76923077"
+   },
+   {
+    "Category": "International",
+    "Oct 2026": "33.33333332999999",
+    "Jul 2026": "32.85714286",
+    "Oct 2025": "32.2147651"
+   },
+   {
+    "Category": "Latin America",
+    "Oct 2026": "50",
+    "Jul 2026": "75",
+    "Oct 2025": "37.5"
+   },
+   {
+    "Category": "North America",
+    "Oct 2026": "37.14285714",
+    "Jul 2026": "35.78947368",
+    "Oct 2025": "24.59770115"
+   },
+   {
+    "Category": "United States",
+    "Oct 2026": "38.83161512",
+    "Jul 2026": "37.89173789",
+    "Oct 2025": "24.57420925"
+   }
+  ]
+ },
+ "subsampleCuts": {
+  "sheet": "_Raw_Subsample_Cuts",
+  "importNote": "Raw Import — subsample_candlestick_2026-09-10T20_29_17.391Z.csv",
+  "columns": [
+   "Category",
+   "Adoption %",
+   "Increase %",
+   "Flat %",
+   "Decrease %",
+   "Replacing %",
+   "Net Score",
+   "Pervasion"
+  ],
+  "rows": [
+   {
+    "Category": "Large + APAC",
+    "Adoption %": "22.22222222",
+    "Increase %": "48.14814815",
+    "Flat %": "18.51851852",
+    "Decrease %": "3.703703704",
+    "Replacing %": "7.407407406999999",
+    "Net Score": "59.25925925999999",
+    "Pervasion": "51.02040816"
+   },
+   {
+    "Category": "Energy/Utilities",
+    "Adoption %": "0",
+    "Increase %": "66.66666667",
+    "Flat %": "22.22222222",
+    "Decrease %": "11.11111111",
+    "Replacing %": "0",
+    "Net Score": "55.55555556",
+    "Pervasion": "29.03225806"
+   },
+   {
+    "Category": "APAC",
+    "Adoption %": "17.14285714",
+    "Increase %": "48.57142857",
+    "Flat %": "22.85714286",
+    "Decrease %": "2.857142857",
+    "Replacing %": "8.571428571",
+    "Net Score": "54.28571429",
+    "Pervasion": "45.71428571"
+   },
+   {
+    "Category": "Latin America",
+    "Adoption %": "0",
+    "Increase %": "50",
+    "Flat %": "50",
+    "Decrease %": "0",
+    "Replacing %": "0",
+    "Net Score": "50",
+    "Pervasion": "22.22222222"
+   },
+   {
+    "Category": "Financials/Insurance",
+    "Adoption %": "7.894736841999999",
+    "Increase %": "46.05263158",
+    "Flat %": "40.78947368",
+    "Decrease %": "3.947368421",
+    "Replacing %": "1.315789474",
+    "Net Score": "48.68421053",
+    "Pervasion": "56.81818182"
+   },
+   {
+    "Category": "North America + Financials/Insurance",
+    "Adoption %": "5.357142857",
+    "Increase %": "46.42857143",
+    "Flat %": "42.85714286",
+    "Decrease %": "3.571428571",
+    "Replacing %": "1.785714286",
+    "Net Score": "46.42857143",
+    "Pervasion": "60.43956044"
+   },
+   {
+    "Category": "Midsize Organizations",
+    "Adoption %": "8.235294118",
+    "Increase %": "44.70588235",
+    "Flat %": "40",
+    "Decrease %": "2.352941176",
+    "Replacing %": "4.705882353",
+    "Net Score": "45.88235294",
+    "Pervasion": "38.57142857"
+   },
+   {
+    "Category": "Fortune 500",
+    "Adoption %": "8.536585366",
+    "Increase %": "42.68292683",
+    "Flat %": "40.24390244",
+    "Decrease %": "7.317073171",
+    "Replacing %": "1.219512195",
+    "Net Score": "42.68292683",
+    "Pervasion": "61.83206107"
+   },
+   {
+    "Category": "Global 2000",
+    "Adoption %": "6.956521739",
+    "Increase %": "43.47826087",
+    "Flat %": "41.73913043",
+    "Decrease %": "6.086956522",
+    "Replacing %": "1.739130435",
+    "Net Score": "42.60869565",
+    "Pervasion": "58.5492228"
+   },
+   {
+    "Category": "VP, Head Of, Director, Manager, Principal",
+    "Adoption %": "7.798165138",
+    "Increase %": "41.74311927",
+    "Flat %": "42.20183486",
+    "Decrease %": "3.669724771",
+    "Replacing %": "4.587155963000001",
+    "Net Score": "41.28440367",
+    "Pervasion": "44.34968017"
+   },
+   {
+    "Category": "Large + IT/TelCo",
+    "Adoption %": "9.803921569",
+    "Increase %": "43.1372549",
+    "Flat %": "35.29411765",
+    "Decrease %": "5.882352941",
+    "Replacing %": "5.882352941",
+    "Net Score": "41.17647059",
+    "Pervasion": "53.93258426999999"
+   },
+   {
+    "Category": "Fortune 1000",
+    "Adoption %": "7.920792079",
+    "Increase %": "41.58415842",
+    "Flat %": "41.58415842",
+    "Decrease %": "7.920792079",
+    "Replacing %": "0.9900990099",
+    "Net Score": "40.59405941",
+    "Pervasion": "59.17159763"
+   },
+   {
+    "Category": "IT/TelCo",
+    "Adoption %": "8.536585366",
+    "Increase %": "42.68292683",
+    "Flat %": "37.80487805",
+    "Decrease %": "7.317073171",
+    "Replacing %": "3.658536585",
+    "Net Score": "40.24390244",
+    "Pervasion": "47.87878788"
+   },
+   {
+    "Category": "Large + Financials/Insurance",
+    "Adoption %": "9.090909091",
+    "Increase %": "38.18181818",
+    "Flat %": "45.45454545",
+    "Decrease %": "5.454545455",
+    "Replacing %": "1.818181818",
+    "Net Score": "40",
+    "Pervasion": "60.6741573"
+   },
+   {
+    "Category": "Giant Public + Private",
+    "Adoption %": "6.666666667",
+    "Increase %": "42.5",
+    "Flat %": "41.66666667000001",
+    "Decrease %": "7.5",
+    "Replacing %": "1.666666667",
+    "Net Score": "40",
+    "Pervasion": "57.28155339999999"
+   },
+   {
+    "Category": "Midsize + Small Organizations",
+    "Adoption %": "10.14492754",
+    "Increase %": "40.57971014",
+    "Flat %": "38.4057971",
+    "Decrease %": "5.072463768",
+    "Replacing %": "5.797101449",
+    "Net Score": "39.85507246",
+    "Pervasion": "30.09259259"
+   },
+   {
+    "Category": "Global 1000",
+    "Adoption %": "5.376344086",
+    "Increase %": "41.93548387",
+    "Flat %": "45.16129032000001",
+    "Decrease %": "5.376344086",
+    "Replacing %": "2.150537634",
+    "Net Score": "39.78494624",
+    "Pervasion": "56.52173913"
+   },
+   {
+    "Category": "Large + North America + Financials/Insurance",
+    "Adoption %": "4.87804878",
+    "Increase %": "41.46341463",
+    "Flat %": "46.34146341",
+    "Decrease %": "4.87804878",
+    "Replacing %": "2.43902439",
+    "Net Score": "39.02439024",
+    "Pervasion": "66.66666667"
+   },
+   {
+    "Category": "United States",
+    "Adoption %": "7.216494845000001",
+    "Increase %": "41.58075601",
+    "Flat %": "41.2371134",
+    "Decrease %": "5.498281787",
+    "Replacing %": "4.467353952",
+    "Net Score": "38.83161512",
+    "Pervasion": "41.18518519"
+   },
+   {
+    "Category": "S&P 500",
+    "Adoption %": "6.329113924000001",
+    "Increase %": "39.24050633",
+    "Flat %": "46.83544304",
+    "Decrease %": "6.329113924000001",
+    "Replacing %": "1.265822785",
+    "Net Score": "37.97468354",
+    "Pervasion": "58.64661654"
+   },
+   {
+    "Category": "Other",
+    "Adoption %": "6.25",
+    "Increase %": "43.75",
+    "Flat %": "37.5",
+    "Decrease %": "6.25",
+    "Replacing %": "6.25",
+    "Net Score": "37.5",
+    "Pervasion": "23.80952381"
+   },
+   {
+    "Category": "CxO - CIO, CTO, CISO, CMO, CDO, CPO",
+    "Adoption %": "9.345794393",
+    "Increase %": "44.85981308",
+    "Flat %": "28.97196262",
+    "Decrease %": "10.28037383",
+    "Replacing %": "6.542056075",
+    "Net Score": "37.38317757",
+    "Pervasion": "34.01360544"
+   },
+   {
+    "Category": "Fortune 100",
+    "Adoption %": "4.651162791",
+    "Increase %": "44.18604651",
+    "Flat %": "39.53488372",
+    "Decrease %": "9.302325581",
+    "Replacing %": "2.325581395",
+    "Net Score": "37.20930233",
+    "Pervasion": "60"
+   },
+   {
+    "Category": "All Respondents",
+    "Adoption %": "8.095238095",
+    "Increase %": "40.23809524",
+    "Flat %": "40.47619048",
+    "Decrease %": "6.428571429000001",
+    "Replacing %": "4.761904762",
+    "Net Score": "37.14285714",
+    "Pervasion": "40.8997955"
+   },
+   {
+    "Category": "Retail/Consumer",
+    "Adoption %": "2.857142857",
+    "Increase %": "42.85714286",
+    "Flat %": "45.71428571",
+    "Decrease %": "8.571428571",
+    "Replacing %": "0",
+    "Net Score": "37.14285714",
+    "Pervasion": "47.2972973"
+   },
+   {
+    "Category": "North America",
+    "Adoption %": "7.619047619",
+    "Increase %": "40.31746032",
+    "Flat %": "41.26984127",
+    "Decrease %": "6.349206349",
+    "Replacing %": "4.444444444",
+    "Net Score": "37.14285714",
+    "Pervasion": "41.57458564"
+   },
+   {
+    "Category": "Repeat Throughout Trailing Year",
+    "Adoption %": "7.977207977000001",
+    "Increase %": "39.31623932",
+    "Flat %": "42.45014245",
+    "Decrease %": "6.267806267999999",
+    "Replacing %": "3.988603989000001",
+    "Net Score": "37.03703704",
+    "Pervasion": "40.84848485"
+   },
+   {
+    "Category": "Large + North America",
+    "Adoption %": "6.280193237",
+    "Increase %": "40.57971014",
+    "Flat %": "42.99516908",
+    "Decrease %": "6.280193237",
+    "Replacing %": "3.8647343",
+    "Net Score": "36.71497585",
+    "Pervasion": "50.63613232"
+   },
+   {
+    "Category": "EMEA + Financials/Insurance",
+    "Adoption %": "0",
+    "Increase %": "45.45454545",
+    "Flat %": "45.45454545",
+    "Decrease %": "9.090909091",
+    "Replacing %": "0",
+    "Net Score": "36.36363636",
+    "Pervasion": "47.82608696"
+   },
+   {
+    "Category": "Services/Consulting",
+    "Adoption %": "9.090909091",
+    "Increase %": "37.66233766",
+    "Flat %": "42.85714286",
+    "Decrease %": "3.896103896",
+    "Replacing %": "6.493506493999999",
+    "Net Score": "36.36363636",
+    "Pervasion": "33.33333332999999"
+   },
+   {
+    "Category": "Industrials/Materials/Manufacturing",
+    "Adoption %": "10.25641026",
+    "Increase %": "41.02564103",
+    "Flat %": "33.33333332999999",
+    "Decrease %": "10.25641026",
+    "Replacing %": "5.128205127999999",
+    "Net Score": "35.8974359",
+    "Pervasion": "44.04761905"
+   },
+   {
+    "Category": "Large Organizations",
+    "Adoption %": "7.092198582000001",
+    "Increase %": "40.07092199",
+    "Flat %": "41.4893617",
+    "Decrease %": "7.092198582000001",
+    "Replacing %": "4.255319149",
+    "Net Score": "35.81560284",
+    "Pervasion": "49.45054945"
+   },
+   {
+    "Category": "International",
+    "Adoption %": "10.07751938",
+    "Increase %": "37.20930233",
+    "Flat %": "38.75968992",
+    "Decrease %": "8.527131783",
+    "Replacing %": "5.426356589",
+    "Net Score": "33.33333332999999",
+    "Pervasion": "40.26402640000001"
+   },
+   {
+    "Category": "Large + North America + Healthcare/Pharma",
+    "Adoption %": "4.347826087",
+    "Increase %": "39.13043478",
+    "Flat %": "43.47826087",
+    "Decrease %": "8.695652174",
+    "Replacing %": "4.347826087",
+    "Net Score": "30.43478261",
+    "Pervasion": "46.80851064"
+   },
+   {
+    "Category": "Small Organizations",
+    "Adoption %": "13.20754717",
+    "Increase %": "33.96226415",
+    "Flat %": "35.8490566",
+    "Decrease %": "9.433962264",
+    "Replacing %": "7.547169811",
+    "Net Score": "30.18867925",
+    "Pervasion": "22.07207207"
+   },
+   {
+    "Category": "Education",
+    "Adoption %": "15",
+    "Increase %": "27.5",
+    "Flat %": "45",
+    "Decrease %": "5",
+    "Replacing %": "7.5",
+    "Net Score": "30",
+    "Pervasion": "35.9223301"
+   },
+   {
+    "Category": "Large + International",
+    "Adoption %": "8.791208791",
+    "Increase %": "36.26373626",
+    "Flat %": "37.36263736",
+    "Decrease %": "12.08791209",
+    "Replacing %": "5.494505495",
+    "Net Score": "27.47252747",
+    "Pervasion": "48.31460674"
+   },
+   {
+    "Category": "Analyst, Architect, Engineer, Lead, Specialist",
+    "Adoption %": "7.368421053",
+    "Increase %": "31.57894737",
+    "Flat %": "49.47368421",
+    "Decrease %": "8.421052632",
+    "Replacing %": "3.157894737",
+    "Net Score": "27.36842105",
+    "Pervasion": "42.79069767"
+   },
+   {
+    "Category": "EMEA",
+    "Adoption %": "6.060606061",
+    "Increase %": "34.84848485",
+    "Flat %": "45.45454545",
+    "Decrease %": "9.090909091",
+    "Replacing %": "4.545454545",
+    "Net Score": "27.27272727",
+    "Pervasion": "37.95180723"
+   },
+   {
+    "Category": "North America + Healthcare/Pharma",
+    "Adoption %": "6.451612902999999",
+    "Increase %": "38.70967742",
+    "Flat %": "35.48387097",
+    "Decrease %": "9.677419355",
+    "Replacing %": "9.677419355",
+    "Net Score": "25.80645161",
+    "Pervasion": "36.36363636"
+   },
+   {
+    "Category": "Large + Healthcare/Pharma",
+    "Adoption %": "3.703703704",
+    "Increase %": "33.33333332999999",
+    "Flat %": "48.14814815",
+    "Decrease %": "11.11111111",
+    "Replacing %": "3.703703704",
+    "Net Score": "22.22222222",
+    "Pervasion": "47.27272727"
+   },
+   {
+    "Category": "Nonprofit",
+    "Adoption %": "0",
+    "Increase %": "30",
+    "Flat %": "60",
+    "Decrease %": "0",
+    "Replacing %": "10",
+    "Net Score": "20",
+    "Pervasion": "42.85714286"
+   },
+   {
+    "Category": "Large + EMEA",
+    "Adoption %": "2.127659574",
+    "Increase %": "34.04255319",
+    "Flat %": "46.80851064",
+    "Decrease %": "12.76595745",
+    "Replacing %": "4.255319149",
+    "Net Score": "19.14893617",
+    "Pervasion": "46.39175258"
+   },
+   {
+    "Category": "Healthcare/Pharma",
+    "Adoption %": "5.555555556",
+    "Increase %": "33.33333332999999",
+    "Flat %": "38.88888889",
+    "Decrease %": "11.11111111",
+    "Replacing %": "11.11111111",
+    "Net Score": "16.66666667",
+    "Pervasion": "35.95505618"
+   },
+   {
+    "Category": "Large + Latin America",
+    "Adoption %": "0",
+    "Increase %": "0",
+    "Flat %": "100",
+    "Decrease %": "0",
+    "Replacing %": "0",
+    "Net Score": "0",
+    "Pervasion": "14.28571429"
+   },
+   {
+    "Category": "Forbes Private 225",
+    "Adoption %": "0",
+    "Increase %": "16.66666667",
+    "Flat %": "50",
+    "Decrease %": "33.33333332999999",
+    "Replacing %": "0",
+    "Net Score": "-16.66666667",
+    "Pervasion": "42.85714286"
+   }
+  ]
+ },
+ "vendorView": {
+  "sheet": "_Raw_Vendor_View",
+  "importNote": "Raw Import — single_vendor_view_2026-09-10T20_29_14.440Z.csv",
+  "columns": [
+   "Category",
+   "Oct 2026",
+   "Jul 2026",
+   "Oct 2025"
+  ],
+  "rows": [
+   {
+    "Category": "CrowdStrike - INFORMATION SECURITY",
+    "Oct 2026": "37.14285714",
+    "Jul 2026": "36.45621181",
+    "Oct 2025": "26.60714286"
+   }
+  ]
+ },
+ "peerTrends": {
+  "sheet": "_Raw_Peer_Trends",
+  "importNote": "Raw Import — vendor_trends_trends_chart_2026-09-10T20_29_11.441Z.csv",
+  "columns": [
+   "Category",
+   "Oct 2026",
+   "Jul 2026",
+   "Oct 2025"
+  ],
+  "rows": [
+   {
+    "Category": "Veeam",
+    "Oct 2026": "17.73399015",
+    "Jul 2026": "16.66666667",
+    "Oct 2025": ""
+   },
+   {
+    "Category": "Orca Security",
+    "Oct 2026": "0",
+    "Jul 2026": "3.174603175",
+    "Oct 2025": "-11.26760563"
+   },
+   {
+    "Category": "Commvault",
+    "Oct 2026": "5.46875",
+    "Jul 2026": "5.960264901",
+    "Oct 2025": ""
+   },
+   {
+    "Category": "OpenText",
+    "Oct 2026": "-0.8064516129000001",
+    "Jul 2026": "9.77443609",
+    "Oct 2025": "0.5952380952"
+   },
+   {
+    "Category": "Cohesity",
+    "Oct 2026": "5",
+    "Jul 2026": "9.574468085",
+    "Oct 2025": ""
+   },
+   {
+    "Category": "Cribl",
+    "Oct 2026": "4.6875",
+    "Jul 2026": "8.695652174",
+    "Oct 2025": "12.82051282"
+   },
+   {
+    "Category": "Arctic Wolf",
+    "Oct 2026": "-0.9708737864",
+    "Jul 2026": "11.11111111",
+    "Oct 2025": "-1.538461538"
+   },
+   {
+    "Category": "Grafana",
+    "Oct 2026": "23.36956522",
+    "Jul 2026": "27.52293578",
+    "Oct 2025": "33.46774194"
+   },
+   {
+    "Category": "Cyera",
+    "Oct 2026": "37.77777778",
+    "Jul 2026": "29.78723404",
+    "Oct 2025": "4.255319149"
+   },
+   {
+    "Category": "BigID",
+    "Oct 2026": "-5.263157895",
+    "Jul 2026": "7.692307692",
+    "Oct 2025": "-5.882352941"
+   },
+   {
+    "Category": "1Password",
+    "Oct 2026": "18.51851852",
+    "Jul 2026": "23.23651452",
+    "Oct 2025": "22.18181818"
+   },
+   {
+    "Category": "Rubrik",
+    "Oct 2026": "25.17482517",
+    "Jul 2026": "30.43478261",
+    "Oct 2025": "22.58064516"
+   },
+   {
+    "Category": "Google",
+    "Oct 2026": "30.87885986",
+    "Jul 2026": "29.58333333",
+    "Oct 2025": "29.00505902"
+   },
+   {
+    "Category": "Thales",
+    "Oct 2026": "8.823529412000001",
+    "Jul 2026": "22.85714286",
+    "Oct 2025": "11.82795699"
+   },
+   {
+    "Category": "Snyk",
+    "Oct 2026": "9.473684211",
+    "Jul 2026": "21.69811321",
+    "Oct 2025": "17.21854305"
+   },
+   {
+    "Category": "OneTrust",
+    "Oct 2026": "10.9375",
+    "Jul 2026": "12.98701299",
+    "Oct 2025": "16.58291457"
+   },
+   {
+    "Category": "HashiCorp (IBM)",
+    "Oct 2026": "1.834862385",
+    "Jul 2026": "8.396946565",
+    "Oct 2025": "14.94252874"
+   },
+   {
+    "Category": "Exabeam",
+    "Oct 2026": "0",
+    "Jul 2026": "-5.882352941",
+    "Oct 2025": "-18.66666667"
+   },
+   {
+    "Category": "Abnormal Security",
+    "Oct 2026": "29.67032967",
+    "Jul 2026": "33.62831858",
+    "Oct 2025": "29.13385827"
+   },
+   {
+    "Category": "Proofpoint",
+    "Oct 2026": "10",
+    "Jul 2026": "15.29850746",
+    "Oct 2025": "12.68882175"
+   },
+   {
+    "Category": "ForeScout",
+    "Oct 2026": "-16.66666667",
+    "Jul 2026": "0",
+    "Oct 2025": "-14.28571429"
+   },
+   {
+    "Category": "Infoblox",
+    "Oct 2026": "1.785714286",
+    "Jul 2026": "11.88811189",
+    "Oct 2025": "1.333333333"
+   },
+   {
+    "Category": "F5 Networks",
+    "Oct 2026": "4.273504274",
+    "Jul 2026": "8.118081181",
+    "Oct 2025": "13.49693252"
+   },
+   {
+    "Category": "Oracle",
+    "Oct 2026": "-5.223880597",
+    "Jul 2026": "-0.6644518272",
+    "Oct 2025": "-1.295336788"
+   },
+   {
+    "Category": "BitSight",
+    "Oct 2026": "9.523809524",
+    "Jul 2026": "12.90322581",
+    "Oct 2025": "2.325581395"
+   },
+   {
+    "Category": "Netwrix",
+    "Oct 2026": "5.357142857",
+    "Jul 2026": "-1.587301587",
+    "Oct 2025": "-3.06122449"
+   },
+   {
+    "Category": "Okta",
+    "Oct 2026": "25.64102564",
+    "Jul 2026": "26.63043478",
+    "Oct 2025": "27.85388128"
+   },
+   {
+    "Category": "Illumio",
+    "Oct 2026": "4.761904762",
+    "Jul 2026": "14.28571429",
+    "Oct 2025": "6.849315068"
+   },
+   {
+    "Category": "Auth0 (Okta)",
+    "Oct 2026": "26.92307692",
+    "Jul 2026": "28.92156863",
+    "Oct 2025": "22.39382239"
+   },
+   {
+    "Category": "Symantec (Broadcom)",
+    "Oct 2026": "-22.03389831",
+    "Jul 2026": "-21.92513369",
+    "Oct 2025": "-25"
+   },
+   {
+    "Category": "PhishLabs",
+    "Oct 2026": "-2.040816327",
+    "Jul 2026": "5.882352941",
+    "Oct 2025": "-8.571428571"
+   },
+   {
+    "Category": "BeyondTrust",
+    "Oct 2026": "20.625",
+    "Jul 2026": "18.94736842",
+    "Oct 2025": "18.14516129"
+   },
+   {
+    "Category": "WhiteHat Security",
+    "Oct 2026": "-7.5",
+    "Jul 2026": "5.128205127999999",
+    "Oct 2025": "9.677419355"
+   },
+   {
+    "Category": "SailPoint",
+    "Oct 2026": "26.875",
+    "Jul 2026": "28.72340426",
+    "Oct 2025": "22.88557214"
+   },
+   {
+    "Category": "Ping Identity",
+    "Oct 2026": "14.43298969",
+    "Jul 2026": "15.44715447",
+    "Oct 2025": "5.555555556"
+   },
+   {
+    "Category": "Trellix (formerly McAfee Enterprise and FireEye)",
+    "Oct 2026": "-31.57894737",
+    "Jul 2026": "-33.33333332999999",
+    "Oct 2025": "-12.60504202"
+   },
+   {
+    "Category": "ForgeRock",
+    "Oct 2026": "-6.666666667",
+    "Jul 2026": "11.36363636",
+    "Oct 2025": "-13.69863014"
+   },
+   {
+    "Category": "Delinea (formerly ThycoticCentrify)",
+    "Oct 2026": "4.225352113",
+    "Jul 2026": "10.84337349",
+    "Oct 2025": "6.086956522"
+   },
+   {
+    "Category": "Fortinet",
+    "Oct 2026": "22.04968944",
+    "Jul 2026": "26.0989011",
+    "Oct 2025": "23.31002331"
+   },
+   {
+    "Category": "ExtraHop",
+    "Oct 2026": "-19.56521739",
+    "Jul 2026": "-17.54385965",
+    "Oct 2025": "0"
+   },
+   {
+    "Category": "Cloudflare",
+    "Oct 2026": "28.30188679",
+    "Jul 2026": "28.60635697",
+    "Oct 2025": "35.8649789"
+   },
+   {
+    "Category": "Veracode",
+    "Oct 2026": "-9.090909091",
+    "Jul 2026": "-1.369863014",
+    "Oct 2025": "-5.600000000000001"
+   },
+   {
+    "Category": "Check Point",
+    "Oct 2026": "4.419889502999999",
+    "Jul 2026": "7.042253521",
+    "Oct 2025": "7.112970710999999"
+   },
+   {
+    "Category": "Zscaler",
+    "Oct 2026": "32.40418118",
+    "Jul 2026": "34.93975904",
+    "Oct 2025": "36.20253165"
+   },
+   {
+    "Category": "CyberArk (Palo Alto Networks)",
+    "Oct 2026": "28.39506173",
+    "Jul 2026": "36.55172414",
+    "Oct 2025": "30.50847458"
+   },
+   {
+    "Category": "Elastic",
+    "Oct 2026": "21.875",
+    "Jul 2026": "21.14285714",
+    "Oct 2025": "28.21782178"
+   },
+   {
+    "Category": "Carbon Black (VMware)",
+    "Oct 2026": "-33.33333332999999",
+    "Jul 2026": "-34.84848485",
+    "Oct 2025": "-28.08988764"
+   },
+   {
+    "Category": "OneLogin (One Identity / Quest Software)",
+    "Oct 2026": "2.857142857",
+    "Jul 2026": "1.234567901",
+    "Oct 2025": "1.5625"
+   },
+   {
+    "Category": "Malwarebytes",
+    "Oct 2026": "-14.63414634",
+    "Jul 2026": "-6.71641791",
+    "Oct 2025": "-4.5"
+   },
+   {
+    "Category": "Juniper (HPE)",
+    "Oct 2026": "3.797468354",
+    "Jul 2026": "3.592814371",
+    "Oct 2025": "5.185185185"
+   },
+   {
+    "Category": "Barracuda Networks",
+    "Oct 2026": "-18.18181818",
+    "Jul 2026": "-19.35483871",
+    "Oct 2025": "-14.05405405"
+   },
+   {
+    "Category": "Dynatrace",
+    "Oct 2026": "19.64285714",
+    "Jul 2026": "23.66863905",
+    "Oct 2025": "22.42990654"
+   },
+   {
+    "Category": "KnowBe4",
+    "Oct 2026": "10.90909091",
+    "Jul 2026": "10.67961165",
+    "Oct 2025": "15.63275434"
+   },
+   {
+    "Category": "RSA",
+    "Oct 2026": "-8",
+    "Jul 2026": "-8.843537415",
+    "Oct 2025": "-11.2244898"
+   },
+   {
+    "Category": "SecureWorks (Sophos)",
+    "Oct 2026": "-23.28767123",
+    "Jul 2026": "-3.797468354",
+    "Oct 2025": "-11.81818182"
+   },
+   {
+    "Category": "Fastly",
+    "Oct 2026": "-4.166666666999999",
+    "Jul 2026": "-16",
+    "Oct 2025": "-5"
+   },
+   {
+    "Category": "Tenable",
+    "Oct 2026": "13.87559809",
+    "Jul 2026": "12.18487395",
+    "Oct 2025": "16.94352159"
+   },
+   {
+    "Category": "SentinelOne",
+    "Oct 2026": "25.35211268",
+    "Jul 2026": "25.32188841",
+    "Oct 2025": "24.27184466"
+   },
+   {
+    "Category": "Cylance (Arctic Wolf)",
+    "Oct 2026": "-22.22222222",
+    "Jul 2026": "-9.259259259",
+    "Oct 2025": "-9.090909091"
+   },
+   {
+    "Category": "Tanium",
+    "Oct 2026": "14.13043478",
+    "Jul 2026": "17.47572816",
+    "Oct 2025": "13.23529412"
+   },
+   {
+    "Category": "Darktrace",
+    "Oct 2026": "-11.34020619",
+    "Jul 2026": "-5.263157895",
+    "Oct 2025": "18.69918699"
+   },
+   {
+    "Category": "VeriSign",
+    "Oct 2026": "4.294478528",
+    "Jul 2026": "9.142857143",
+    "Oct 2025": "5.639097744"
+   },
+   {
+    "Category": "Mimecast",
+    "Oct 2026": "-7.37704918",
+    "Jul 2026": "-2.097902098",
+    "Oct 2025": "-2.912621359"
+   },
+   {
+    "Category": "Qualys",
+    "Oct 2026": "10.24096386",
+    "Jul 2026": "11.64021164",
+    "Oct 2025": "2.127659574"
+   },
+   {
+    "Category": "Cisco",
+    "Oct 2026": "12.47401247",
+    "Jul 2026": "13.13485114",
+    "Oct 2025": "9.762900976"
+   },
+   {
+    "Category": "Microsoft",
+    "Oct 2026": "50.18820577",
+    "Jul 2026": "48.68835257",
+    "Oct 2025": "52.69784172999999"
+   },
+   {
+    "Category": "Datadog",
+    "Oct 2026": "19.45945946",
+    "Jul 2026": "15.31100478",
+    "Oct 2025": "9.090909091"
+   },
+   {
+    "Category": "Netskope",
+    "Oct 2026": "28.07017544",
+    "Jul 2026": "26.61290323",
+    "Oct 2025": "24.09638554"
+   },
+   {
+    "Category": "Sophos",
+    "Oct 2026": "-9.210526316",
+    "Jul 2026": "-5.421686747",
+    "Oct 2025": "-3.398058252"
+   },
+   {
+    "Category": "Palo Alto Networks",
+    "Oct 2026": "28.67132867",
+    "Jul 2026": "31.90661479",
+    "Oct 2025": "28.49915683"
+   },
+   {
+    "Category": "CrowdStrike",
+    "Oct 2026": "37.14285714",
+    "Jul 2026": "36.45621181",
+    "Oct 2025": "26.60714286"
+   },
+   {
+    "Category": "Radware",
+    "Oct 2026": "-5.555555556",
+    "Jul 2026": "-5.263157895",
+    "Oct 2025": "-10.76923077"
+   },
+   {
+    "Category": "Wiz (Google)",
+    "Oct 2026": "44.24242424",
+    "Jul 2026": "41.875",
+    "Oct 2025": "41.14285714"
+   },
+   {
+    "Category": "Trend Micro",
+    "Oct 2026": "-20",
+    "Jul 2026": "-15.38461538",
+    "Oct 2025": "-11.16504854"
+   },
+   {
+    "Category": "Imperva (Thales)",
+    "Oct 2026": "1.639344262",
+    "Jul 2026": "7.042253521",
+    "Oct 2025": "-9.900990099"
+   },
+   {
+    "Category": "Akamai",
+    "Oct 2026": "15.20467836",
+    "Jul 2026": "15.38461538",
+    "Oct 2025": "15.93625498"
+   },
+   {
+    "Category": "New Relic",
+    "Oct 2026": "-5.785123967",
+    "Jul 2026": "3.846153846",
+    "Oct 2025": "5.660377358"
+   },
+   {
+    "Category": "LogRhythm (Exabeam)",
+    "Oct 2026": "-13.46153846",
+    "Jul 2026": "-16.12903226",
+    "Oct 2025": "-22.11538462"
+   },
+   {
+    "Category": "SonicWALL",
+    "Oct 2026": "-17.47572816",
+    "Jul 2026": "-21.36752137",
+    "Oct 2025": "-18.63354037"
+   },
+   {
+    "Category": "Rapid7",
+    "Oct 2026": "6.338028169",
+    "Jul 2026": "6.976744186",
+    "Oct 2025": "5.238095238"
+   },
+   {
+    "Category": "Splunk (Cisco)",
+    "Oct 2026": "6.918238994",
+    "Jul 2026": "15.04178273",
+    "Oct 2025": "10.85972851"
+   },
+   {
+    "Category": "IBM",
+    "Oct 2026": "-2.89017341",
+    "Jul 2026": "2.898550725",
+    "Oct 2025": "-10.35714286"
+   },
+   {
+    "Category": "Forcepoint",
+    "Oct 2026": "-3.703703704",
+    "Jul 2026": "1.086956522",
+    "Oct 2025": "0"
+   },
+   {
+    "Category": "Varonis Systems",
+    "Oct 2026": "6.315789474",
+    "Jul 2026": "7.446808510999999",
+    "Oct 2025": "5.042016807"
+   }
+  ]
+ },
+ "adoptionReasons": {
+  "sheet": "_Raw_Adoption_Reasons",
+  "importNote": "Raw Import — adoption_reasoning_2026-09-10T20_29_08.323Z.csv",
+  "columns": [
+   "Category",
+   "Oct 26",
+   "Jul 26"
+  ],
+  "rows": [
+   {
+    "Category": "Product Technical Capabilities",
+    "Oct 26": "60.60606060606061",
+    "Jul 26": "59.45945945945946"
+   },
+   {
+    "Category": "Feature Breadth",
+    "Oct 26": "45.45454545454545",
+    "Jul 26": "56.75675675675676"
+   },
+   {
+    "Category": "Product Security",
+    "Oct 26": "54.54545454545454",
+    "Jul 26": "51.35135135135135"
+   },
+   {
+    "Category": "Technological Lead / Lag",
+    "Oct 26": "21.21212121212121",
+    "Jul 26": "37.83783783783784"
+   },
+   {
+    "Category": "Product Cost / ROI",
+    "Oct 26": "33.33333333333333",
+    "Jul 26": "32.43243243243244"
+   },
+   {
+    "Category": "Implementation Cost / Time to Value",
+    "Oct 26": "24.24242424242424",
+    "Jul 26": "24.32432432432433"
+   },
+   {
+    "Category": "Stack Alignment / Integrations",
+    "Oct 26": "24.24242424242424",
+    "Jul 26": "18.91891891891892"
+   },
+   {
+    "Category": "Vendor Roadmap / Vision",
+    "Oct 26": "15.15151515151515",
+    "Jul 26": "16.21621621621622"
+   },
+   {
+    "Category": "IT Skills / Talent Availability",
+    "Oct 26": "24.24242424242424",
+    "Jul 26": "10.81081081081081"
+   },
+   {
+    "Category": "Vendor Relationship / Support",
+    "Oct 26": "15.15151515151515",
+    "Jul 26": "10.81081081081081"
+   },
+   {
+    "Category": "Other",
+    "Oct 26": "6.060606060606061",
+    "Jul 26": "2.702702702702702"
+   }
+  ]
+ },
+ "jobTitles": {
+  "sheet": "_Raw_Job_Titles",
+  "importNote": "Raw Import — respondent_composition_job_title_2026-09-10T20_28_56.798Z.csv",
+  "columns": [
+   "Category",
+   "Job Title"
+  ],
+  "rows": [
+   {
+    "Category": "CxO - CIO, CTO, CISO, CMO, CDO, CPO",
+    "Job Title": "25.47619047619047"
+   },
+   {
+    "Category": "VP, Head Of, Director, Manager, Principal",
+    "Job Title": "51.90476190476191"
+   },
+   {
+    "Category": "Analyst, Architect, Engineer, Lead, Specialist",
+    "Job Title": "22.61904761904762"
+   }
+  ]
+ }
+}

@@ -17,6 +17,20 @@ var NARRATIVE = {};
 
 /** The numbers every template opens from, read fresh so filters and rebuilds
     are always reflected. Nothing here is stored or cached. */
+/** The spending-intent split, said plainly. The workbook supplies it only for
+    the subsample cut that belongs to the archived October reading, so for the
+    canonical observation it is reported as not supplied rather than carried
+    across from a reading that no longer stands. */
+function intentSentence(){
+  var it = (CP && CP.intent) || {};
+  if (it.supplied === false || it.increase == null)
+    return 'The spending-intent split (adopting, increasing, flat, decreasing, replacing) is not ' +
+           'supplied for this observation, so the composition behind the Net Score is not shown.';
+  return 'The intent split runs ' + n2(it.increase) + '% increasing and ' + n2(it.adoption) +
+         '% adopting against ' + n2(it.decrease) + '% decreasing and ' + n2(it.replacing) +
+         '% replacing, with ' + n2(it.flat) + '% flat.';
+}
+
 function NV(){
   return {
     ns: CP.netScore, pv: CP.pervasion, z: CP.zScore, it: CP.intent,
@@ -75,10 +89,14 @@ NARRATIVE.companyDeck = function(){
   return claim('company',
     'CrowdStrike’s ' + v.period + ' spending intent reads ' + n2(v.ns.value) + ' on ' +
     n2(v.n, 0) + ' citations — ' + sign(v.ns.qqDelta) + ' against ' + (v.prior.label||'the prior period') +
-    ', which the workbook’s wording convention calls ' + moveWord(v.ns.qqDelta) + ', and ' +
+    ', which the workbook’s movement-wording rule calls ' + moveWord(v.ns.qqDelta) + ', and ' +
     sign(v.ns.yyDelta) + ' against ' + (v.yearAgo.label||'a year earlier') + ', ' + moveWord(v.ns.yyDelta) +
     '. Deployment breadth rose further still, to ' + n2(v.pv.value) + ' (' + sign(v.pv.qqDelta) +
-    '). The recorded reading is: “' + CALL.primarySignalText + '”',
+    '). ' + (sig.statementSuperseded
+      ? 'The statement recorded for the primary signal was authored against the archived October ' +
+        'reading and is kept, unchanged, in the Archive; the reading above is the canonical ' +
+        'observation.'
+      : 'The recorded reading is: “' + CALL.primarySignalText + '”'),
     'ETR interpretation', ['ETR-OCT26-NS','ETR-OCT26-PV'], [sig.id || 'SIG-02'],
     ['R-004','R-005','R-008'], 'High on current raw values',
     'Spending intent and deployment breadth only. No company outcome is implied.', []);
@@ -111,10 +129,11 @@ NARRATIVE.snapshot = function(){
 
     { key:'open', label:'What remains open', cls:'Open question',
       c: claim('company',
-        'No ' + v.period + ' ETR data outlook is recorded anywhere in the package, which is why the ' +
-        'current call reads Source Needed rather than carrying the prior Positive forward. Underneath ' +
-        'it, no October cohort or regional cut carries a citation base, and the approved Z-Score bands ' +
-        'that would let the deviation numbers be interpreted are absent.',
+        'The call on record is inherited, not resolved from ' + v.period + ' evidence: the workbook ' +
+        'carries the last resolved Outlook from July 2026 and records no separate ' + v.period +
+        ' Outlook field. Underneath it, no October cohort or regional cut carries a citation base, ' +
+        'and the approved Z-Score method bands that would let the deviation numbers be read against ' +
+        'a threshold are absent.',
         'Open question', [], ['OQ-002','OQ-014','OQ-005'], ['R-007','R-009','R-025'], null,
         'Prior outlooks are historical under R-025 and are not carried forward.',
         ['OQ-002','OQ-014','OQ-005']) }
@@ -316,9 +335,7 @@ NARRATIVE.emailClean = function(g){
     'What moved more than intent did was breadth. Pervasion rose to ' + n2(v.pv.value) + ', up ' +
     sign(v.pv.qqDelta) + ' on the quarter, which is a larger sequential step than the ' +
     sign(v.ns.qqDelta) + ' on Net Score. More accounts are reporting the platform in use, and the ' +
-    'accounts already there are not pulling back — the intent split runs ' + n2(v.it.increase) +
-    '% increasing and ' + n2(v.it.adoption) + '% adopting against ' + n2(v.it.decrease) +
-    '% decreasing and ' + n2(v.it.replacing) + '% replacing.',
+    'accounts already there are not pulling back. ' + intentSentence(),
     'Client-provided fact', ['ETR-OCT26-PV','ETR-OCT26-INTENT'], [], ['R-008','R-009'], 'High',
     'Pervasion is deployment breadth, not revenue or market share.', []));
 
@@ -465,7 +482,11 @@ NARRATIVE.sunday = function(style, length, opts){
   /* ── primary signal in focus — changes with the "Primary signal" control ── */
   if (sig.id) B.push({ essential:true, c: claim('sunday',
     'The reading this piece is built around is “' + (sig.title || 'the recorded signal') +
-    '.” As the workbook states it: “' + (sig.statement || 'no statement is recorded') + '” Recorded ' +
+    '.” ' + (sig.statementSuperseded
+       ? 'Its recorded statement was authored against the archived October reading and is kept in ' +
+         'the Archive; the canonical reading is used here: “' + sigStatement(sig) + '” '
+       : 'As the workbook states it: “' + (sig.statement || 'no statement is recorded') + '” ') +
+    'Recorded ' +
     'direction is ' + (sig.direction || 'Source Needed') + ' at ' +
     (sig.confidence || 'Source Needed') + ' confidence.',
     sig.classification || 'Client-provided fact', [], [sig.id], ['R-009'], sig.confidence,
@@ -485,9 +506,7 @@ NARRATIVE.sunday = function(style, length, opts){
     'The more interesting movement is in breadth rather than level. Pervasion — the share of ' +
     'respondents reporting the platform in use — rose to ' + n2(v.pv.value) + ', up ' +
     sign(v.pv.qqDelta) + ' on the quarter, a larger step than intent took over the same period. ' +
-    'Underneath, the intent split runs ' + n2(v.it.increase) + '% increasing and ' + n2(v.it.adoption) +
-    '% adopting against ' + n2(v.it.decrease) + '% decreasing and ' + n2(v.it.replacing) +
-    '% replacing, with ' + n2(v.it.flat) + '% flat. Deployment is spreading faster than budgets are ' +
+    intentSentence() + ' Deployment is spreading faster than budgets are ' +
     'growing, which is a recovery of a particular kind: wider, not yet deeper.',
     'Client-provided fact', ['ETR-OCT26-PV','ETR-OCT26-INTENT'], [], ['R-008','R-009'], 'High',
     'Pervasion is breadth, not revenue or market share.', []) });

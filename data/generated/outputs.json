@@ -1,0 +1,823 @@
+[
+ {
+  "id": "EXECUTIVE-BRIEF",
+  "originalId": "Executive Brief",
+  "objectType": "Output",
+  "title": "Executive Brief",
+  "statement": "Executive Brief — working draft assembled in the workbook",
+  "description": "",
+  "classification": "Recommended action",
+  "sourceLane": "",
+  "sourceType": "",
+  "sourceName": "",
+  "sourceFile": "",
+  "sourceWorksheet": "Executive Brief",
+  "sourceRow": "",
+  "dataset": "",
+  "period": "",
+  "currentOrHistorical": "",
+  "theme": "",
+  "metric": "",
+  "value": "",
+  "priorValue": "",
+  "comparisonValue": "",
+  "trend": "",
+  "nBase": "",
+  "confidence": "",
+  "importance": "",
+  "verificationStatus": "Human Review Required",
+  "workflowStatus": "Human Review Required",
+  "supportingIds": [],
+  "contradictingIds": [],
+  "relatedEvidenceIds": [
+   "ETR-OCT26-G2K",
+   "ETR-OCT26-NS",
+   "ETR-OCT26-PV",
+   "ETR-OCT26-ZS",
+   "KPI-003",
+   "OQ-005",
+   "OQ-014",
+   "REF-E-F04",
+   "SIG-02",
+   "XL-01"
+  ],
+  "relatedSignalIds": [],
+  "relatedKpiIds": [],
+  "relatedRiskIds": [],
+  "relatedQuestionIds": [],
+  "relatedRuleIds": [
+   "R-004",
+   "R-008",
+   "R-015",
+   "R-021"
+  ],
+  "sourceNeededFields": [],
+  "caveat": "",
+  "prohibitedConclusions": "",
+  "recommendedNextAction": "",
+  "rows": [
+   [
+    "CrowdStrike Vendor Signal Brief — Working Draft",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Call-first, signal-first, and evidence-backed. This is an output assembled from the research workspace; Human Review Required.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Signal summary",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Current Call",
+    "Positive — last resolved Outlook in JUL26; no separate OCT26 Outlook field supplied",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Current TSIS Period",
+    "October 2026",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Primary Signal",
+    "Post-outage spending recovery persists",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Direction",
+    "Improving Y/Y; relatively flat sequentially",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Conviction",
+    "Medium-High",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Net Score",
+    "37.14 | +0.69 vs Jul 2026 | +10.54 vs Oct 2025",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Pervasion",
+    "40.90 | +2.52 vs Jul 2026",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Z-Score",
+    "Q/Q 0.129 | Y/Y 0.892 | strength bands Source Needed",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Review",
+    "Human Review Required",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Executive signal",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Client-provided fact",
+    "October 2026 Net Score was 37.14, Pervasion was 40.90, and N was 420. Q/Q and Y/Y Z-Scores were 0.129 and 0.892.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "ETR-OCT26-NS; ETR-OCT26-PV; ETR-OCT26-ZS",
+    ""
+   ],
+   [
+    "",
+    "ETR interpretation",
+    "Recovery persists. The latest sequential move is modest, while the year-over-year improvement is materially larger. Breadth continued to expand.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "ETR-OCT26-NS; ETR-OCT26-PV; R-004; R-008",
+    ""
+   ],
+   [
+    "",
+    "Hypothesis",
+    "The recovery signal may be associated with later Net New ARR outcomes, but mechanism, lag, and confounders remain unvalidated.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "SIG-02; KPI-003; R-021",
+    ""
+   ],
+   [
+    "",
+    "Open question",
+    "What are the cohort and regional Ns, and what approved bands should govern Z-Score interpretation?",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "OQ-014; OQ-005",
+    ""
+   ],
+   [
+    "",
+    "Recommended action",
+    "Approve, revise, or reject SIG-02 and the SIG-02 → KPI-003 bridge; then backtest against historical vintages.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "Signal Builder; KPI Bridge; Backtest Required",
+    ""
+   ],
+   [
+    "Three drivers",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Demand recovery",
+    "Net Score 37.14; +10.54 vs Oct 2025; Pervasion 40.90.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "ETR-OCT26-NS; ETR-OCT26-PV",
+    ""
+   ],
+   [
+    "",
+    "Selective enterprise strength",
+    "G2000 42.61 and F500 42.68 exceed overall 37.14; Large Organizations 35.82.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "ETR-OCT26-G2K; F500; LARGE",
+    ""
+   ],
+   [
+    "",
+    "Operating confirmation — not validation",
+    "Net New ARR $332.8M (+51%) is directionally consistent with recovery, but does not prove ETR prediction.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "REF-E-F04; XL-01; R-015",
+    ""
+   ]
+  ],
+  "sections": [
+   {
+    "section": "Client-provided fact",
+    "text": "October 2026 Net Score was 37.14, Pervasion was 40.90, and N was 420. Q/Q and Y/Y Z-Scores were 0.129 and 0.892.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV",
+     "ETR-OCT26-ZS"
+    ],
+    "ruleIds": []
+   },
+   {
+    "section": "ETR interpretation",
+    "text": "Recovery persists. The latest sequential move is modest, while the year-over-year improvement is materially larger. Breadth continued to expand.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV"
+    ],
+    "ruleIds": [
+     "R-004",
+     "R-008"
+    ]
+   },
+   {
+    "section": "Hypothesis",
+    "text": "The recovery signal may be associated with later Net New ARR outcomes, but mechanism, lag, and confounders remain unvalidated.",
+    "citedIds": [
+     "SIG-02",
+     "KPI-003"
+    ],
+    "ruleIds": [
+     "R-021"
+    ]
+   },
+   {
+    "section": "Open question",
+    "text": "What are the cohort and regional Ns, and what approved bands should govern Z-Score interpretation?",
+    "citedIds": [
+     "OQ-014",
+     "OQ-005"
+    ],
+    "ruleIds": []
+   },
+   {
+    "section": "Demand recovery",
+    "text": "Net Score 37.14; +10.54 vs Oct 2025; Pervasion 40.90.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV"
+    ],
+    "ruleIds": []
+   },
+   {
+    "section": "Selective enterprise strength",
+    "text": "G2000 42.61 and F500 42.68 exceed overall 37.14; Large Organizations 35.82.",
+    "citedIds": [
+     "ETR-OCT26-G2K"
+    ],
+    "ruleIds": []
+   },
+   {
+    "section": "Operating confirmation — not validation",
+    "text": "Net New ARR $332.8M (+51%) is directionally consistent with recovery, but does not prove ETR prediction.",
+    "citedIds": [
+     "REF-E-F04",
+     "XL-01"
+    ],
+    "ruleIds": [
+     "R-015"
+    ]
+   }
+  ],
+  "active": false,
+  "status": "superseded",
+  "staleProvenance": {
+   "reason": "This draft was assembled before the October 2026 reading was canonicalised and is built on evidence that has since been archived (ETR-OCT26-NS, ETR-OCT26-PV). It is kept verbatim for audit. Regenerate it from the Create views, which build from the active observation.",
+   "citesArchivedEvidence": [
+    "ETR-OCT26-NS",
+    "ETR-OCT26-PV"
+   ],
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ },
+ {
+  "id": "SUNDAY-SIGNAL",
+  "originalId": "Sunday Signal",
+  "objectType": "Output",
+  "title": "Sunday Signal",
+  "statement": "Sunday Signal — working draft assembled in the workbook",
+  "description": "",
+  "classification": "Recommended action",
+  "sourceLane": "",
+  "sourceType": "",
+  "sourceName": "",
+  "sourceFile": "",
+  "sourceWorksheet": "Sunday Signal",
+  "sourceRow": "",
+  "dataset": "",
+  "period": "",
+  "currentOrHistorical": "",
+  "theme": "",
+  "metric": "",
+  "value": "",
+  "priorValue": "",
+  "comparisonValue": "",
+  "trend": "",
+  "nBase": "",
+  "confidence": "",
+  "importance": "",
+  "verificationStatus": "Human Review Required",
+  "workflowStatus": "Human Review Required",
+  "supportingIds": [],
+  "contradictingIds": [],
+  "relatedEvidenceIds": [
+   "ETR-OCT26-G2K",
+   "ETR-OCT26-NS",
+   "ETR-OCT26-PV",
+   "ETR-OCT26-ZS",
+   "OQ-005",
+   "OQ-006",
+   "OQ-008",
+   "OQ-014"
+  ],
+  "relatedSignalIds": [],
+  "relatedKpiIds": [],
+  "relatedRiskIds": [],
+  "relatedQuestionIds": [],
+  "relatedRuleIds": [
+   "R-002",
+   "R-003",
+   "R-004",
+   "R-005",
+   "R-006",
+   "R-007",
+   "R-008",
+   "R-010",
+   "R-011",
+   "R-015",
+   "R-016",
+   "R-020",
+   "R-021",
+   "R-025",
+   "R-026"
+  ],
+  "sourceNeededFields": [],
+  "caveat": "",
+  "prohibitedConclusions": "",
+  "recommendedNextAction": "",
+  "rows": [
+   [
+    "Sunday Signal Builder — CrowdStrike",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Editable working draft assembled from classified research objects. Every block retains evidence IDs and claim type.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Section",
+    "Draft Text",
+    "Classification",
+    "Evidence IDs",
+    "Rule IDs",
+    "Confidence",
+    "Caveat",
+    "Include?",
+    "Researcher Edit"
+   ],
+   [
+    "Headline",
+    "CrowdStrike’s October demand signal holds: breadth expands while sequential momentum levels off.",
+    "ETR Interpretation",
+    "ETR-OCT26-NS; ETR-OCT26-PV",
+    "R-004; R-008",
+    "Medium-High",
+    "Human Review Required",
+    "Yes",
+    ""
+   ],
+   [
+    "Why now",
+    "October 2026 is the current TSIS period; July 2026 is historical comparison.",
+    "Client-provided fact",
+    "ETR-OCT26-NS; ETR-OCT26-PV",
+    "R-002; R-025",
+    "High",
+    "Preserve source period labels",
+    "Yes",
+    ""
+   ],
+   [
+    "What changed",
+    "Net Score reached 37.14, up 0.69 versus July and 10.54 versus October 2025; Pervasion reached 40.90.",
+    "Client-provided fact",
+    "ETR-OCT26-NS; ETR-OCT26-PV",
+    "R-003; R-005",
+    "High",
+    "Sequential move is relatively flat under the wording convention",
+    "Yes",
+    ""
+   ],
+   [
+    "Z-Score context",
+    "Q/Q Z-Score was 0.129 and Y/Y Z-Score was 0.892. Both are positive; approved strength bands remain Source Needed.",
+    "Client-provided fact / interpretation",
+    "ETR-OCT26-ZS",
+    "R-006; R-007; R-026",
+    "Medium",
+    "No significance or prediction claim",
+    "Yes",
+    ""
+   ],
+   [
+    "Where strongest",
+    "G2000 and Fortune 500 Net Scores exceeded overall, while Large Organizations were below overall.",
+    "ETR Interpretation",
+    "ETR-OCT26-G2K; F500; LARGE",
+    "R-010; R-011",
+    "Medium",
+    "Cohort Ns not supplied",
+    "Yes",
+    ""
+   ],
+   [
+    "What it does not prove",
+    "The current survey evidence does not prove revenue, ARR, regional revenue, or a causal demand-to-KPI relationship.",
+    "ETR Interpretation",
+    "R-015; R-016; R-021",
+    "R-015; R-016",
+    "High",
+    "Retain in final draft",
+    "Yes",
+    ""
+   ],
+   [
+    "What to watch",
+    "Resolve cohort Ns, current retention, shared accounts, Z-Score bands, and the Signal→KPI lag.",
+    "Recommended action",
+    "OQ-005; OQ-006; OQ-008; OQ-014",
+    "R-020",
+    "Medium-High",
+    "Human Review Required",
+    "Yes",
+    ""
+   ]
+  ],
+  "sections": [
+   {
+    "section": "Headline",
+    "text": "CrowdStrike’s October demand signal holds: breadth expands while sequential momentum levels off.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV"
+    ],
+    "ruleIds": [
+     "R-004",
+     "R-008"
+    ]
+   },
+   {
+    "section": "Why now",
+    "text": "October 2026 is the current TSIS period; July 2026 is historical comparison.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV"
+    ],
+    "ruleIds": [
+     "R-002",
+     "R-025"
+    ]
+   },
+   {
+    "section": "What changed",
+    "text": "Net Score reached 37.14, up 0.69 versus July and 10.54 versus October 2025; Pervasion reached 40.90.",
+    "citedIds": [
+     "ETR-OCT26-NS",
+     "ETR-OCT26-PV"
+    ],
+    "ruleIds": [
+     "R-003",
+     "R-005"
+    ]
+   },
+   {
+    "section": "Z-Score context",
+    "text": "Q/Q Z-Score was 0.129 and Y/Y Z-Score was 0.892. Both are positive; approved strength bands remain Source Needed.",
+    "citedIds": [
+     "ETR-OCT26-ZS"
+    ],
+    "ruleIds": [
+     "R-006",
+     "R-007",
+     "R-026"
+    ]
+   },
+   {
+    "section": "Where strongest",
+    "text": "G2000 and Fortune 500 Net Scores exceeded overall, while Large Organizations were below overall.",
+    "citedIds": [
+     "ETR-OCT26-G2K"
+    ],
+    "ruleIds": [
+     "R-010",
+     "R-011"
+    ]
+   },
+   {
+    "section": "What it does not prove",
+    "text": "The current survey evidence does not prove revenue, ARR, regional revenue, or a causal demand-to-KPI relationship.",
+    "citedIds": [],
+    "ruleIds": [
+     "R-015",
+     "R-016",
+     "R-021",
+     "R-015",
+     "R-016"
+    ]
+   },
+   {
+    "section": "What to watch",
+    "text": "Resolve cohort Ns, current retention, shared accounts, Z-Score bands, and the Signal→KPI lag.",
+    "citedIds": [
+     "OQ-005",
+     "OQ-006",
+     "OQ-008",
+     "OQ-014"
+    ],
+    "ruleIds": [
+     "R-020"
+    ]
+   }
+  ],
+  "active": false,
+  "status": "superseded",
+  "staleProvenance": {
+   "reason": "This draft was assembled before the October 2026 reading was canonicalised and is built on evidence that has since been archived (ETR-OCT26-NS, ETR-OCT26-PV). It is kept verbatim for audit. Regenerate it from the Create views, which build from the active observation.",
+   "citesArchivedEvidence": [
+    "ETR-OCT26-NS",
+    "ETR-OCT26-PV"
+   ],
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ },
+ {
+  "id": "UPDATE-EMAIL",
+  "originalId": "Update Email",
+  "objectType": "Output",
+  "title": "Update Email",
+  "statement": "Update Email — working draft assembled in the workbook",
+  "description": "",
+  "classification": "Recommended action",
+  "sourceLane": "",
+  "sourceType": "",
+  "sourceName": "",
+  "sourceFile": "",
+  "sourceWorksheet": "Update Email",
+  "sourceRow": "",
+  "dataset": "",
+  "period": "",
+  "currentOrHistorical": "",
+  "theme": "",
+  "metric": "",
+  "value": "",
+  "priorValue": "",
+  "comparisonValue": "",
+  "trend": "",
+  "nBase": "",
+  "confidence": "",
+  "importance": "",
+  "verificationStatus": "Human Review Required",
+  "workflowStatus": "Human Review Required",
+  "supportingIds": [],
+  "contradictingIds": [],
+  "relatedEvidenceIds": [
+   "ETR-OCT26-F500",
+   "ETR-OCT26-G2K",
+   "ETR-OCT26-LARGE.\n\nHuman Review Required.",
+   "ETR-OCT26-PV",
+   "ETR-OCT26-ZS"
+  ],
+  "relatedSignalIds": [],
+  "relatedKpiIds": [],
+  "relatedRiskIds": [],
+  "relatedQuestionIds": [],
+  "relatedRuleIds": [],
+  "sourceNeededFields": [],
+  "caveat": "",
+  "prohibitedConclusions": "",
+  "recommendedNextAction": "",
+  "rows": [
+   [
+    "Research Update Email Builder — CrowdStrike",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Internal working draft generated from the same approved research objects. Edit locally; do not send without review.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Audience",
+    "ETR Research Team",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Purpose",
+    "Review October 2026 CrowdStrike signal and evidence",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Subject",
+    "CrowdStrike Signal Update — October 2026 TSIS",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Status",
+    "Working Draft — Human Review Required",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "Draft email",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   [
+    "",
+    "Team,\n\nBottom line: CrowdStrike’s October 2026 demand signal remains positive. Net Score was 37.14, up 0.69 points versus July 2026 and 10.54 points versus October 2025. Pervasion rose to 40.90.\n\nWhat changed: Sequential Net Score movement was modest, while the year-over-year recovery was materially larger. Q/Q and Y/Y Z-Scores were 0.129 and 0.892; the raw values are available, but approved interpretation bands remain Source Needed.\n\nResearch implication: The evidence supports continued recovery and broader deployment, with selective enterprise strength and geographic divergence. It does not validate a causal or predictive relationship to Net New ARR.\n\nReview requested: Please approve, revise, or reject SIG-02 and the proposed SIG-02 → KPI-003 bridge. We also need cohort/regional Ns, current retention, current shared-account data, and approved Z-Score methodology bands.\n\nEvidence: ETR-OCT26-NS; ETR-OCT26-PV; ETR-OCT26-ZS; ETR-OCT26-G2K; ETR-OCT26-F500; ETR-OCT26-LARGE.\n\nHuman Review Required.",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ]
+  ],
+  "sections": [],
+  "active": false,
+  "status": "superseded",
+  "staleProvenance": {
+   "reason": "This draft was assembled before the October 2026 reading was canonicalised and is built on evidence that has since been archived (ETR-OCT26-PV). It is kept verbatim for audit. Regenerate it from the Create views, which build from the active observation.",
+   "citesArchivedEvidence": [
+    "ETR-OCT26-PV"
+   ],
+   "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+   "canonicalReading": "Net Score 38.05, Deployment Breadth (Pervasion) 41.22, N 452, All Respondents"
+  }
+ }
+]

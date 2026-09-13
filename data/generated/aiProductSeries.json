@@ -1,0 +1,288 @@
+[
+ {
+  "groupId": "AIPS-WIDGET-USAGE",
+  "group": "Usage of AI Features",
+  "sourceId": "AIPS-WIDGET-USAGE",
+  "sourceName": "Usage of AI Features",
+  "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59",
+  "respondentCut": "CrowdStrike customers",
+  "periods": [
+   "Jul 2025",
+   "Jan 2026",
+   "Jul 2026"
+  ],
+  "registeredRows": "21 rows",
+  "accessStatus": "Accessible",
+  "rowLevelSupplied": true,
+  "categories": [
+   {
+    "category": "Rolled out",
+    "period": "Jul 2025",
+    "value": 27.2,
+    "unit": "%"
+   },
+   {
+    "category": "Rolled out",
+    "period": "Jan 2026",
+    "value": 28.3,
+    "unit": "%"
+   },
+   {
+    "category": "Rolled out",
+    "period": "Jul 2026",
+    "value": 24.2,
+    "unit": "%"
+   },
+   {
+    "category": "Evaluating",
+    "period": "Jul 2025",
+    "value": 23.9,
+    "unit": "%"
+   },
+   {
+    "category": "Evaluating",
+    "period": "Jan 2026",
+    "value": 18.3,
+    "unit": "%"
+   },
+   {
+    "category": "Evaluating",
+    "period": "Jul 2026",
+    "value": 27.0,
+    "unit": "%"
+   },
+   {
+    "category": "Plan to evaluate",
+    "period": "Jul 2025",
+    "value": 18.3,
+    "unit": "%"
+   },
+   {
+    "category": "Plan to evaluate",
+    "period": "Jan 2026",
+    "value": 22.8,
+    "unit": "%"
+   },
+   {
+    "category": "Plan to evaluate",
+    "period": "Jul 2026",
+    "value": 20.2,
+    "unit": "%"
+   }
+  ],
+  "evidence": [
+   {
+    "evidenceId": "EV-003",
+    "statement": "In Jul 2026, 24.2% of CrowdStrike customers had rolled out Charlotte AI, 27.0% were evaluating/piloting, and 20.2% planned to evaluate within 6 months",
+    "supportingData": "Rolled out: 27.2%→28.3%→24.2%; Evaluating: 23.9%→18.3%→27.0%; Plan to evaluate: 18.3%→22.8%→20.2%",
+    "metric": "Usage of AI Features",
+    "value": "24.2% rolled out",
+    "trend": "Active pipeline; evaluation surge in Jul 2026",
+    "nBase": "178",
+    "confidence": "High",
+    "verification": "Verified",
+    "caveat": "Usage metric covers CrowdStrike customers only, not general market",
+    "relatedSignals": [
+     "SIG-12"
+    ],
+    "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59"
+   }
+  ]
+ },
+ {
+  "groupId": "AIPS-WIDGET-VALUE",
+  "group": "Feature Value Among Current Users",
+  "sourceId": "AIPS-WIDGET-VALUE",
+  "sourceName": "Feature Value Among Current Users",
+  "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59",
+  "respondentCut": "Current Users",
+  "periods": [
+   "Jul 2025",
+   "Jan 2026",
+   "Jul 2026"
+  ],
+  "registeredRows": "15 rows",
+  "accessStatus": "Accessible",
+  "rowLevelSupplied": true,
+  "categories": [
+   {
+    "category": "Extremely+Very",
+    "period": "Jul 2025",
+    "value": 40.8,
+    "unit": "%"
+   },
+   {
+    "category": "Extremely+Very",
+    "period": "Jan 2026",
+    "value": 45.1,
+    "unit": "%"
+   },
+   {
+    "category": "Extremely+Very",
+    "period": "Jul 2026",
+    "value": 57.1,
+    "unit": "%"
+   }
+  ],
+  "evidence": [
+   {
+    "evidenceId": "EV-004",
+    "statement": "Extremely Valuable + Very Valuable ratings rose from 40.8% (Jul 2025) to 57.1% (Jul 2026) among current users",
+    "supportingData": "Extremely+Very: Jul25=40.8%, Jan26=45.1%, Jul26=57.1%",
+    "metric": "Feature Value",
+    "value": "57.1% top-2 box",
+    "trend": "Positive trend",
+    "nBase": "42",
+    "confidence": "High",
+    "verification": "Verified",
+    "caveat": "N=42 in Jul 2026 is relatively small",
+    "relatedSignals": [
+     "SIG-12"
+    ],
+    "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59"
+   }
+  ]
+ },
+ {
+  "groupId": "AIPS-WIDGET-IMPACT",
+  "group": "Impact on Continual Usage Among Current Users",
+  "sourceId": "AIPS-WIDGET-IMPACT",
+  "sourceName": "Impact on Continual Usage Among Current Users",
+  "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59",
+  "respondentCut": "Current Users",
+  "periods": [
+   "Jul 2025",
+   "Jan 2026",
+   "Jul 2026"
+  ],
+  "registeredRows": "15 rows",
+  "accessStatus": "Accessible",
+  "rowLevelSupplied": true,
+  "categories": [
+   {
+    "category": "Strong+Significant",
+    "period": "Jul 2025",
+    "value": 34.6,
+    "unit": "%"
+   },
+   {
+    "category": "Strong+Significant",
+    "period": "Jan 2026",
+    "value": 35.3,
+    "unit": "%"
+   },
+   {
+    "category": "Strong+Significant",
+    "period": "Jul 2026",
+    "value": 50.0,
+    "unit": "%"
+   }
+  ],
+  "evidence": [
+   {
+    "evidenceId": "EV-006",
+    "statement": "Strong+Significant impact on continued usage rose from 34.6% (Jul 2025) to 50.0% (Jul 2026)",
+    "supportingData": "Strong+Significant: Jul25=34.6%, Jan26=35.3%, Jul26=50.0%",
+    "metric": "Impact on Continual Usage",
+    "value": "50.0% strong/significant",
+    "trend": "Positive trend",
+    "nBase": "42",
+    "confidence": "High",
+    "verification": "Verified",
+    "caveat": "N=42; \"Strong impact\" alone rose from 22.4% to 33.3%",
+    "relatedSignals": [
+     "SIG-12"
+    ],
+    "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59"
+   }
+  ]
+ },
+ {
+  "groupId": "AIPS-WIDGET-WTP",
+  "group": "Willingness to Pay Among Current Users",
+  "sourceId": "AIPS-WIDGET-WTP",
+  "sourceName": "Willingness to Pay Among Current Users",
+  "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59",
+  "respondentCut": "Current Users",
+  "periods": [
+   "Jul 2025",
+   "Jan 2026",
+   "Jul 2026"
+  ],
+  "registeredRows": "18 rows",
+  "accessStatus": "Accessible",
+  "rowLevelSupplied": true,
+  "categories": [
+   {
+    "category": "WTP 0%",
+    "period": "Jul 2025",
+    "value": 30.6,
+    "unit": "%"
+   },
+   {
+    "category": "WTP 0%",
+    "period": "Jan 2026",
+    "value": 17.6,
+    "unit": "%"
+   },
+   {
+    "category": "WTP 0%",
+    "period": "Jul 2026",
+    "value": 16.7,
+    "unit": "%"
+   },
+   {
+    "category": "WTP 11-25%+",
+    "period": "Jul 2025",
+    "value": 22.4,
+    "unit": "%"
+   },
+   {
+    "category": "WTP 11-25%+",
+    "period": "Jan 2026",
+    "value": 31.4,
+    "unit": "%"
+   },
+   {
+    "category": "WTP 11-25%+",
+    "period": "Jul 2026",
+    "value": 42.9,
+    "unit": "%"
+   }
+  ],
+  "evidence": [
+   {
+    "evidenceId": "EV-005",
+    "statement": "Share willing to pay 0% extra dropped from 30.6% (Jul 2025) to 16.7% (Jul 2026); share willing to pay 11-25%+ rose from 22.4% to 42.9%",
+    "supportingData": "WTP 0%: 30.6%→17.6%→16.7%; WTP 11-25%+: 22.4%→31.4%→42.9%",
+    "metric": "Willingness to Pay",
+    "value": "16.7% unwilling",
+    "trend": "Improving monetization signal",
+    "nBase": "42",
+    "confidence": "High",
+    "verification": "Verified",
+    "caveat": "N=42 in Jul 2026",
+    "relatedSignals": [
+     "SIG-12"
+    ],
+    "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59"
+   }
+  ]
+ },
+ {
+  "groupId": "AIPS-WIDGET-COST",
+  "group": "Consumption Portion of Cost",
+  "sourceId": "AIPS-WIDGET-COST",
+  "sourceName": "Consumption Portion of Cost",
+  "sourceLocation": "https://new.etr.ai/analyzers/b249e960-262f-4201-886a-a93c38876af3?categories=3&products=59",
+  "respondentCut": "Not specified",
+  "periods": [
+   "Jul 2026"
+  ],
+  "registeredRows": "5 rows, Jul 2026 only",
+  "accessStatus": "Accessible",
+  "rowLevelSupplied": false,
+  "categories": [],
+  "evidence": []
+ }
+]

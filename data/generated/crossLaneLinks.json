@@ -1,0 +1,86 @@
+[
+ {
+  "id": "XL-01",
+  "theme": "Demand recovery / operating acceleration",
+  "etrEvidence": "ETR-OCT26-NS; ETR-OCT26-PV; ETR-OCT26-INTENT; ETR-OCT26-ZS",
+  "reflexivityObjects": "REF-E-F01; REF-E-F03; REF-E-F04; REF-E-F08",
+  "relationshipType": "Parallel evidence / consistent with",
+  "statement": "October 2026 demand and breadth evidence, positive raw Z-Scores, and company-reported ARR/Net New ARR outcomes move in a directionally consistent pattern.",
+  "classification": "Hypothesis",
+  "doesNotProve": "Does not prove ETR measures or Z-Score caused or predicted company outcomes; lag, bands, and confounders require testing.",
+  "recommendedAction": "Review quarter alignment; test one KPI at a time.",
+  "sourceRow": 32
+ },
+ {
+  "id": "XL-02",
+  "theme": "Platform consolidation / Falcon Flex",
+  "etrEvidence": "ETR Edge consolidation and footprint-expansion observations in JUL26 report",
+  "reflexivityObjects": "REF-INT-02; REF-E-O02; REF-E-O03",
+  "relationshipType": "Qualitative corroboration",
+  "statement": "ETR qualitative evidence and company-reported module/Flex evidence both reference consolidation or footprint expansion.",
+  "classification": "Hypothesis",
+  "doesNotProve": "Does not isolate Flex accounts in ETR or show that Flex caused module adoption.",
+  "recommendedAction": "Compare Flex and non-Flex cohorts if available.",
+  "sourceRow": 33
+ },
+ {
+  "id": "XL-03",
+  "theme": "Large-enterprise footprint",
+  "etrEvidence": "ETR-OCT26-G2K; ETR-OCT26-F500; ETR-OCT26-LARGE",
+  "reflexivityObjects": "REF-E-O01; REF-E-O03; REF-E-O04",
+  "relationshipType": "Context bridge",
+  "statement": "Select indexed enterprise cohorts exceed overall Net Score, while Large Organizations are below overall; enterprise strength is selective.",
+  "classification": "Hypothesis",
+  "doesNotProve": "Does not establish enterprise revenue contribution; cohort N is Source Needed.",
+  "recommendedAction": "Select a reported large-customer KPI or mark Source Needed.",
+  "sourceRow": 34
+ },
+ {
+  "id": "XL-04",
+  "theme": "AI security / Charlotte AI",
+  "etrEvidence": "ETR JUL26 report: Charlotte AI traction",
+  "reflexivityObjects": "REF-INT-03; REF-E-P04",
+  "relationshipType": "Parallel emerging evidence",
+  "statement": "ETR product-adoption evidence and company commentary both point to rising Charlotte/AIDR activity.",
+  "classification": "Hypothesis",
+  "doesNotProve": "Absolute AIDR/Charlotte ARR base and incremental budget source remain unspecified.",
+  "recommendedAction": "Retrieve absolute product KPI and distinguish new budget from reallocation.",
+  "sourceRow": 35
+ },
+ {
+  "id": "XL-05",
+  "theme": "SIEM expansion / displacement",
+  "etrEvidence": "ETR master package PP-013 and current evidence review",
+  "reflexivityObjects": "REF-E-P02; REF-E-C01",
+  "relationshipType": "Support plus contradiction",
+  "statement": "Company-reported SIEM ARR growth and named displacement commentary sit alongside older negative qualitative scope evidence in the ETR package.",
+  "classification": "Interpretation",
+  "doesNotProve": "A single older interview cannot establish current market position; management-stated displacement needs corroboration.",
+  "recommendedAction": "Use current shared-account or displacement evidence.",
+  "sourceRow": 36
+ },
+ {
+  "id": "XL-06",
+  "theme": "Post-outage resilience",
+  "etrEvidence": "ETR-CUR-001; ETR-CUR-002; ETR-CUR-004",
+  "reflexivityObjects": "REF-E-F04; REF-E-O05; REF-INTP-01",
+  "relationshipType": "Recovery hypothesis",
+  "statement": "Current ETR demand metrics improve while company evidence reports stronger net-new ARR; retention evidence in Reflexivity remains incomplete.",
+  "classification": "Hypothesis",
+  "doesNotProve": "Does not establish full normalization, churn quality, or the effect of customer commitment packages.",
+  "recommendedAction": "Resolve exact retention and CCP-lapsing evidence.",
+  "sourceRow": 37
+ },
+ {
+  "id": "XL-07",
+  "theme": "Geographic demand divergence",
+  "etrEvidence": "ETR-OCT26-REGION",
+  "reflexivityObjects": "Company geographic revenue KPI Source Needed",
+  "relationshipType": "Hypothesis",
+  "statement": "October regional Net Scores vary materially across the supplied cuts.",
+  "classification": "ETR Interpretation",
+  "doesNotProve": "Does not prove regional revenue outcomes or causal drivers.",
+  "recommendedAction": "Obtain cut Ns, map geographies, and compare later company disclosures.",
+  "sourceRow": 38
+ }
+]

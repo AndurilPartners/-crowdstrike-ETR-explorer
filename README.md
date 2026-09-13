@@ -1,14 +1,14 @@
 # CrowdStrike REVEAL Company Explorer
 
-A company explorer built over one governed evidence workbook.
+A company explorer built over one governed evidence workbook — the **CrowdStrike REVEAL
+V5.0 Research Lineage Workbench**.
 
 It opens on **Company**, and the first thing it shows is the company, the primary signal,
-and one editorial chart. A short headline and a two-sentence deck say what the reading is;
-below them a single chart shows spending intent and deployment breadth for the periods the
-workbook actually supplies; below that, the story in three moves, the counterpoint, and
-what to watch next. The governed research layer — evidence, lineage, KPI bridges, rules,
-sources, risks, methodology, claim manifests — is all still here, one click down, and it is
-what every sentence above is built from.
+and one editorial chart: every TSIS period the workbook supplies, Net Score and Deployment
+Breadth (Pervasion) side by side. Below that, the story in three moves, the counterpoint,
+and what to watch next. The governed research layer — evidence, lineage, KPI bridges,
+rules, sources, risks, methodology, claim manifests — is all one click down, and it is what
+every sentence above is built from.
 
 The design intent in one line: the reader should encounter the company and the signal
 first, the evidence should always be one click away, and the machinery should be powerful
@@ -16,6 +16,10 @@ when it is needed and quiet when it is not. There is no mode to switch between t
 states — every view simply is what it is, and the research layer is reached the same way
 every time: a link, a drawer, an *Inspect claims* toggle, never a global setting that
 changes what the whole application shows.
+
+**Nothing in this application is asserted that the workbook does not state.** Where two
+sources disagree, both are shown. Where a value is missing, the gap is named. Where a
+relationship is a candidate rather than a finding, it says so.
 
 ---
 
@@ -25,10 +29,41 @@ Double-click **`index.html`**. It lands on the Company page.
 
 No server, no npm, no build step, no internet connection. The application runs under
 `file://` with plain HTML, CSS and JavaScript. There is no React, no CDN, no external font,
-no API and no `fetch()`. Python is used only during the build, to read the workbook. The one
-image in the application — the CrowdStrike wordmark — is a local file under `assets/`; it is
-never fetched from a remote host, and it fails gracefully (no broken-image icon) if it is
-ever moved or removed.
+no API and no `fetch()` — which is also why the generated data ships as a `.js` file that
+assigns a global rather than as JSON the page would have to fetch: a browser opening a
+local file cannot fetch a sibling JSON file. Python is used only during the build, to read
+the workbook. The one image — the CrowdStrike wordmark — is a local file under `assets/`
+and fails gracefully if it is ever moved.
+
+## Commands
+
+| What | Command |
+| --- | --- |
+| Local development | *(none needed)* — open `index.html`, or serve the folder with any static server |
+| Regenerate data from the workbook | `python3 build_v5_data.py [path/to/workbook.xlsx]` |
+| Interface tests | `node test.mjs` |
+| Lint | `node lint.mjs` |
+| Syntax check | `node --check app.js` |
+| Python lint | `python3 -m pyflakes build_v5_data.py extract_workbook.py` |
+| Production build | *(none)* — the folder is the deployable artifact |
+
+The full rebuild cycle after a workbook change:
+
+```
+python3 build_v5_data.py data/source/CrowdStrike_ETR_V5_Full_Rebuild.xlsx
+node lint.mjs                       # 0 errors required
+node test.mjs                       # writes ux-checks.json
+python3 build_v5_data.py            # carries the interface results back into the app
+```
+
+`lint.mjs` concatenates the four scripts in `index.html` order into one program and lints
+that, because the browser loads them into one shared global scope and there is no module
+system to tell a per-file linter about it. It exits non-zero on any error.
+
+`build_v5_data.py` exits non-zero and writes nothing if a blocking data-integrity error is
+found. Workbook items marked *Needs Validation*, *Source Needed*, *Open Question* or
+*Conflicting* are warnings, not failures: that is research state, and the application's job
+is to show it rather than resolve it.
 
 ## Files
 
@@ -36,24 +71,54 @@ ever moved or removed.
 | --- | --- |
 | `index.html` | Application shell — header, grouped navigation rail, view containers, drawer, source pane |
 | `styles.css` | The screen design system |
-| `print.css` | Print styling for the seven named surfaces, loaded `media="print"` |
-| `storage-migration.js` | Cleans up and migrates a saved `localStorage` state from an earlier build — drops the old mode field, renames the old classification label, stamps a schema version |
-| `narrative-templates.js` | Deterministic prose assembly — every paragraph shared across the Company page, the Narrative brief, the Executive Brief and both generators |
+| `print.css` | Print styling for the named print surfaces, loaded `media="print"` |
+| `storage-migration.js` | Migrates a saved `localStorage` state from an earlier build |
+| `narrative-templates.js` | Deterministic prose assembly shared by the Company page, the Narrative brief, the Executive Brief and both generators |
+| `build_v5_data.py` | **The build step.** Reads the V5 workbook with openpyxl and writes `reveal-data.js`, `data/generated/*.json` and `validation-report.json` |
 | `reveal-data.js` | Generated. Assigns the normalized object model to `window.REVEAL_DATA` |
+| `data/source/` | Where the source workbook goes. Git-ignored — the workbook is proprietary research and is not published with the site |
+| `data/generated/` | The same generated data as one JSON file per section, for inspection and for any other consumer |
 | `app.js` | The application. Consumes `window.REVEAL_DATA`; no other input |
-| `extract_workbook.py` | Build step. Reads the workbook with openpyxl and writes `reveal-data.js` |
+| `extract_workbook.py` | The previous V3.5 pipeline, kept for provenance. Not used by the current build |
 | `test.mjs` | The interface suite. Runs Playwright against the built app and writes `ux-checks.json` |
-| `ux-checks.json` | Generated by `test.mjs`, carried into the app by the extractor |
-| `validation-report.json` | Extraction, runtime and interface checks, targets, conflicts and counts |
-| `assets/crowdstrike-logo.png` | The CrowdStrike wordmark, used small and restrained across the header, the Company and Narrative pages, the Executive Brief, and the printed and branded-preview surfaces |
+| `ux-checks.json` | Generated by `test.mjs`, carried into the app by the build step |
+| `validation-report.json` | Extraction checks, warnings, dataset coverage, conflicts and counts |
+| `docs/v5-baseline-audit.md` | What the application and the stack looked like before the V5 rebuild |
+| `assets/crowdstrike-logo.png` | The CrowdStrike wordmark |
 
-Rebuild after a workbook change:
+### What is committed, and what is not
 
-```
-python3 extract_workbook.py <workbook.xlsx>
-node test.mjs                 # writes ux-checks.json
-python3 extract_workbook.py <workbook.xlsx>   # carries the interface results back in
-```
+| Artifact | Committed? | Why |
+| --- | --- | --- |
+| `reveal-data.js`, `data/generated/*.json` | **Yes** | The application cannot run without them, and there is no server-side build |
+| `validation-report.json`, `ux-checks.json` | **Yes** | They are the evidence that the build and the interface pass |
+| `data/source/*.xlsx` | **No** — git-ignored | Proprietary research. Another developer regenerates the data by dropping a copy at `data/source/` and running the build |
+| `reveal-data.v3_5.backup.js` | **No** — git-ignored | A local rollback copy of the previous workbook's data |
+
+Generated data carries only what the application displays: statements, values, periods,
+bases, confidences, IDs, source names and the sanitised source locations the workbook
+itself records. No credentials, tokens, headers, cookies or local file paths are written
+into it.
+
+---
+
+## The V5 data model
+
+| Section | What it holds |
+| --- | --- |
+| `tsisHistory` | Every supplied TSIS period: Net Score, Pervasion, citation base, respondent cut, source snapshot, verification status |
+| `tsisConflicts` | Snapshots the workbook marks *Conflicting* — kept beside their period, never merged into it |
+| `aiProductSeries` | The five registered Charlotte AI metric groups, with response categories, periods and bases |
+| `evidence` | The Evidence Library, every lane: ETR, ETR API, AI Product Series, Reflexivity, Edge, company and external |
+| `signals` | Signal Builder candidates with confidence, evidence strength, source gaps and reviewer decision |
+| `lineage` | Research Lineage rows — evidence → signal, with relationship type and review status |
+| `bridges` / `kpis` | Signal → KPI candidates, with linkage type, lag support and named confounders |
+| `researchQueue` | Open questions, risks and review items with priority, status, owner and expected source |
+| `rules` | The interpretation rule registry |
+| `interpretations` / `crossLaneLinks` | Reviewer readings and cross-lane synthesis rows |
+| `datasetCoverage` | Registered raw-dataset row counts reconciled against parsed rows, plus evidence counts by lane and dataset |
+| `researchTrace` | The six-stage source-to-output chain used by **How the Research Works** |
+| `proofPath` | The default lineage path, walked out of edges that actually exist in the graph |
 
 ---
 
@@ -61,8 +126,8 @@ python3 extract_workbook.py <workbook.xlsx>   # carries the interface results ba
 
 | Group | Views |
 | --- | --- |
-| **Explore** | Company · Narrative · Signals · Evidence · Lineage |
-| **Research** | KPI Bridges · Sources · Risks & Questions · Rules · Cohorts & Regions · Methodology |
+| **Explore** | Company · Narrative · **Charlotte AI** · Signals · Evidence · **Lineage trace** · Lineage graph |
+| **Research** | **How the Research Works** · KPI Bridges · Sources · Risks & Questions · Rules · Cohorts & Regions · Methodology |
 | **Create** | Sunday Signal · Update Email · Audience Translator · Executive Brief |
 
 The Narrative route is a content destination — a full digital research brief — not a mode:
@@ -142,22 +207,27 @@ literal **Source Needed** status still appears exactly where it always has in a 
 export context — a table cell, a CSV export, a claim manifest — because that is a controlled
 status value, not reading-path prose.
 
-## The lead chart
+## The lead chart — CrowdStrike TSIS: Spending Intent and Deployment Breadth
 
-One frame, two series, and a strict rule about what may be drawn.
+One frame, two series, every period the V5 workbook supplies.
 
-- **Deployment breadth (Pervasion)** is supplied for all twelve survey periods, so it is
-  drawn as a continuous line.
-- **Spending intent (Net Score)** is supplied for three of those twelve. It is drawn as
-  points, with a connecting segment only where two *consecutive* periods are both supplied.
-  The long gap between October 2025 and July 2026 is drawn as a faint dashed rule labelled
-  *no intervening periods supplied* — nothing is interpolated, and no line implies data
-  that does not exist.
-- The current period is highlighted; July 2026 is labelled *historical*.
-- Latest values are labelled directly rather than through a legend lookup.
-- Every point is hoverable, keyboard-focusable and opens its evidence object.
-- The chart carries a `<title>`, a `<desc>` text summary, and a **Show the numbers** toggle
-  that reveals the same data as a table with unsupplied periods marked *not supplied*.
+- **Net Score** and **Deployment Breadth (Pervasion)** are both supplied for all twelve
+  survey periods from January 2024 to October 2026, so both are drawn as continuous lines.
+  Every vertex is a supplied value; nothing between two periods is interpolated.
+- The presentation wording and the canonical metric are both kept: the series is labelled
+  **Deployment Breadth (Pervasion)**, never silently renamed.
+- Each point carries its **citation base**, its **respondent cut** and its **source
+  snapshot** in the tooltip, in its accessible name, and in the data table — so none of it
+  depends on hovering.
+- **The two October 2026 snapshots are both on record.** The V5-designated current
+  observation (`TSIS-API-2026-09-12`, Net Score 38.05, Pervasion 41.22, N 452) is the
+  plotted one. The earlier snapshot (`TSIS-USER-SNAPSHOT`, Net Score 37.14, Pervasion
+  40.90) is drawn as a hollow marker at the same period, listed in the table, and stated in
+  words beneath the chart. Neither is averaged into the other.
+- **Show the numbers** opens the full table — period, both metrics, base, cut, source and
+  status — and **Download CSV** exports exactly those rows.
+- *What this measures* and *what this does not prove* sit under the chart, not in a
+  footnote.
 
 ## The Narrative view
 
@@ -186,6 +256,49 @@ change without changing a fact. Every claim carries a full manifest reachable be
 carrying the wordmark, and prints as its own named surface. Like the other generators, its
 Human Review status lives in its own chrome, not the global header, and no object ID appears
 in its body by default.
+
+## CrowdStrike Charlotte AI
+
+`#charlotte` carries the ETR **AI Product Series**, one panel per registered metric group:
+Usage of AI Features · Feature Value Among Current Users · Impact on Continual Usage Among
+Current Users · Willingness to Pay Among Current Users · Consumption Portion of Cost.
+
+Each panel states its **respondent cut**, its **survey periods**, its **N / base** and its
+**verification status**, then shows every response category as its own row across every
+period, exactly as the workbook words it. Where a label combines two response options —
+*Extremely + Very Valuable* — the panel says that the combination is the workbook's own
+summary, not a calculation made here. Every panel has an accessible table and a CSV
+download.
+
+**Consumption Portion of Cost** is registered as a source but carries no row-level values
+in this workbook. The panel says so, names what the register records, and shows no figure.
+Nothing is estimated to close the gap.
+
+Each panel also states what the group does not prove. Stated impact on continued usage is
+not observed retention. Stated willingness to pay is not realised revenue. Rollout share is
+not licences, seats or market share.
+
+## How the Research Works
+
+`#how` is the plain-language walkthrough: one worked example carried end to end, through
+six stages — **Raw Source → Observation → Evidence Object → Signal → Interpretation →
+Output**. Each stage shows the exact workbook content, the object ID it is held as, what
+that stage did to the material it received, its classification, and what it still does not
+prove.
+
+The page ends where the research ends: at a **KPI candidate** held as a hypothesis with an
+unestablished lag and named confounders — not at a conclusion.
+
+## Lineage trace
+
+`#trace` shows lineage as a plain stepper — **Evidence → Signal → KPI candidate →
+Output** — with the recorded lineage rows beneath it in a table, each with its relationship
+type and review status. The full interactive graph is still at `#lineage`, one click away,
+for when the shape of the neighbourhood is the question.
+
+Lineage rows migrated from the pre-V5 sheet name evidence under the old ID convention.
+Those rows are shown as **unresolved** rather than re-pointed at a V5 object, because
+matching them is a research decision, not a display one.
 
 ## Update Email — clean email first
 
@@ -299,15 +412,17 @@ opened on screen.
 
 | Layer | Count | Where it runs |
 | --- | --- | --- |
-| Extraction checks | 17 | Python, when `reveal-data.js` is built |
+| Extraction checks | 22 | Python, in `build_v5_data.py`, when the data is built |
 | Runtime checks | 14 | The browser, every time Methodology & Validation opens |
-| Interface checks | 133 | Playwright, in `test.mjs` |
+| Interface checks | 182 | Playwright, in `test.mjs` |
 
-All checks pass, including **V-26 Print Brief**, which exercises the scoping mechanism —
-paint the narrative brief, scope the document to it, confirm it is the only view showing
-and that the question and short answer survive — and **V-29**, which confirms there is no
-global Human Review badge anywhere in the application and that every generator's own chrome
-carries its review status correctly.
+All checks pass. The extraction checks are the ones that can stop a build: they confirm the
+workbook identifies itself as V5, that every canonical worksheet is present, that the TSIS
+history covers every supplied period in chronological order with both series, that the
+conflicting October snapshot is preserved rather than averaged, that all five Charlotte AI
+groups are represented, that every registered raw dataset reconciles against its parsed row
+count, that every graph edge resolves to two workbook objects, that the six-stage research
+trace is complete, and that the default lineage path is a real chain of recorded edges.
 
 The interface checks cover the default route, the absence of any mode toggle or mode state,
 the company-led first viewport, the lead chart's refusal to interpolate, the Current Call
@@ -318,6 +433,16 @@ output untouched, audience translation leaving every fact fixed, the header's id
 period and Last-updated value, the CrowdStrike wordmark loading everywhere it is used, print
 scoping, every preserved route including the new Executive Brief, and no horizontal overflow
 from 1500px down to 390px.
+
+The V5 section of the suite additionally covers: the chart's title and its two series; all
+twelve TSIS periods plotted in survey order with no interpolated vertex; the accessible
+table's value, base, respondent cut and snapshot columns; the preserved October conflict in
+the table, in the plot and in words; the CSV matching the plotted rows; all five Charlotte
+AI groups with their categories, periods and bases; the registered-but-empty group stating
+that it is empty; each Charlotte AI CSV matching its table; the six methodology stages with
+their classifications and limits; the Evidence → Signal → KPI candidate → Output stepper;
+all eleven Evidence Library filters; the evidence drawer's full field set; and the signal
+workspace's strength, gaps, reviewer decision and human-review status.
 
 ## Source discipline
 
@@ -334,7 +459,8 @@ component, Risks & Questions, the object drawer, or Methodology & Validation —
 into the hero.
 
 October 2026 is the current TSIS period. July 2026 is historical comparison and is never
-presented as current. Observations are never interpolated. The Z-Score is deviation context
+presented as current. Observations are never interpolated, and two snapshots of the same
+period are never averaged into one: both are shown, with their own bases and sources. The Z-Score is deviation context
 only: it never creates or changes the Current Call, and the prohibited strength language is
 named in the application solely in order to prohibit it.
 

@@ -1,0 +1,238 @@
+{
+ "rawDatasets": [
+  {
+   "dataset": "Raw - Z Score",
+   "sheet": "_Raw_Z_Score",
+   "registeredRows": 1,
+   "parsedRows": 1,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Pervasion Trend",
+   "sheet": "_Raw_Pervasion_Trend",
+   "registeredRows": 12,
+   "parsedRows": 12,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Region",
+   "sheet": "_Raw_Region",
+   "registeredRows": 6,
+   "parsedRows": 6,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Subsample Cuts",
+   "sheet": "_Raw_Subsample_Cuts",
+   "registeredRows": 46,
+   "parsedRows": 46,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Vendor View",
+   "sheet": "_Raw_Vendor_View",
+   "registeredRows": 1,
+   "parsedRows": 1,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Peer Trends",
+   "sheet": "_Raw_Peer_Trends",
+   "registeredRows": 84,
+   "parsedRows": 84,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Adoption Reasons",
+   "sheet": "_Raw_Adoption_Reasons",
+   "registeredRows": 11,
+   "parsedRows": 11,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  },
+  {
+   "dataset": "Raw - Job Titles",
+   "sheet": "_Raw_Job_Titles",
+   "registeredRows": 3,
+   "parsedRows": 3,
+   "match": true,
+   "treatment": "Exact imported rows",
+   "location": "Hidden system sheet in this workbook"
+  }
+ ],
+ "evidenceByLane": [
+  {
+   "lane": "AI Product Series",
+   "count": 4
+  },
+  {
+   "lane": "ETR / Claude package",
+   "count": 57
+  },
+  {
+   "lane": "ETR / OCT26 current primary",
+   "count": 10
+  },
+  {
+   "lane": "ETR API",
+   "count": 13
+  },
+  {
+   "lane": "Edge",
+   "count": 1
+  },
+  {
+   "lane": "Reflexivity",
+   "count": 33
+  },
+  {
+   "lane": "TSIS",
+   "count": 2
+  }
+ ],
+ "evidenceByDataset": [
+  {
+   "dataset": "2025 Endpoint Observatory",
+   "count": 1
+  },
+  {
+   "dataset": "2025 Tech Trends Panel",
+   "count": 1
+  },
+  {
+   "dataset": "2025 Tech Trends panel",
+   "count": 1
+  },
+  {
+   "dataset": "AI Product Series",
+   "count": 4
+  },
+  {
+   "dataset": "Breaking Analysis",
+   "count": 1
+  },
+  {
+   "dataset": "Company data",
+   "count": 1
+  },
+  {
+   "dataset": "EPP Observatory",
+   "count": 3
+  },
+  {
+   "dataset": "ETR Observatory for EPP",
+   "count": 1
+  },
+  {
+   "dataset": "ETS + TSIS cross-reference",
+   "count": 1
+  },
+  {
+   "dataset": "Earnings",
+   "count": 7
+  },
+  {
+   "dataset": "Earnings + Commentary",
+   "count": 1
+  },
+  {
+   "dataset": "Earnings + Primary research",
+   "count": 1
+  },
+  {
+   "dataset": "Earnings Call",
+   "count": 1
+  },
+  {
+   "dataset": "Earnings presentation",
+   "count": 4
+  },
+  {
+   "dataset": "Edge",
+   "count": 1
+  },
+  {
+   "dataset": "FY2025 Guidance",
+   "count": 1
+  },
+  {
+   "dataset": "Flash Survey",
+   "count": 1
+  },
+  {
+   "dataset": "Interview #415",
+   "count": 1
+  },
+  {
+   "dataset": "Market analysis",
+   "count": 1
+  },
+  {
+   "dataset": "Market research",
+   "count": 2
+  },
+  {
+   "dataset": "Product announcements",
+   "count": 1
+  },
+  {
+   "dataset": "Q1 FY2026 Earnings",
+   "count": 1
+  },
+  {
+   "dataset": "RSAC analysis",
+   "count": 2
+  },
+  {
+   "dataset": "Recognition",
+   "count": 1
+  },
+  {
+   "dataset": "Reflexivity / company evidence",
+   "count": 33
+  },
+  {
+   "dataset": "Shared Accounts",
+   "count": 2
+  },
+  {
+   "dataset": "TSIS",
+   "count": 37
+  },
+  {
+   "dataset": "TSIS + Follow-up surveys",
+   "count": 1
+  },
+  {
+   "dataset": "TSIS Viewpoint List",
+   "count": 3
+  },
+  {
+   "dataset": "TSIS survey + qualitative",
+   "count": 1
+  },
+  {
+   "dataset": "TSIS time series",
+   "count": 1
+  },
+  {
+   "dataset": "TSIS — G2000 cohort",
+   "count": 2
+  }
+ ],
+ "sourcesRegistered": 60,
+ "note": "Counts of objects present in the workbook. No weighting scheme is supplied by the workbook, so no composite score is computed."
+}

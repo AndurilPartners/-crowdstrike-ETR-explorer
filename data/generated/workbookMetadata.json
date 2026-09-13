@@ -1,0 +1,198 @@
+{
+ "metadata": {
+  "application": "CrowdStrike REVEAL Company Explorer",
+  "workbook": "CrowdStrike_ETR_V5_Full_Rebuild.xlsx",
+  "workbookVersion": "V5.0",
+  "workbookTitleLine": "CrowdStrike REVEAL V5.0 — Research Lineage Workbench",
+  "generatedAt": "2026-09-13T13:08:56+00:00",
+  "generator": "build_v5_data.py",
+  "worksheets": [
+   {
+    "name": "Home",
+    "state": "visible"
+   },
+   {
+    "name": "Workflow Guide",
+    "state": "visible"
+   },
+   {
+    "name": "Evidence Intake Form",
+    "state": "visible"
+   },
+   {
+    "name": "Add Evidence",
+    "state": "visible"
+   },
+   {
+    "name": "Sources",
+    "state": "visible"
+   },
+   {
+    "name": "Evidence Library",
+    "state": "visible"
+   },
+   {
+    "name": "Signal Builder",
+    "state": "visible"
+   },
+   {
+    "name": "Research Lineage",
+    "state": "visible"
+   },
+   {
+    "name": "KPI Bridge",
+    "state": "visible"
+   },
+   {
+    "name": "Research Queue",
+    "state": "visible"
+   },
+   {
+    "name": "Rules & Methodology",
+    "state": "visible"
+   },
+   {
+    "name": "Executive Brief",
+    "state": "visible"
+   },
+   {
+    "name": "Sunday Signal",
+    "state": "visible"
+   },
+   {
+    "name": "_Legacy Evidence Relationships",
+    "state": "hidden"
+   },
+   {
+    "name": "_Lists",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Z_Score",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Pervasion_Trend",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Region",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Subsample_Cuts",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Vendor_View",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Peer_Trends",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Adoption_Reasons",
+    "state": "hidden"
+   },
+   {
+    "name": "_Raw_Job_Titles",
+    "state": "hidden"
+   },
+   {
+    "name": "Update Email",
+    "state": "visible"
+   }
+  ],
+  "sourceOfTruth": "The extracted workbook is the sole factual source. No value is interpolated, averaged across a conflict, or supplied from outside the workbook."
+ },
+ "currentPeriod": {
+  "label": "October 2026",
+  "shortLabel": "Oct 2026",
+  "isCurrent": true,
+  "nBase": "452",
+  "respondentCut": "All Respondents",
+  "source": "TSIS-API-2026-09-12",
+  "netScore": {
+   "value": 38.05,
+   "metric": "Net Score",
+   "evidenceId": "TSIS-2026-10",
+   "qqDelta": 1.5899999999999963,
+   "yyDelta": 11.439999999999998,
+   "priorPeriod": "Jul 2026",
+   "yearAgoPeriod": "Oct 2025"
+  },
+  "pervasion": {
+   "value": 41.22,
+   "metric": "Deployment Breadth (Pervasion)",
+   "canonicalMetric": "Pervasion",
+   "presentationLabel": "Deployment Breadth",
+   "evidenceId": "TSIS-2026-10",
+   "qqDelta": 2.8399999999999963,
+   "yyDelta": 2.729999999999997
+  },
+  "zScore": {
+   "qqZ": 0.129243494,
+   "yyZ": 0.892193894,
+   "citations": 420.0,
+   "metricValue": 37.14285714,
+   "bandStatus": "Source Needed",
+   "note": "Z-Score values are supplied; approved strength bands are not. Deviation context only."
+  },
+  "intent": {
+   "adoption": null,
+   "increase": null,
+   "flat": null,
+   "decrease": null,
+   "replacing": null,
+   "cut": "All Respondents",
+   "supplied": false,
+   "status": "Not supplied for the canonical observation",
+   "note": "The workbook supplies a spending-intent split only for the subsample cut that accompanies the archived TSIS-USER-SNAPSHOT October 2026 reading. It is not restated for TSIS-API-2026-09-12, so no intent composition is shown for the current period.",
+   "archivedValues": {
+    "adoption": 8.095238095,
+    "increase": 40.23809524,
+    "flat": 40.47619048,
+    "decrease": 6.428571429000001,
+    "replacing": 4.761904762,
+    "belongsToSnapshot": "TSIS-USER-SNAPSHOT",
+    "active": false
+   }
+  },
+  "supersededSnapshots": [
+   {
+    "period": "Oct 2026",
+    "sortKey": [
+     2026,
+     10
+    ],
+    "netScore": 37.14,
+    "pervasion": 40.9,
+    "nBase": "Not supplied",
+    "respondentCut": "Not supplied",
+    "source": "TSIS-USER-SNAPSHOT",
+    "sourceName": "User workbook screenshot",
+    "sourceLocation": "crowdstrike_tsis_history.csv",
+    "snapshotNote": "Contains earlier Oct 2026 values: NS=37.14, DB=40.90",
+    "verification": "Conflicting",
+    "evidenceId": "TSIS-2026-10#2",
+    "workbookId": "TSIS-2026-10",
+    "conflictFlag": true,
+    "status": "superseded",
+    "active": false,
+    "plotted": false,
+    "selectableAsEvidence": false,
+    "contributesToCounts": false,
+    "reason": "Superseded by the more recent API observation with a supplied respondent base",
+    "supersededBy": "TSIS-2026-10 · TSIS-API-2026-09-12",
+    "supersededByEvidenceId": "TSIS-2026-10",
+    "resolvedAt": "V5 canonicalisation"
+   }
+  ],
+  "provenanceResolved": true
+ },
+ "company": {
+  "name": "CrowdStrike",
+  "ticker": "CRWD"
+ }
+}

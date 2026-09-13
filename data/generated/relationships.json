@@ -1,0 +1,2288 @@
+[
+ {
+  "id": "REL-0001",
+  "from": "SRC-001",
+  "type": "SOURCE_OF",
+  "to": "NS-007",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0002",
+  "from": "SRC-001",
+  "type": "SOURCE_OF",
+  "to": "CE-002",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0003",
+  "from": "SRC-005",
+  "type": "SOURCE_OF",
+  "to": "CE-001",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0004",
+  "from": "SRC-013",
+  "type": "SOURCE_OF",
+  "to": "CE-003",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0005",
+  "from": "SRC-014",
+  "type": "SOURCE_OF",
+  "to": "CE-004",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0006",
+  "from": "SRC-017",
+  "type": "SOURCE_OF",
+  "to": "KPI-001",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0007",
+  "from": "SRC-017",
+  "type": "SOURCE_OF",
+  "to": "KPI-002",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0008",
+  "from": "SRC-017",
+  "type": "SOURCE_OF",
+  "to": "KPI-003",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0009",
+  "from": "SRC-018",
+  "type": "SOURCE_OF",
+  "to": "KPI-005",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0010",
+  "from": "SRC-018",
+  "type": "SOURCE_OF",
+  "to": "KPI-007",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0011",
+  "from": "SRC-024",
+  "type": "SOURCE_OF",
+  "to": "PP-013",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0012",
+  "from": "SRC-025",
+  "type": "SOURCE_OF",
+  "to": "CE-008",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0013",
+  "from": "SRC-029",
+  "type": "SOURCE_OF",
+  "to": "CE-010",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0014",
+  "from": "SRC-030",
+  "type": "SOURCE_OF",
+  "to": "KPI-001",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0015",
+  "from": "SRC-030",
+  "type": "SOURCE_OF",
+  "to": "KPI-002",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0016",
+  "from": "SRC-031",
+  "type": "SOURCE_OF",
+  "to": "CE-006",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0017",
+  "from": "SRC-032",
+  "type": "SOURCE_OF",
+  "to": "CE-007",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0018",
+  "from": "SRC-033",
+  "type": "SOURCE_OF",
+  "to": "CE-009",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0019",
+  "from": "SRC-OCT26-34",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-ZS",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0020",
+  "from": "SRC-OCT26-35",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-PV",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0021",
+  "from": "SRC-OCT26-36",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-REGION",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0022",
+  "from": "SRC-OCT26-37",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-INTENT",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0023",
+  "from": "SRC-OCT26-37",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-G2K",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0024",
+  "from": "SRC-OCT26-37",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-F500",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0025",
+  "from": "SRC-OCT26-37",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-LARGE",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0026",
+  "from": "SRC-OCT26-38",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-NS",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0027",
+  "from": "SRC-OCT26-40",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-ADOPT",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0028",
+  "from": "SRC-OCT26-41",
+  "type": "SOURCE_OF",
+  "to": "ETR-OCT26-JOBS",
+  "note": "Source register",
+  "origin": "Sources",
+  "dashed": false
+ },
+ {
+  "id": "REL-0029",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "EV-001",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0030",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "EV-002",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0031",
+  "from": "AIPS-WIDGET-USAGE",
+  "type": "SOURCE_OF",
+  "to": "EV-003",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0032",
+  "from": "AIPS-WIDGET-VALUE",
+  "type": "SOURCE_OF",
+  "to": "EV-004",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0033",
+  "from": "AIPS-WIDGET-WTP",
+  "type": "SOURCE_OF",
+  "to": "EV-005",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0034",
+  "from": "AIPS-WIDGET-IMPACT",
+  "type": "SOURCE_OF",
+  "to": "EV-006",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0035",
+  "from": "EDGE-CRWD-AUG26",
+  "type": "SOURCE_OF",
+  "to": "EV-007",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0036",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2024-01",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0037",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2024-04",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0038",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2024-07",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0039",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2024-10",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0040",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2025-01",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0041",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2025-04",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0042",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2025-07",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0043",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2025-10",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0044",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2026-01",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0045",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2026-04",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0046",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2026-07",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0047",
+  "from": "TSIS-API-2026-09-12",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2026-10",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0048",
+  "from": "TSIS-USER-SNAPSHOT",
+  "type": "SOURCE_OF",
+  "to": "TSIS-2026-10#2",
+  "note": "Evidence Library names this source",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0049",
+  "from": "CE-001",
+  "type": "CONTRADICTS",
+  "to": "SIG-02",
+  "note": "Outage severity peak",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0050",
+  "from": "CE-001",
+  "type": "CONTRADICTS",
+  "to": "SIG-06",
+  "note": "Outage severity peak",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0051",
+  "from": "CE-002",
+  "type": "CONTRADICTS",
+  "to": "SIG-02",
+  "note": "Residual replacement intent",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0052",
+  "from": "CE-002",
+  "type": "CONTRADICTS",
+  "to": "SIG-06",
+  "note": "Residual replacement intent",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0053",
+  "from": "CE-003",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Microsoft competitive gains",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0054",
+  "from": "CE-006",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Pricing pressure",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0055",
+  "from": "CE-006",
+  "type": "CONTRADICTS",
+  "to": "SIG-05",
+  "note": "Pricing pressure",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0056",
+  "from": "CE-007",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "Valuation risk",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0057",
+  "from": "CE-007",
+  "type": "CONTRADICTS",
+  "to": "SIG-04",
+  "note": "Valuation risk",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0058",
+  "from": "CE-008",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Blast radius risk",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0059",
+  "from": "CE-008",
+  "type": "CONTRADICTS",
+  "to": "SIG-04",
+  "note": "Blast radius risk",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0060",
+  "from": "CE-009",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "GAAP vs Non-GAAP disconnect",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0061",
+  "from": "CE-010",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "FY2026 guidance miss",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0062",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Primary OCT26 demand evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0063",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "via RL-0078",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0064",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "via RL-0078",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0065",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-03",
+  "note": "Primary OCT26 demand evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0066",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "via RL-0079",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0067",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "via RL-0079",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0068",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Primary OCT26 breadth evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0069",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "via RL-0080",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0070",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Primary OCT26 breadth evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0071",
+  "from": "SIG-05",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "via RL-0081",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0072",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Actual positive Q/Q/Y/Y Z-Scores; strength bands unresolved",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0073",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "via RL-0082",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0074",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "via RL-0082",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0075",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-03",
+  "note": "Actual positive Q/Q/Y/Y Z-Scores; strength bands unresolved",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0076",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "via RL-0083",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0077",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "via RL-0083",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0078",
+  "from": "ETR-OCT26-G2K",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Select enterprise cohort premium",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0079",
+  "from": "SIG-05",
+  "type": "INFORMS",
+  "to": "KPI-006",
+  "note": "via RL-0084",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0080",
+  "from": "SIG-05",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "via RL-0084",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0081",
+  "from": "ETR-OCT26-REGION",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Regional divergence; N and KPI mapping needed",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0082",
+  "from": "SIG-07",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "via RL-0085",
+  "origin": "Research Lineage",
+  "dashed": true
+ },
+ {
+  "id": "REL-0083",
+  "from": "ETR-OCT26-ADOPT",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Adoption reasons; not causal explanation",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0084",
+  "from": "EV-001",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Corrected TSIS recovery series",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0085",
+  "from": "EV-003",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Charlotte adoption evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0086",
+  "from": "EV-004",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Charlotte value evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0087",
+  "from": "EV-005",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Charlotte WTP evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0088",
+  "from": "EV-006",
+  "type": "SUPPORTS",
+  "to": "SIG-13",
+  "note": "Charlotte usage impact evidence",
+  "origin": "Research Lineage",
+  "dashed": false
+ },
+ {
+  "id": "REL-0089",
+  "from": "SIG-01",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-01-KPI-002",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0090",
+  "from": "SIG-01",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Flex deals lock in multi-module commitments at higher contract values",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0091",
+  "from": "BRIDGE-SIG-01-KPI-002",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0092",
+  "from": "SIG-01",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-01-KPI-003",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0093",
+  "from": "SIG-01",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Flex generates larger initial commitments and re-Flex adds incremental ARR",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0094",
+  "from": "BRIDGE-SIG-01-KPI-003",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0095",
+  "from": "SIG-01",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-01-KPI-007",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0096",
+  "from": "SIG-01",
+  "type": "INFORMS",
+  "to": "KPI-007",
+  "note": "Flex credit model lowers friction to adopt additional modules",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0097",
+  "from": "BRIDGE-SIG-01-KPI-007",
+  "type": "INFORMS",
+  "to": "KPI-007",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0098",
+  "from": "SIG-02",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-02-KPI-003",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0099",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Recovered intent and broader Pervasion may precede or coincide with contracted commitments",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0100",
+  "from": "BRIDGE-SIG-02-KPI-003",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0101",
+  "from": "SIG-02",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-02-KPI-005",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0102",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Spending intent recovery precedes/coincides with retention stabilization",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0103",
+  "from": "BRIDGE-SIG-02-KPI-005",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0104",
+  "from": "SIG-02",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-02-KPI-006",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0105",
+  "from": "SIG-02",
+  "type": "INFORMS",
+  "to": "KPI-006",
+  "note": "Spending intent recovery correlates with sustained customer count",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0106",
+  "from": "BRIDGE-SIG-02-KPI-006",
+  "type": "INFORMS",
+  "to": "KPI-006",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0107",
+  "from": "SIG-03",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-03-KPI-001",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0108",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "Net new ARR converts to subscription revenue over contract term",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0109",
+  "from": "BRIDGE-SIG-03-KPI-001",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0110",
+  "from": "SIG-03",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-03-KPI-002",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0111",
+  "from": "SIG-03",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Net new ARR directly adds to ending ARR by accounting identity",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0112",
+  "from": "BRIDGE-SIG-03-KPI-002",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0113",
+  "from": "SIG-04",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-04-KPI-003",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0114",
+  "from": "SIG-04",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "AIDR creates new budget line items contributing incremental NNA",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0115",
+  "from": "BRIDGE-SIG-04-KPI-003",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0116",
+  "from": "SIG-04",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-04-KPI-007",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0117",
+  "from": "SIG-04",
+  "type": "INFORMS",
+  "to": "KPI-007",
+  "note": "AIDR modules expand addressable module count",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0118",
+  "from": "BRIDGE-SIG-04-KPI-007",
+  "type": "INFORMS",
+  "to": "KPI-007",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0119",
+  "from": "SIG-05",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-05-KPI-006",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0120",
+  "from": "SIG-05",
+  "type": "INFORMS",
+  "to": "KPI-006",
+  "note": "Elevated G2000 spending velocity drives disproportionate ARR from large customers",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0121",
+  "from": "BRIDGE-SIG-05-KPI-006",
+  "type": "INFORMS",
+  "to": "KPI-006",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0122",
+  "from": "SIG-05",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-05-KPI-009",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0123",
+  "from": "SIG-05",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "Higher enterprise Net Score translates to growing Pervasion",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0124",
+  "from": "BRIDGE-SIG-05-KPI-009",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0125",
+  "from": "SIG-06",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-06-KPI-002",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0126",
+  "from": "SIG-06",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Moat resilience enables ARR re-acceleration as headwinds fade",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0127",
+  "from": "BRIDGE-SIG-06-KPI-002",
+  "type": "INFORMS",
+  "to": "KPI-002",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0128",
+  "from": "SIG-06",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-06-KPI-005",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0129",
+  "from": "SIG-06",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Moat integrity maintains retention near pre-outage levels",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0130",
+  "from": "BRIDGE-SIG-06-KPI-005",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0131",
+  "from": "SIG-07",
+  "type": "RELATES_TO",
+  "to": "BRIDGE-SIG-07-KPI-001",
+  "note": "Signal → KPI bridge candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0132",
+  "from": "SIG-07",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "Regional demand differences may relate to later geographic revenue patterns",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0133",
+  "from": "BRIDGE-SIG-07-KPI-001",
+  "type": "INFORMS",
+  "to": "KPI-001",
+  "note": "Bridge names this KPI candidate",
+  "origin": "KPI Bridge",
+  "dashed": true
+ },
+ {
+  "id": "REL-0134",
+  "from": "ETR-OCT26-ADOPT",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0135",
+  "from": "ETR-OCT26-F500",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0136",
+  "from": "ETR-OCT26-F500",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0137",
+  "from": "ETR-OCT26-F500",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0138",
+  "from": "ETR-OCT26-G2K",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0139",
+  "from": "ETR-OCT26-G2K",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0140",
+  "from": "ETR-OCT26-G2K",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0141",
+  "from": "ETR-OCT26-INTENT",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0142",
+  "from": "ETR-OCT26-JOBS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0143",
+  "from": "ETR-OCT26-LARGE",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0144",
+  "from": "ETR-OCT26-LARGE",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0145",
+  "from": "ETR-OCT26-LARGE",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0146",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0147",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0148",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0149",
+  "from": "ETR-OCT26-NS",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0150",
+  "from": "ETR-OCT26-NS",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0151",
+  "from": "ETR-OCT26-NS",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0152",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0153",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0154",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0155",
+  "from": "ETR-OCT26-PV",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0156",
+  "from": "ETR-OCT26-PV",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0157",
+  "from": "ETR-OCT26-PV",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0158",
+  "from": "ETR-OCT26-REGION",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0159",
+  "from": "ETR-OCT26-REGION",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0160",
+  "from": "ETR-OCT26-REGION",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0161",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0162",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0163",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0164",
+  "from": "ETR-OCT26-ZS",
+  "type": "INFORMS",
+  "to": "KPI-003",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0165",
+  "from": "ETR-OCT26-ZS",
+  "type": "INFORMS",
+  "to": "KPI-005",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0166",
+  "from": "ETR-OCT26-ZS",
+  "type": "INFORMS",
+  "to": "KPI-009",
+  "note": "Evidence Library related KPI",
+  "origin": "Evidence Library",
+  "dashed": true
+ },
+ {
+  "id": "REL-0167",
+  "from": "EV-001",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0168",
+  "from": "EV-002",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0169",
+  "from": "EV-003",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0170",
+  "from": "EV-004",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0171",
+  "from": "EV-005",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0172",
+  "from": "EV-006",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0173",
+  "from": "EV-007",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0174",
+  "from": "TSIS-2024-01",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0175",
+  "from": "TSIS-2024-04",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0176",
+  "from": "TSIS-2024-07",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0177",
+  "from": "TSIS-2024-10",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0178",
+  "from": "TSIS-2025-01",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0179",
+  "from": "TSIS-2025-04",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0180",
+  "from": "TSIS-2025-07",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0181",
+  "from": "TSIS-2025-10",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0182",
+  "from": "TSIS-2026-01",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0183",
+  "from": "TSIS-2026-04",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0184",
+  "from": "TSIS-2026-07",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0185",
+  "from": "TSIS-2026-10",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0186",
+  "from": "TSIS-2026-10#2",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Evidence Library related signal",
+  "origin": "Evidence Library",
+  "dashed": false
+ },
+ {
+  "id": "REL-0187",
+  "from": "ETR-OCT26-G2K",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0188",
+  "from": "ETR-OCT26-NS",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0189",
+  "from": "ETR-OCT26-PV",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0190",
+  "from": "ETR-OCT26-ZS",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0191",
+  "from": "KPI-003",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0192",
+  "from": "OQ-005",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0193",
+  "from": "OQ-014",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0194",
+  "from": "REF-E-F04",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0195",
+  "from": "SIG-02",
+  "type": "COMMUNICATES",
+  "to": "EXECUTIVE-BRIEF",
+  "note": "Cited in the Executive Brief draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0196",
+  "from": "EXECUTIVE-BRIEF",
+  "type": "GOVERNED_BY",
+  "to": "R-004",
+  "note": "Rule cited in the draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0197",
+  "from": "EXECUTIVE-BRIEF",
+  "type": "GOVERNED_BY",
+  "to": "R-008",
+  "note": "Rule cited in the draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0198",
+  "from": "EXECUTIVE-BRIEF",
+  "type": "GOVERNED_BY",
+  "to": "R-015",
+  "note": "Rule cited in the draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0199",
+  "from": "EXECUTIVE-BRIEF",
+  "type": "GOVERNED_BY",
+  "to": "R-021",
+  "note": "Rule cited in the draft",
+  "origin": "Executive Brief",
+  "dashed": false
+ },
+ {
+  "id": "REL-0200",
+  "from": "ETR-OCT26-G2K",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0201",
+  "from": "ETR-OCT26-NS",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0202",
+  "from": "ETR-OCT26-PV",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0203",
+  "from": "ETR-OCT26-ZS",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0204",
+  "from": "OQ-005",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0205",
+  "from": "OQ-006",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0206",
+  "from": "OQ-008",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0207",
+  "from": "OQ-014",
+  "type": "COMMUNICATES",
+  "to": "SUNDAY-SIGNAL",
+  "note": "Cited in the Sunday Signal draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0208",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-002",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0209",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-003",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0210",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-004",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0211",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-005",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0212",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-006",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0213",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-007",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0214",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-008",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0215",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-010",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0216",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-011",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0217",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-015",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0218",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-016",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0219",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-020",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0220",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-021",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0221",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-025",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0222",
+  "from": "SUNDAY-SIGNAL",
+  "type": "GOVERNED_BY",
+  "to": "R-026",
+  "note": "Rule cited in the draft",
+  "origin": "Sunday Signal",
+  "dashed": false
+ },
+ {
+  "id": "REL-0223",
+  "from": "ETR-OCT26-F500",
+  "type": "COMMUNICATES",
+  "to": "UPDATE-EMAIL",
+  "note": "Cited in the Update Email draft",
+  "origin": "Update Email",
+  "dashed": false
+ },
+ {
+  "id": "REL-0224",
+  "from": "ETR-OCT26-G2K",
+  "type": "COMMUNICATES",
+  "to": "UPDATE-EMAIL",
+  "note": "Cited in the Update Email draft",
+  "origin": "Update Email",
+  "dashed": false
+ },
+ {
+  "id": "REL-0225",
+  "from": "ETR-OCT26-PV",
+  "type": "COMMUNICATES",
+  "to": "UPDATE-EMAIL",
+  "note": "Cited in the Update Email draft",
+  "origin": "Update Email",
+  "dashed": false
+ },
+ {
+  "id": "REL-0226",
+  "from": "ETR-OCT26-ZS",
+  "type": "COMMUNICATES",
+  "to": "UPDATE-EMAIL",
+  "note": "Cited in the Update Email draft",
+  "origin": "Update Email",
+  "dashed": false
+ },
+ {
+  "id": "REL-0227",
+  "from": "CE-003",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0228",
+  "from": "CE-006",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0229",
+  "from": "CE-008",
+  "type": "CONTRADICTS",
+  "to": "SIG-01",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0230",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0231",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0232",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0233",
+  "from": "ETR-OCT26-ADOPT",
+  "type": "SUPPORTS",
+  "to": "SIG-02",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0234",
+  "from": "CE-001",
+  "type": "CONTRADICTS",
+  "to": "SIG-02",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0235",
+  "from": "CE-002",
+  "type": "CONTRADICTS",
+  "to": "SIG-02",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0236",
+  "from": "ETR-OCT26-NS",
+  "type": "SUPPORTS",
+  "to": "SIG-03",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0237",
+  "from": "ETR-OCT26-ZS",
+  "type": "SUPPORTS",
+  "to": "SIG-03",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0238",
+  "from": "CE-007",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0239",
+  "from": "CE-009",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0240",
+  "from": "CE-010",
+  "type": "CONTRADICTS",
+  "to": "SIG-03",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0241",
+  "from": "CE-007",
+  "type": "CONTRADICTS",
+  "to": "SIG-04",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0242",
+  "from": "CE-008",
+  "type": "CONTRADICTS",
+  "to": "SIG-04",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0243",
+  "from": "ETR-OCT26-PV",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0244",
+  "from": "ETR-OCT26-G2K",
+  "type": "SUPPORTS",
+  "to": "SIG-05",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0245",
+  "from": "CE-006",
+  "type": "CONTRADICTS",
+  "to": "SIG-05",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0246",
+  "from": "CE-001",
+  "type": "CONTRADICTS",
+  "to": "SIG-06",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0247",
+  "from": "CE-002",
+  "type": "CONTRADICTS",
+  "to": "SIG-06",
+  "note": "Signal Builder counter-evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0248",
+  "from": "ETR-OCT26-REGION",
+  "type": "SUPPORTS",
+  "to": "SIG-07",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0249",
+  "from": "EV-003",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0250",
+  "from": "EV-004",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0251",
+  "from": "EV-005",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0252",
+  "from": "EV-006",
+  "type": "SUPPORTS",
+  "to": "SIG-12",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0253",
+  "from": "EV-003",
+  "type": "SUPPORTS",
+  "to": "SIG-13",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ },
+ {
+  "id": "REL-0254",
+  "from": "EV-004",
+  "type": "SUPPORTS",
+  "to": "SIG-13",
+  "note": "Signal Builder supporting evidence",
+  "origin": "Signal Builder",
+  "dashed": false
+ }
+]

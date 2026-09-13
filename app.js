@@ -15,6 +15,30 @@ var COLLECTIONS = ['evidence','signals','kpis','bridges','risks','openQuestions'
   'interpretations','rawNodes','outputs'];
 COLLECTIONS.forEach(function(c){ (D[c]||[]).forEach(function(o){ if(o && o.id) OBJ[o.id]=o; }); });
 
+/* Superseded records stay in the data for audit and are never edited, but
+   they are inactive: nothing inactive is plotted, counted, searched as current
+   evidence, offered when assembling an output, or allowed into lineage counts.
+   One predicate decides that, everywhere. */
+function isActive(o){ return !!o && o.active !== false; }
+function activeOnly(list){ return (list || []).filter(isActive); }
+var ARCHIVE = D.archive || {supersededObservations:[], supersededObjects:[]};
+var SUPERSEDED_MAP = D.supersededMap || {};
+/** An archived ID resolves to the record that replaced it. Used everywhere a
+    citation is rendered or a manifest is assembled, so a reference written
+    against the old reading lands on the canonical one instead of quietly
+    pointing at an inactive object. */
+function canonId(id){ return SUPERSEDED_MAP[id] || id; }
+function canonIds(list){
+  var out = [], seen = {};
+  (list || []).forEach(function(i){
+    var c = canonId(i);
+    if (c && !seen[c]) { seen[c] = 1; out.push(c); }
+  });
+  return out;
+}
+var SUPERSEDED_IDS = {};
+(ARCHIVE.supersededObjects || []).forEach(function(o){ SUPERSEDED_IDS[o.id] = o; });
+
 var EDGES = D.relationships || [];
 var OUT_BY = {}, IN_BY = {};
 EDGES.forEach(function(e){
@@ -23,20 +47,35 @@ EDGES.forEach(function(e){
 });
 
 /* ─────────────────────────────────────────────────────────── constants ── */
-var LANES = [
-  ['oct26','October 2026 Current TSIS'], ['jul26','July 2026 Historical TSIS'],
-  ['historical','Earlier Historical TSIS'], ['zscore','Survey Z-Score'],
-  ['cohort','Subsample / Cohort Evidence'], ['region','Regional Evidence'],
-  ['adoption','Adoption Reasoning'], ['composition','Respondent Composition'],
-  ['peer','Peer Trends'], ['company','Company / External Evidence'],
-  ['crosslane','Cross-Lane Synthesis'], ['interpretation','Analyst Interpretation'],
-  ['rules','Rules and Methodology']
-];
-var CLASSES = ['Client-provided fact','ETR interpretation','Hypothesis',
-               'Open question','Recommended action'];
+/* Every filter dimension is read off the workbook rather than declared here,
+   so a workbook that adds a lane, a class or a dataset family gets a filter
+   for it without a code change — and none of them can drift out of date. */
+function distinct(list, pick){
+  var seen = {}, out = [];
+  (list || []).forEach(function(o){
+    var v = (pick(o) || '').trim();
+    if (v && !seen[v]) { seen[v] = 1; out.push(v); }
+  });
+  return out.sort();
+}
+var ACTIVE_EVIDENCE = activeOnly(D.evidence);
+var LANES = distinct(ACTIVE_EVIDENCE, function(e){ return e.sourceLane; })
+  .map(function(l){ return [l, l]; });
+var DATASETS = distinct(ACTIVE_EVIDENCE, function(e){ return e.dataset; });
+var THEMES = distinct(ACTIVE_EVIDENCE, function(e){ return e.theme; });
+var PERIODS = distinct(ACTIVE_EVIDENCE, function(e){ return e.period; });
+var VERIFICATIONS = distinct(ACTIVE_EVIDENCE, function(e){ return e.verificationStatus; });
+var IMPORTANCES = distinct(ACTIVE_EVIDENCE, function(e){ return e.importance; });
+var CLASSES = distinct(ACTIVE_EVIDENCE, function(e){ return e.classification; });
 var STATES = ['Supporting','Contradictory','Contextual','Source Needed','Verified',
               'Pending Review','Current','Historical'];
-var CONFS = ['High','Medium-High','Medium','Low','Source Needed'];
+var CONFS = distinct(ACTIVE_EVIDENCE, function(e){ return e.confidence; })
+  .concat(['Source Needed']).filter(function(v, i, a){ return a.indexOf(v) === i; });
+/* The five research classifications the workbook applies to its own claims.
+   Evidence rows carry richer class labels; these are the interpretation
+   classes used in the methodology walkthrough and the claim markers. */
+var CLAIM_CLASSES = ['Client-provided fact','ETR interpretation','Hypothesis',
+                     'Open question','Recommended action'];
 
 var NODE_STYLE = {
   Source:      {fill:'#E7EBEF', stroke:'#5C6B7A', shape:'doc'},
@@ -66,14 +105,18 @@ var EDGE_COLOR = {SUPPORTS:'#70AD47', CONTRADICTS:'#C00000', BLOCKS:'#C00000',
 
 /* ─────────────────────────────────────────────────────────────── state ── */
 var DEFAULT_STATE = {
-  view:'company', schemaVersion:2,
+  view:'company', schemaVersion:3,
+  /* Bumped whenever the shape of a saved source-control selection changes.
+     A selection saved under an older version is reset rather than reapplied,
+     so an old build's filter can never make this one open filtered. */
+  sourceControlVersion: 3,
   emailFormat:'clean', sundayStyle:'cohesive', sundayLength:'standard',
   emailNotes:{method:false, appendix:false, review:false, ids:false, logo:true},
   sundayNotes:{method:false, ids:false, review:false},
   lanes:null, classes:null, states:null, confs:null,
   audience:'investor', evidenceMode:'list', graphOrientation:'horizontal',
   graphDepth:'2', nodeTypes:null, edgeTypes:null,
-  genEvidence:['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-ZS'],
+  genEvidence:null,   /* filled from the canonical observation at load */
   genCounter:['CE-002'], genQuestion:['OQ-014'], drafts:{}, dismissedTips:[],
   inspect:false, compare:[], sundayNewsletter:false
 };
@@ -89,19 +132,45 @@ function load(){
   try {
     var raw = localStorage.getItem('reveal.crwd.state');
     var p = raw ? JSON.parse(raw) : null;
-    if (typeof REVEAL_MIGRATE_STATE === 'function') p = REVEAL_MIGRATE_STATE(p);
+    /* storage-migration.js attaches this to window, so it is read from there
+       rather than as a bare global. */
+    if (typeof window.REVEAL_MIGRATE_STATE === 'function') p = window.REVEAL_MIGRATE_STATE(p);
     if (p) for (var j in p) if (j in s) s[j] = p[j];
   } catch(e){}
-  if (!s.lanes)   s.lanes   = LANES.map(function(l){return l[0];});
-  if (!s.classes) s.classes = CLASSES.slice();
-  if (!s.states)  s.states  = STATES.slice();
-  if (!s.confs)   s.confs   = CONFS.slice();
+  /* Filter selections are reconciled against the dimensions this workbook
+     actually has. A selection saved against an earlier workbook would
+     otherwise silently hide every object, which reads as an empty library
+     rather than as a stale filter. */
+  var scStale = (p && p.sourceControlVersion !== DEFAULT_STATE.sourceControlVersion);
+  function reconcile(saved, available){
+    /* Every control starts enabled. A saved selection is honoured only when it
+       was written by this schema version and every value in it still exists;
+       anything else resets to all-on, because an inherited filter the reader
+       never chose is worse than losing one they did. */
+    if (scStale || !saved) return available.slice();
+    var kept = saved.filter(function(v){ return available.indexOf(v) >= 0; });
+    if (!kept.length || kept.length !== saved.length) return available.slice();
+    return kept;
+  }
+  if (!s.genEvidence || !s.genEvidence.length){
+    var curEv = ((D.tsisHistory||[]).slice(-1)[0]||{}).evidenceId;
+    s.genEvidence = canonIds([curEv, 'ETR-OCT26-ZS'].filter(Boolean));
+  } else {
+    s.genEvidence = canonIds(s.genEvidence).filter(function(i){ return isActive(OBJ[i]); });
+  }
+  s.genCounter  = (s.genCounter  || []).filter(function(i){ return isActive(OBJ[i]); });
+  s.genQuestion = (s.genQuestion || []).filter(function(i){ return isActive(OBJ[i]); });
+  s.lanes   = reconcile(s.lanes,   LANES.map(function(l){ return l[0]; }));
+  s.classes = reconcile(s.classes, CLASSES);
+  s.states  = reconcile(s.states,  STATES);
+  s.confs   = reconcile(s.confs,   CONFS);
   if (!s.nodeTypes) s.nodeTypes = Object.keys(NODE_STYLE);
   if (!s.emailNotes) s.emailNotes = {method:false, appendix:false, review:false, ids:false, logo:true};
   if (!('logo' in s.emailNotes)) s.emailNotes.logo = true;
   if (!s.sundayNotes) s.sundayNotes = {method:false, ids:false, review:false};
   if (!s.edgeTypes) s.edgeTypes = EDGE_TYPES.slice();
   s.schemaVersion = DEFAULT_STATE.schemaVersion;
+  s.sourceControlVersion = DEFAULT_STATE.sourceControlVersion;
   return s;
 }
 function save(){
@@ -136,6 +205,87 @@ function announce(msg){
 function esc(s){
   return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+/* ── superseded readings: one provenance path for every number ──────────
+   The October 2026 observation was canonicalised at build time. An earlier
+   reading from the same period is archived, and its values — 37.14 and 40.90
+   in this package — must never appear in an active view as that period's
+   headline. They do still appear legitimately: as a named cut's own supplied
+   value, inside the source register's description of the archived snapshot,
+   in the raw export tables, and in the validation record. Every one of those
+   is marked in the DOM with data-prov, so a reader can see why the number is
+   there and an audit can tell the two cases apart. Anything else is a defect.  */
+var CANON_OBS = (function(){
+  var t = D.tsisHistory || [];
+  return t.length ? t[t.length - 1] : null;
+})();
+var ARCHIVED_OBS = (D.tsisSuperseded || [])[0] || null;
+var CANON_LINE = CANON_OBS
+  ? 'Net Score ' + n2(CANON_OBS.netScore) + ', Deployment Breadth (Pervasion) ' +
+    n2(CANON_OBS.pervasion) + ', N ' + CANON_OBS.nBase + ', ' + CANON_OBS.respondentCut +
+    ' · ' + CANON_OBS.source
+  : '';
+var SUPERSEDED_VALUES = (function(){
+  var out = [];
+  (D.tsisSuperseded || []).forEach(function(a){
+    [a.netScore, a.pervasion].forEach(function(v){
+      if (v == null) return;
+      var two = Number(v).toFixed(2);
+      if (out.indexOf(two) < 0) out.push(two);
+    });
+  });
+  return out;
+})();
+var SUPERSEDED_RE = SUPERSEDED_VALUES.length
+  ? new RegExp('(' + SUPERSEDED_VALUES.map(function(v){
+      return v.replace('.', '\\.').replace(/0$/, '') + '\\d*';
+    }).join('|') + ')(?![\\d.])', 'g')
+  : null;
+
+/** Marks any archived October value inside already-escaped HTML, so the
+    reader is told, in place, that this is a row's own supplied figure and not
+    the period's headline reading. Nothing is hidden and no value is changed. */
+function provMark(html, why){
+  if (!SUPERSEDED_RE) return html;
+  SUPERSEDED_RE.lastIndex = 0;
+  if (!SUPERSEDED_RE.test(html)) return html;
+  SUPERSEDED_RE.lastIndex = 0;
+  var tip = (why || 'This is the value this row supplies. It is not the October 2026 headline ' +
+    'reading, which was canonicalised as: ' + CANON_LINE) ;
+  return html.replace(SUPERSEDED_RE, function(m){
+    return '<span class="provval" data-prov="source-value" tabindex="0" role="note" title="' +
+      esc(tip) + '" aria-label="' + esc(m + '. ' + tip) + '">' + m + '</span>';
+  });
+}
+/** esc() plus provMark() — the form used for any text that comes from the
+    workbook and may quote a value from the archived October reading. */
+function escProv(s, why){ return provMark(esc(s), why); }
+
+/** The standing note wherever a table's own All Respondents line has been
+    replaced by the canonical observation. It names both readings and says
+    where the archived one lives, so the substitution is never silent. */
+function canonNote(){
+  if (!ARCHIVED_OBS) return '';
+  return '<p class="prov-note" data-prov="canonical-substitution">' +
+    '<span class="pn-k">Provenance</span>The All Respondents line above is the canonical ' +
+    'October 2026 observation — ' + esc(CANON_LINE) + '. The subsample export supplies its own ' +
+    'All Respondents line from the earlier ' + esc(ARCHIVED_OBS.source) + ' snapshot, recorded ' +
+    'without a respondent base; that line is archived, not shown here as a current reading, and ' +
+    'kept verbatim in the <a href="#archive">Archive</a>. Cohort rows are shown exactly as the ' +
+    'export supplies them and are not re-based to the canonical observation.</p>';
+}
+
+/** A signal statement, read for an active surface. Where the build marked the
+    recorded wording as authored against the archived reading, active views
+    read the canonical observation instead; the recorded wording itself is kept
+    verbatim in the Archive and in the object drawer, never rewritten. */
+function sigStatement(sg){
+  if (!sg) return '';
+  if (!sg.statementSuperseded) return sg.statement || '';
+  return 'For ' + (CANON_OBS ? CANON_OBS.period : 'the current period') + ' the canonical ' +
+    'observation reads ' + (sg.canonicalReading || CANON_LINE) + '. The statement recorded for ' +
+    'this signal was authored against the earlier October reading and is kept, unchanged, in ' +
+    'the Archive.';
 }
 function $(sel,root){ return (root||document).querySelector(sel); }
 function $$(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
@@ -189,12 +339,9 @@ function laneChip(l){
    Lineage, Methodology, claim manifests, technical-detail disclosures,
    export footnotes) renders the literal ID as before. */
 var QUIET_CITE = false;
-function withQuietCite(fn){
-  QUIET_CITE = true;
-  try { return fn(); } finally { QUIET_CITE = false; }
-}
 /** Clickable object-ID chip. Every ID in the app is one of these. */
 function oid(id, extra){
+  id = canonId(id);
   var o = OBJ[id];
   var cls = 'oid';
   if (!o) cls += ' rule';
@@ -290,22 +437,12 @@ function copyText(t, btn){
 /* ─────────────────────────────────────────────── source-control filtering ── */
 /** Which control lane an object belongs to, refined for cohort/region/adoption. */
 function laneOf(o){
-  /* Refinement is driven by the Metric field only. Theme text is too loose: "Spending
-     Composition" is an October TSIS reading, not respondent composition. */
-  var l = o.sourceLane || 'rules';
-  var m = o.metric || '';
-  if (o.currentOrHistorical==='current'){
-    if (/G2000|F500|Large Org|Cohort/i.test(m)) return 'cohort';
-    if (/Regional/i.test(m)) return 'region';
-    if (/Adoption reasoning/i.test(m)) return 'adoption';
-    if (/Job title/i.test(m)) return 'composition';
-  }
-  if (/peer/i.test(m)) return 'peer';
-  return l;
+  /* The lane is the one the workbook records on the object. Nothing is
+     re-derived from metric or theme wording. */
+  return (o && o.sourceLane) || 'Not specified';
 }
 function stateTagsOf(o){
   var t = [];
-  var cls = (o.classification||'').toLowerCase();
   if (o.objectType==='Risk' || /contradict/i.test(o.theme||'')) t.push('Contradictory');
   if (o.objectType==='Evidence'){
     var contra = (IN_BY[o.id]||[]).concat(OUT_BY[o.id]||[])
@@ -330,6 +467,7 @@ function confOf(o){
 }
 function passes(o){
   if (!o) return false;
+  if (!isActive(o)) return false;
   if (state.lanes.indexOf(laneOf(o)) < 0) return false;
   var cls = o.classification || 'Client-provided fact';
   var matched = CLASSES.filter(function(c){ return tagClass(c)===tagClass(cls); })[0] || cls;
@@ -339,16 +477,26 @@ function passes(o){
   if (state.confs.indexOf(confOf(o)) < 0) return false;
   return true;
 }
-function visibleEvidence(){ return (D.evidence||[]).filter(passes); }
+function visibleEvidence(){ return ACTIVE_EVIDENCE.filter(passes); }
 function activeFilterCount(){
   return (LANES.length - state.lanes.length) + (CLASSES.length - state.classes.length) +
          (STATES.length - state.states.length) + (CONFS.length - state.confs.length);
 }
-function currentHidden(){ return state.lanes.indexOf('oct26') < 0; }
+/* True when a source control has switched off every lane that carries
+   current-period evidence — the one filter state worth warning about, since
+   it changes what the counts mean. Derived from the data, not from a lane
+   name written here. */
+function currentHidden(){
+  var currentLanes = {};
+  (D.evidence || []).forEach(function(e){
+    if (e.currentOrHistorical === 'current') currentLanes[laneOf(e)] = 1; });
+  var keys = Object.keys(currentLanes);
+  if (!keys.length) return false;
+  return keys.every(function(l){ return state.lanes.indexOf(l) < 0; });
+}
 
 /* ──────────────────────────────────────────────────── workbook readings ── */
 var CP = D.currentPeriod, HP = D.historicalPeriods || [];
-var JUL = HP[0] || {}, OCT25 = HP[1] || {};
 
 /** R-005 movement wording — the workbook's own convention, applied mechanically. */
 function moveWord(delta){
@@ -358,28 +506,35 @@ function moveWord(delta){
   if (a < 5)  return 'a slight move';
   return 'a stated change';
 }
+/* The call, the direction and the conviction are read from the workbook's own
+   Executive Brief summary and its open-question register. Nothing here is a
+   value this application decided. */
+var CC = D.currentCall || {};
+var PRIMARY_SIG = (D.signals || []).filter(function(s){
+  return s.id === (CC.primarySignalId || 'SIG-02'); })[0] || {};
 var CALL = {
   current: {
-    value: 'Source Needed',
-    detail: 'No October 2026 ETR data outlook is recorded in the workbook. OQ-002 is Critical and Open.',
-    ids: ['OQ-002']
+    value: CC.value || 'Source Needed',
+    detail: CC.detail || '',
+    ids: CC.ids || []
   },
   prior: {
     value: 'Positive',
-    detail: 'The JUL26 report states CrowdStrike warranted a step up to a Positive outlook. That reading is now historical under R-025.',
-    ids: ['ETR-CUR-005','R-025']
+    detail: 'Recorded in the workbook as the last resolved ETR Outlook, from JUL26. It is ' +
+            'historical under the current-period promotion rule.',
+    ids: ['OQ-002']
   },
-  primarySignalId: 'SIG-02',
-  primarySignalText: 'Recovery persists; sequential improvement is modest; year-over-year improvement is materially larger.',
-  direction: 'Improving',
-  conviction: 'Medium-High',
-  evidenceConfidence: 'Mixed — high on current raw values; cohort and regional N absent'
+  primarySignalId: CC.primarySignalId || 'SIG-02',
+  primarySignalText: sigStatement(PRIMARY_SIG) || CC.primarySignal || '',
+  direction: CC.direction || 'Source Needed',
+  conviction: CC.conviction || PRIMARY_SIG.confidence || 'Source Needed',
+  evidenceConfidence: PRIMARY_SIG.evidenceStrength || 'Source Needed'
 };
 
 /* ───────────────────────────────────────────────────────────── routing ── */
-var VIEWS = ['company','narrative','signals','evidence','lineage','kpis','cohorts','rules',
-             'risks','sources','audience','gen-sunday','gen-email','gen-brief','methodology'];
-var pendingFocus = null;
+var VIEWS = ['company','narrative','charlotte','signals','evidence','trace','lineage','kpis',
+             'kpiplan','cohorts','rules','risks','sources','how','archive','audience',
+             'gen-sunday','gen-email','gen-brief','methodology'];
 
 function parseHash(){
   var h = (location.hash||'#company').replace(/^#/,'');
@@ -410,6 +565,12 @@ function parseHash(){
     case 'generator': r.view = (p[1]==='update-email') ? 'gen-email' :
       (p[1]==='executive-brief' ? 'gen-brief' : 'gen-sunday'); break;
     case 'methodology': r.view='methodology'; break;
+    case 'charlotte': r.view='charlotte'; break;
+    case 'ai': r.view='charlotte'; break;            /* alias */
+    case 'how': r.view='how'; break;
+    case 'trace': r.view='trace'; r.arg=p[1]; break;
+    case 'kpiplan': r.view='kpiplan'; break;
+    case 'archive': r.view='archive'; break;
     default: r.view='company';
   }
   return r;
@@ -439,24 +600,37 @@ function render(){
 
 function updateChrome(){
   el('tbPeriod').textContent = CP.label;
-  el('tbUpdated').textContent = CP.exportTimestamp || 'Not specified';
-  el('filterCount').textContent = activeFilterCount();
-  el('nSignals').textContent  = (D.signals||[]).length;
-  el('nEvidence').textContent = visibleEvidence().length + '/' + (D.evidence||[]).length;
+  el('tbUpdated').textContent = (D.metadata && D.metadata.generatedAt
+    ? String(D.metadata.generatedAt).slice(0, 10) : 'Not specified');
+  var fc = activeFilterCount(), fcEl = el('filterCount');
+  fcEl.textContent = fc ? String(fc) : '';
+  fcEl.hidden = !fc;
+  fcEl.setAttribute('aria-label', fc ? fc + ' source controls disabled' : 'no source controls disabled');
+  el('nSignals').textContent  = activeOnly(D.signals).length;
+  var aiN = el('nAi');
+  if (aiN) aiN.textContent = (D.aiProductSeries||[]).length;
+  var arN = el('nArchive');
+  if (arN) arN.textContent = (ARCHIVE.supersededObservations||[]).length +
+                             (ARCHIVE.supersededObjects||[]).length;
+  el('nEvidence').textContent = visibleEvidence().length + '/' + ACTIVE_EVIDENCE.length;
   el('nRels').textContent     = EDGES.length;
   el('nBridges').textContent  = (D.bridges||[]).length;
   el('nRules').textContent    = (D.rules||[]).length + (D.contextRules||[]).length;
-  el('nRisks').textContent    = (D.risks||[]).length + (D.openQuestions||[]).length;
+  el('nRisks').textContent    = activeOnly(D.risks).length + activeOnly(D.openQuestions).length;
   el('nSources').textContent  = (D.sources||[]).length;
-  var w = el('filteredWarn');
-  if (currentHidden()){
+  var w = el('filteredWarn'), off = activeFilterCount();
+  if (off > 0){
     w.hidden = false;
-    w.textContent = 'Filtered view — current October evidence is hidden. The approved Current Call is unchanged.';
-  } else if (activeFilterCount() > 0){
-    w.hidden = false;
-    w.textContent = 'Filtered view — ' + activeFilterCount() +
-      ' source control(s) are off. Counts and lineage reflect the filter; the approved Current Call is unchanged.';
-  } else w.hidden = true;
+    w.className = 'filtered-warn' + (currentHidden() ? ' fw-strong' : '');
+    w.innerHTML = '<span class="fw-k">Filtered research view</span>' +
+      (off === 1 ? 'One source is excluded.' : off + ' sources are excluded.') +
+      ' Visible counts, evidence, charts and lineage reflect the active source set.' +
+      (currentHidden() ? ' Every lane carrying current-period evidence is currently off.' : '') +
+      ' <button type="button" class="lnk" id="fwReset">Reset to all sources</button>';
+  } else {
+    w.hidden = true;
+    w.innerHTML = '';
+  }
 }
 
 /* ════════════════════════════════════════════════════ VIEW: Company ═════ */
@@ -472,28 +646,40 @@ var RENDER = {};
     Pervasion series is supplied for every period on the axis, and Net Score is
     supplied for three of them, so Net Score is drawn as points with a segment
     only where two consecutive periods are both supplied. */
+/** The TSIS series, exactly as the V5 workbook supplies it.
+    Every period the workbook verifies is plotted, in workbook order. Snapshots
+    the workbook marks Conflicting are carried alongside their period rather
+    than merged into it, so no average is ever drawn. */
 function recoverySeries(){
-  var rows = D.rawTables.pervasionTrend.rows;
-  var axis = rows.map(function(r){ return r.Category; });
-  var perv = rows.map(function(r){ return {label:r.Category, value:Number(r.Pervasion)}; });
-  /* The trend axis is labelled in short form ("Oct 2026") while the period
-     objects carry both spellings. Key on the short label, and keep the long one
-     as an alias so neither naming convention silently drops a point. */
-  var nsBy = {};
-  function putNs(o, value, role){
-    if (value == null) return;
-    if (o.shortLabel) nsBy[o.shortLabel] = {value:value, role:role};
-    if (o.label)      nsBy[o.label]      = {value:value, role:role};
-  }
-  putNs(CP, CP.netScore.value, 'current period');
-  (D.historicalPeriods||[]).forEach(function(hp){
-    putNs(hp, hp.netScore, hp.role || 'historical comparison');
+  var hist = (D.tsisHistory || []).slice();
+  return {
+    rows: hist,
+    axis: hist.map(function(t){ return t.period; }),
+    pervasion: hist.map(function(t){ return {label:t.period, value:t.pervasion, rec:t}; }),
+    netScore: hist.map(function(t){ return {label:t.period, value:t.netScore, rec:t}; }),
+    superseded: (D.tsisSuperseded || []),
+    suppliedNs: hist.filter(function(t){ return t.netScore != null; }).length,
+    suppliedPv: hist.filter(function(t){ return t.pervasion != null; }).length,
+    total: hist.length
+  };
+}
+
+/** The chart's numbers as CSV — the same values the table and the plot show. */
+function tsisCsv(){
+  var S = recoverySeries();
+  var head = ['Survey period', 'Net Score', 'Deployment Breadth (Pervasion)', 'N (citations)',
+              'Respondent cut', 'Source', 'Snapshot status', 'Evidence ID'];
+  var q = function(v){ var s = (v == null ? '' : String(v));
+                       return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  var lines = [head.join(',')];
+  /* The download carries the active series and nothing else — the same rows the
+     plot and the accessible table show. */
+  S.rows.forEach(function(t){
+    lines.push([t.period, t.netScore, t.pervasion, t.nBase, t.respondentCut, t.source,
+                t.isCurrent ? 'Current observation' : 'Verified',
+                t.workbookId || t.evidenceId].map(q).join(','));
   });
-  var ns = axis.map(function(lab){
-    return nsBy[lab] ? {label:lab, value:nsBy[lab].value, role:nsBy[lab].role} : null;
-  });
-  return {axis:axis, pervasion:perv, netScore:ns,
-          suppliedNs: ns.filter(function(x){return !!x;}).length, total: axis.length};
+  return lines.join('\n') + '\n';
 }
 
 /** The lead chart. One frame, two series, direct labels, no invented points. */
@@ -501,138 +687,162 @@ function recoveryChart(opts){
   opts = opts || {};
   var uid = opts.id || 'lead';
   var S = recoverySeries();
-  var W = 880, H = 322, L = 46, R = 96, T = 26, B = 44;
-  var all = S.pervasion.map(function(p){return p.value;})
-    .concat(S.netScore.filter(function(x){return !!x;}).map(function(p){return p.value;}));
+  if (!S.total) return '<div class="callout">The workbook supplies no TSIS periods.</div>';
+  var W = 880, H = 342, L = 46, R = 100, T = 26, B = 58;
+  var all = S.pervasion.map(function(p){ return p.value; })
+    .concat(S.netScore.map(function(p){ return p.value; }))
+    .filter(function(v){ return v != null; });
   var lo = Math.floor(Math.min.apply(null, all) - 4), hi = Math.ceil(Math.max.apply(null, all) + 4);
-  var X = function(i){ return L + i * (W - L - R) / (S.axis.length - 1); };
+  var X = function(i){ return S.total < 2 ? (L + W - R) / 2
+                            : L + i * (W - L - R) / (S.total - 1); };
   var Y = function(v){ return T + (hi - v) / (hi - lo) * (H - T - B); };
-  var curI = S.axis.length - 1;
-  var julI = S.axis.indexOf('Jul 2026');
+  var curI = S.total - 1;
+  var cur = S.rows[curI];
 
   var g = ['<svg viewBox="0 0 ' + W + ' ' + H + '" class="leadsvg" role="img" ' +
     'aria-labelledby="' + uid + 'Title ' + uid + 'Desc"><title id="' + uid +
-    'Title">The recovery profile</title>' +
-    '<desc id="' + uid + 'Desc">Deployment breadth is supplied for all ' + S.total + ' survey periods from ' +
-    S.axis[0] + ' to ' + S.axis[curI] + ' and rises to ' + n2(S.pervasion[curI].value) +
-    '. Spending intent is supplied for ' + S.suppliedNs + ' of those periods only and reads ' +
-    n2(CP.netScore.value) + ' in the current period. Unsupplied periods are left blank.</desc>'];
+    'Title">CrowdStrike TSIS: Spending Intent and Deployment Breadth</title>' +
+    '<desc id="' + uid + 'Desc">Net Score and Deployment Breadth (Pervasion) for all ' + S.total +
+    ' supplied TSIS survey periods from ' + S.axis[0] + ' to ' + S.axis[curI] +
+    '. Net Score falls from ' + n2(S.netScore[0].value) + ' to ' +
+    n2(Math.min.apply(null, S.netScore.map(function(p){ return p.value; }))) +
+    ' after the July 2024 outage and reads ' + n2(cur.netScore) + ' in ' + cur.period +
+    ' on a base of ' + esc(String(cur.nBase)) + '. Deployment Breadth reads ' + n2(cur.pervasion) +
+    ' on the ' + esc(cur.respondentCut) + ' cut, N ' + esc(String(cur.nBase)) + '.</desc>'];
 
   g.push('<rect x="' + (X(curI) - 17).toFixed(1) + '" y="' + T + '" width="34" height="' +
     (H - T - B) + '" fill="#F16A20" opacity=".07"/>');
 
-  for (var k = 0; k <= 3; k++){
-    var gv = lo + (hi - lo) * k / 3;
+  for (var k = 0; k <= 4; k++){
+    var gv = lo + (hi - lo) * k / 4;
     g.push('<line x1="' + L + '" y1="' + Y(gv).toFixed(1) + '" x2="' + (W - R) + '" y2="' +
       Y(gv).toFixed(1) + '" stroke="#E7E2D9"/>');
     g.push('<text x="' + (L - 9) + '" y="' + (Y(gv) + 3.5).toFixed(1) + '" font-size="10.5" ' +
       'text-anchor="end" fill="#8A8478">' + gv.toFixed(0) + '</text>');
   }
 
-  /* breadth — supplied for every period, so a continuous line is honest */
-  g.push('<polyline fill="none" stroke="#0F6E66" stroke-width="2.4" ' +
-    'stroke-linejoin="round" points="' + S.pervasion.map(function(p, i){
-      return X(i).toFixed(1) + ',' + Y(p.value).toFixed(1); }).join(' ') + '"/>');
-
-  /* intent — a segment only between two consecutive supplied periods */
-  S.netScore.forEach(function(p, i){
-    if (!p || !S.netScore[i + 1]) return;
-    g.push('<line x1="' + X(i).toFixed(1) + '" y1="' + Y(p.value).toFixed(1) +
-      '" x2="' + X(i + 1).toFixed(1) + '" y2="' + Y(S.netScore[i + 1].value).toFixed(1) +
-      '" stroke="#17365D" stroke-width="2.4"/>');
-  });
-
-  /* the gap, named rather than bridged */
-  var first = -1, gapEnd = -1;
-  S.netScore.forEach(function(p, i){
-    if (!p) return;
-    if (first < 0) first = i; else if (gapEnd < 0) gapEnd = i;
-  });
-  if (first >= 0 && gapEnd > first + 1){
-    var mid = (X(first) + X(gapEnd)) / 2;
-    var midY = Y((S.netScore[first].value + S.netScore[gapEnd].value) / 2);
-    g.push('<line x1="' + (X(first) + 8).toFixed(1) + '" y1="' + Y(S.netScore[first].value).toFixed(1) +
-      '" x2="' + (X(gapEnd) - 8).toFixed(1) + '" y2="' + Y(S.netScore[gapEnd].value).toFixed(1) +
-      '" stroke="#B8AFA1" stroke-width="1" stroke-dasharray="2 5"/>');
-    g.push('<text x="' + mid.toFixed(1) + '" y="' + (midY - 10).toFixed(1) +
-      '" font-size="10" text-anchor="middle" fill="#8A8478" font-style="italic">' +
-      'no intervening periods supplied</text>');
+  /* Both series are supplied for every period in V5, so both are drawn as
+     continuous lines. Nothing is interpolated: each vertex is a supplied value. */
+  function poly(pts, color){
+    return '<polyline fill="none" stroke="' + color + '" stroke-width="2.4" ' +
+      'stroke-linejoin="round" points="' + pts.map(function(p, i){
+        return X(i).toFixed(1) + ',' + Y(p.value).toFixed(1); }).join(' ') + '"/>';
   }
+  g.push(poly(S.pervasion, '#0F6E66'));
+  g.push(poly(S.netScore, '#17365D'));
 
-  /* points — focusable, hoverable, and each opens its evidence object */
+  function tip(rec, metric, value){
+    return esc(rec.period) + ' · ' + metric + ' ' + n2(value) + ' · N ' + esc(String(rec.nBase)) +
+      ' · ' + esc(rec.respondentCut) + ' · ' + esc(rec.source);
+  }
   S.pervasion.forEach(function(p, i){
-    var cur = (i === curI);
-    g.push('<circle class="pt" data-oid="ETR-OCT26-PV" tabindex="0" role="button" ' +
-      'aria-label="Deployment breadth, ' + esc(p.label) + ': ' + n2(p.value) + '" ' +
-      'data-tip="' + esc(p.label) + ' · breadth ' + n2(p.value) + '" cx="' + X(i).toFixed(1) +
-      '" cy="' + Y(p.value).toFixed(1) + '" r="' + (cur ? 5 : 3.4) + '" fill="#0F6E66"/>');
+    var isCur = (i === curI);
+    g.push('<circle class="pt" data-oid="' + esc(p.rec.evidenceId) + '" tabindex="0" role="button" ' +
+      'aria-label="Deployment Breadth (Pervasion), ' + esc(p.rec.period) + ': ' + n2(p.value) +
+      ', N ' + esc(String(p.rec.nBase)) + ', ' + esc(p.rec.respondentCut) + '" ' +
+      'data-tip="' + tip(p.rec, 'Deployment Breadth', p.value) + '" cx="' + X(i).toFixed(1) +
+      '" cy="' + Y(p.value).toFixed(1) + '" r="' + (isCur ? 5 : 3.4) + '" fill="#0F6E66"/>');
   });
   S.netScore.forEach(function(p, i){
-    if (!p) return;
-    var cur = (i === curI);
-    g.push('<circle class="pt" data-oid="ETR-OCT26-NS" tabindex="0" role="button" ' +
-      'aria-label="Spending intent, ' + esc(p.label) + ': ' + n2(p.value) + ', ' + esc(p.role) + '" ' +
-      'data-tip="' + esc(p.label) + ' · intent ' + n2(p.value) + ' · ' + esc(p.role) + '" cx="' +
-      X(i).toFixed(1) + '" cy="' + Y(p.value).toFixed(1) + '" r="' + (cur ? 5.6 : 4) +
-      '" fill="' + (cur ? '#F16A20' : '#17365D') + '"/>');
+    var isCur = (i === curI);
+    g.push('<circle class="pt" data-oid="' + esc(p.rec.evidenceId) + '" tabindex="0" role="button" ' +
+      'aria-label="Net Score, ' + esc(p.rec.period) + ': ' + n2(p.value) + ', N ' +
+      esc(String(p.rec.nBase)) + ', ' + esc(p.rec.respondentCut) + '" ' +
+      'data-tip="' + tip(p.rec, 'Net Score', p.value) + '" cx="' + X(i).toFixed(1) +
+      '" cy="' + Y(p.value).toFixed(1) + '" r="' + (isCur ? 5.6 : 4) +
+      '" fill="' + (isCur ? '#F16A20' : '#17365D') + '"/>');
   });
 
-  /* direct labels at the latest values */
-  g.push('<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.netScore.value) + 1).toFixed(1) +
-    '" font-size="12.5" font-weight="700" fill="#17365D">' + n2(CP.netScore.value) + '</text>' +
-    '<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.netScore.value) + 15).toFixed(1) +
-    '" font-size="10" fill="#8A8478">intent</text>');
-  g.push('<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.pervasion.value) + 1).toFixed(1) +
-    '" font-size="12.5" font-weight="700" fill="#0F6E66">' + n2(CP.pervasion.value) + '</text>' +
-    '<text x="' + (X(curI) + 12) + '" y="' + (Y(CP.pervasion.value) + 15).toFixed(1) +
-    '" font-size="10" fill="#8A8478">breadth</text>');
+  /* Direct labels for the latest values. When the two series finish close
+     together the labels would collide, so they are nudged apart — the
+     positions move, the numbers never do. */
+  var yNs = Y(cur.netScore), yPv = Y(cur.pervasion), MIN_GAP = 34;
+  if (Math.abs(yNs - yPv) < MIN_GAP){
+    var mid = (yNs + yPv) / 2;
+    if (yNs > yPv){ yNs = mid + MIN_GAP / 2; yPv = mid - MIN_GAP / 2; }
+    else          { yNs = mid - MIN_GAP / 2; yPv = mid + MIN_GAP / 2; }
+  }
+  function valueLabel(y, value, label, colour){
+    return '<text x="' + (X(curI) + 13) + '" y="' + (y + 1).toFixed(1) +
+      '" font-size="12.5" font-weight="700" fill="' + colour + '">' + n2(value) + '</text>' +
+      '<text x="' + (X(curI) + 13) + '" y="' + (y + 14).toFixed(1) +
+      '" font-size="9.5" fill="#8A8478">' + label + '</text>';
+  }
+  g.push(valueLabel(yNs, cur.netScore, 'Net Score', '#17365D'));
+  g.push(valueLabel(yPv, cur.pervasion, 'breadth', '#0F6E66'));
 
   S.axis.forEach(function(lab, i){
-    if (i % 2 !== 0 && i !== curI && i !== julI) return;
-    g.push('<text x="' + X(i).toFixed(1) + '" y="' + (H - 24) + '" font-size="10" ' +
+    if (S.total > 8 && i % 2 !== 0 && i !== curI) return;
+    g.push('<text x="' + X(i).toFixed(1) + '" y="' + (H - 34) + '" font-size="10" ' +
       'text-anchor="middle" fill="' + (i === curI ? '#B4470F' : '#8A8478') + '"' +
       (i === curI ? ' font-weight="700"' : '') + '>' + esc(lab.replace(' 20', ' ’')) + '</text>');
   });
-  /* the two period roles, named under their own ticks and kept short enough
-     that adjacent quarters do not collide */
-  if (julI >= 0) g.push('<text x="' + X(julI).toFixed(1) + '" y="' + (H - 10) +
-    '" font-size="9" text-anchor="middle" fill="#8A8478" font-style="italic">historical</text>');
-  g.push('<text x="' + X(curI).toFixed(1) + '" y="' + (H - 10) +
+  g.push('<text x="' + X(curI).toFixed(1) + '" y="' + (H - 20) +
     '" font-size="9" text-anchor="middle" fill="#B4470F" font-weight="700">current</text>');
   g.push('</svg>');
 
-  /* the same numbers as a table, for anyone who would rather read them */
-  var tbl = ['<div class="tw"><table><caption class="sr">The recovery profile, as supplied</caption>' +
-    '<thead><tr><th>Survey period</th><th>Deployment breadth</th><th>Spending intent</th></tr></thead><tbody>'];
-  S.axis.forEach(function(lab, i){
-    tbl.push('<tr><td>' + esc(lab) + '</td><td>' + n2(S.pervasion[i].value) + '</td><td>' +
-      (S.netScore[i] ? n2(S.netScore[i].value) : '<span class="note">not supplied</span>') +
-      '</td></tr>');
+  var rows = S.rows;
+  var tbl = ['<div class="tw"><table><caption class="sr">CrowdStrike TSIS: Spending Intent and ' +
+    'Deployment Breadth, every supplied period</caption><thead><tr><th>Survey period</th>' +
+    '<th>Net Score</th><th>Deployment Breadth (Pervasion)</th><th>N (citations)</th>' +
+    '<th>Respondent cut</th><th>Source / snapshot</th><th>Status</th></tr></thead><tbody>'];
+  rows.forEach(function(t){
+    tbl.push('<tr><td>' + esc(t.period) +
+      '</td><td>' + (t.netScore == null ? needed() : n2(t.netScore)) +
+      '</td><td>' + (t.pervasion == null ? needed() : n2(t.pervasion)) +
+      '</td><td>' + esc(String(t.nBase)) + '</td><td>' + esc(t.respondentCut) +
+      '</td><td>' + esc(t.source) + '</td><td>' +
+      (t.isCurrent ? 'Current observation' : esc(t.verification)) + '</td></tr>');
   });
   tbl.push('</tbody></table></div>');
 
+  /* An archived record is a resolved provenance note, not a live conflict. */
+  var sup = S.superseded;
+  var provenanceNote = sup.length ? '<p class="prov-note" data-prov="provenance-resolved">' +
+    '<span class="pn-k">Provenance resolved</span>' +
+    'An earlier ' + esc(sup[0].period) + ' reading from ' + esc(sup[0].source) + ', recorded ' +
+    'without a respondent base, is archived as superseded by this observation. It is not plotted, ' +
+    'not counted and not selectable as evidence. ' +
+    '<button type="button" class="lnk no-print" data-goto="#archive">See the archived record</button>' +
+    '</p>' : '';
+
   return '<figure class="lead">' +
-    '<figcaption><div class="lead-head">The recovery profile</div>' +
-    '<p class="lead-sub">Spending intent and deployment breadth, displayed only for supplied periods.</p>' +
+    '<figcaption><div class="lead-head">CrowdStrike TSIS: Spending Intent and Deployment Breadth</div>' +
+    '<p class="lead-sub">Every TSIS period the V5 workbook supplies, in survey order. ' +
+    'Deployment Breadth is the presentation wording; the canonical ETR metric is Pervasion.</p>' +
     '</figcaption>' +
     '<div class="lead-legend"><span class="lg"><i class="sw sw-ns"></i>Spending intent · Net Score · ' +
       S.suppliedNs + ' of ' + S.total + ' periods supplied</span>' +
-    '<span class="lg"><i class="sw sw-pv"></i>Deployment breadth · Pervasion · all ' + S.total +
-      ' periods supplied</span></div>' +
+    '<span class="lg"><i class="sw sw-pv"></i>Deployment Breadth (Pervasion) · ' + S.suppliedPv +
+      ' of ' + S.total + ' periods supplied</span>' +
+    '</div>' +
     '<div class="lead-plot" data-plot="1" id="' + uid + 'Plot">' + g.join('') +
       '<div class="charttip" hidden></div></div>' +
-    '<p class="lead-take">Breadth moved more than intent did in the latest period: ' +
-      sign(CP.pervasion.qqDelta) + ' on deployment breadth against ' + sign(CP.netScore.qqDelta) +
-      ' on spending intent.</p>' +
+    '<p class="lead-take">' + esc(cur.period) + ': Net Score ' + n2(cur.netScore) + ' (' +
+      sign(CP.netScore.qqDelta) + ' on ' + esc((D.historicalPeriods[0] || {}).label || 'the prior period') +
+      '), Deployment Breadth ' + n2(cur.pervasion) + ' (' + sign(CP.pervasion.qqDelta) + ').</p>' +
+    provenanceNote +
+    '<div class="measures"><div><h4>What this measures</h4><p>Two ETR TSIS survey readings for ' +
+      'CrowdStrike: Net Score, the net share of surveyed respondents reporting increasing versus ' +
+      'decreasing spending intent, and Pervasion, the share reporting the platform in use — shown ' +
+      'here under its presentation wording, Deployment Breadth. Each point is one survey period on ' +
+      'the citation base named in the table.</p></div>' +
+      '<div><h4>What this does not prove</h4><p>Neither series is revenue, ARR, market share, ' +
+      'retention or a forecast. A rising Net Score records what respondents said about spending ' +
+      'intent, not money booked. The two series are not causally linked to each other or to any ' +
+      'company outcome, and no relationship to a company KPI is established here.</p></div></div>' +
     '<div class="lead-acts no-print"><button type="button" class="btn" data-expand="' + uid +
       'Table" aria-expanded="false" aria-controls="' + uid + 'Table">Show the numbers</button>' +
+      '<button type="button" class="btn" id="' + uid + 'Csv" data-csv="tsis">Download CSV</button>' +
       (opts.bare ? '' :
-        '<button type="button" class="btn" data-oid="ETR-OCT26-NS">Inspect spending intent</button>' +
-        '<button type="button" class="btn" data-oid="ETR-OCT26-PV">Inspect breadth</button>') +
+        '<button type="button" class="btn" data-oid="' + esc(cur.evidenceId) +
+          '">Inspect the current observation</button>' +
+        '<button type="button" class="btn" data-goto="#evidence?dataset=TSIS">All TSIS evidence</button>' +
+        '<button type="button" class="btn" data-goto="#trace">Trace this claim</button>') +
       '</div>' +
     '<div class="xpanel" id="' + uid + 'Table" hidden>' + tbl.join('') +
-      '<p class="note">Unsupplied Net Score periods are left blank and are never interpolated. ' +
-      'Values are as extracted; nothing on this chart comes from outside the workbook.</p></div>' +
+      '<p class="note">Values are exactly as the workbook supplies them. Nothing is interpolated, ' +
+      'rounded into a trend, or averaged across the two October 2026 snapshots.</p></div>' +
     '</figure>';
 }
 
@@ -672,9 +882,12 @@ RENDER.company = function(){
   CLAIM_SEQ = 0;   /* company claim ids are stable across repaints */
 
   /* ── hero ───────────────────────────────────────────────────────────── */
-  /* No logo repeated here — the persistent header already carries the one
-     CrowdStrike wordmark, and it stays on screen above every view. */
+  /* The wordmark opens the company page, at reading size rather than as a
+     token. It is the same local asset the header and every printed surface
+     use, and it hides itself rather than showing a broken image if the file
+     is ever moved. */
   h.push('<header class="chero">');
+  h.push(brandLogo('chero-logo'));
   h.push('<div class="chero-eyebrow">' + esc(CP.label) + ' research</div>');
   h.push('<div class="chero-id"><h1>CrowdStrike</h1><span class="tick">CRWD</span>' +
     '<button type="button" class="sigchip" data-goto="#signal/' + esc(CALL.primarySignalId) + '">' +
@@ -682,10 +895,17 @@ RENDER.company = function(){
   h.push('<h2 class="chero-head">' + esc(NARRATIVE.companyHeadline()) + '</h2>');
   var deck = NARRATIVE.companyDeck();
   h.push('<p class="chero-deck">' + esc(deck.text) + '</p>');
+  /* The summary is a claim like any other: the manifest behind it names the
+     evidence, the signal, the rules and the caveat it was written under. */
+  h.push('<p class="chero-trace no-print">' + tag(deck.classification) +
+    '<span class="note">Movement wording ' + oid('R-005') + '</span>' +
+    '<button type="button" class="lnk" data-claim="' + esc(deck.claimId) + '">' +
+    'Trace this claim</button></p>');
   h.push('<div class="chips">' +
-    statusChip('Current call', CALL.current.value,
-      CALL.current.value === 'Source Needed' ? 'need' : 'pos', 'OQ-002',
-      CALL.current.value === 'Source Needed' ? 'Why Source Needed?' : 'Details') +
+    statusChip('Current call', callShort(), 'neu', 'OQ-002', 'Why?',
+      'Recorded reviewer call on ETR demand evidence. It is inherited from the last resolved ' +
+      'July 2026 Outlook — the workbook records no separate October 2026 Outlook field — and it ' +
+      'is not a rating, a recommendation or a financial view. Full wording: ' + CALL.current.value) +
     statusChip('Direction', CALL.direction, 'pos', 'SIG-02', 'Details') +
     statusChip('Conviction', CALL.conviction, 'neu', 'SIG-02', 'Details') +
     statusChip('Evidence confidence', CALL.evidenceConfidence.split(/[—-]/)[0].trim(),
@@ -699,16 +919,19 @@ RENDER.company = function(){
   h.push('</header>');
 
   /* ── metric rail — right under the heading, above the chart ──────────── */
-  h.push('<div class="railhead"><h3>Key metrics</h3><p class="note">' + esc(CP.label) +
-    ' · N ' + n2(CP.nBase, 0) + ' citations. Every tile opens its evidence object.</p></div>');
+  var curObs = (D.tsisHistory || []).slice(-1)[0] || {};
+  var obsId = curObs.evidenceId || '';
+  h.push('<div class="railhead"><h3>Key metrics</h3><p class="note">' + esc(CP.label) + ' · ' +
+    esc(curObs.respondentCut || 'Not supplied') + ' · N ' + esc(String(curObs.nBase)) +
+    ' citations (counts of citations, not unique respondents) · source ' +
+    esc(curObs.source || 'Not supplied') + '. Every tile opens the object behind it.</p></div>');
   h.push('<div class="mrail">' +
-    mtile('Net Score', n2(v.ns.value), 'spending intent', 'ETR-OCT26-NS') +
-    mtile('Q/Q change', sign(v.ns.qqDelta), moveWord(v.ns.qqDelta), 'ETR-OCT26-NS') +
-    mtile('Y/Y change', sign(v.ns.yyDelta), moveWord(v.ns.yyDelta), 'ETR-OCT26-NS') +
-    mtile('Pervasion', n2(v.pv.value), 'deployment breadth', 'ETR-OCT26-PV') +
-    mtile('Q/Q Z', n2(v.z.qqZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
-    mtile('Y/Y Z', n2(v.z.yyZ, 3), 'bands Source Needed', 'ETR-OCT26-ZS') +
-    mtile('N', n2(CP.nBase, 0), 'citations, not people', 'ETR-OCT26-ZS') +
+    mtile('Net Score', n2(v.ns.value), 'spending intent', obsId) +
+    mtile('Q/Q change', sign(v.ns.qqDelta), 'vs ' + esc((HP[0] || {}).label || 'prior period'), obsId) +
+    mtile('Y/Y change', sign(v.ns.yyDelta), 'vs ' + esc((HP[1] || {}).label || 'year ago'), obsId) +
+    mtile('Deployment Breadth', n2(v.pv.value), 'Pervasion', obsId) +
+    ztile('Q/Q Z', v.z.qqZ) + ztile('Y/Y Z', v.z.yyZ) +
+    mtile('N', esc(String(curObs.nBase)), 'citations, not people', obsId) +
     '</div>');
 
   /* ── lead chart ─────────────────────────────────────────────────────── */
@@ -794,16 +1017,42 @@ RENDER.company = function(){
   el('view-company').innerHTML = h.join('');
   wireChart();
 
-  function statusChip(k, val, kind, id, linkLabel){
-    return '<span class="schip s-' + kind + '"><span class="k">' + esc(k) + '</span>' +
+  /* The recorded call, shortened for the chip. The full wording travels in the
+     tooltip and in the object behind it; nothing is reworded. */
+  function callShort(){
+    var v = String(CALL.current.value || 'Source Needed');
+    var cut = v.split('—')[0].trim();
+    return cut && cut.length < v.length ? cut + ' (inherited)' : v;
+  }
+  function statusChip(k, val, kind, id, linkLabel, tip){
+    return '<span class="schip s-' + kind + '"' + (tip ? ' title="' + esc(tip) + '"' : '') +
+      '><span class="k">' + esc(k) + '</span>' +
       '<span class="v">' + esc(val) + '</span>' +
       (id ? '<button type="button" class="q no-print" data-oid="' + esc(id) + '">' +
         esc(linkLabel || id) + '</button>' : '') + '</span>';
   }
-  function mtile(k, val, s, id){
-    return '<button type="button" class="mtile" data-oid="' + esc(id) + '">' +
+  function mtile(k, val, sub, id){
+    return '<button type="button" class="mtile" data-oid="' + esc(id) + '" ' +
+      'title="Trace this value: opens the object it is read from">' +
       '<span class="k">' + esc(k) + '</span><span class="v">' + esc(val) + '</span>' +
-      '<span class="s">' + esc(s) + '</span></button>';
+      '<span class="s">' + esc(sub) + '</span>' +
+      '<span class="trace no-print">Trace this claim</span></button>';
+  }
+  /* A Z-Score is displayed exactly as supplied. No method band is supplied with
+     it, so there is no threshold to read it against and it is not coloured as
+     though there were. */
+  function ztile(k, val){
+    return '<button type="button" class="mtile z-tile" data-oid="' + esc(zEvidenceId()) + '" ' +
+      'title="Supplied by the source. No interpretive threshold is supplied with it, so this ' +
+      'score is shown as a value only — it is not scored as positive or negative here.">' +
+      '<span class="k">' + esc(k) + '</span>' +
+      '<span class="v neutral">' + (val == null ? needed() : n2(val, 3)) + '</span>' +
+      '<span class="s">Method band not supplied</span>' +
+      '<span class="trace no-print">Trace this claim</span></button>';
+  }
+  function zEvidenceId(){
+    var z = ACTIVE_EVIDENCE.filter(function(e){ return /Z-Score/i.test(e.metric || ''); })[0];
+    return z ? z.id : (obsId || '');
   }
 };
 
@@ -811,54 +1060,6 @@ function btn(label,href,cls){
   return '<button type="button" class="btn '+(cls||'')+'" data-goto="'+esc(href)+'">'+esc(label)+'</button>';
 }
 
-/* the three drivers, each assembled from workbook objects */
-var DRIVERS = [
-  { key:'demand', title:'Post-outage demand recovery persists, modestly',
-    classification:'ETR interpretation', direction:'Improving', confidence:'High on current raw values',
-    body:function(){
-      var ns=CP.netScore;
-      return 'Net Score '+n2(ns.value)+' in '+CP.label+', '+sign(ns.qqDelta)+' sequentially ('+
-        moveWord(ns.qqDelta)+', per the workbook’s movement terminology) and '+sign(ns.yyDelta)+
-        ' year over year ('+moveWord(ns.yyDelta)+
-        '). Pervasion '+n2(CP.pervasion.value)+', '+sign(CP.pervasion.qqDelta)+' sequentially. '+
-        'Both Z-Scores are positive with Y/Y above Q/Q.';
-    },
-    evidence:['ETR-OCT26-NS','ETR-OCT26-PV','ETR-OCT26-ZS','ETR-OCT26-INTENT'],
-    counter:['CE-002','CE-003'], kpi:'KPI-003', questions:['OQ-002','OQ-005'] },
-  { key:'cohort', title:'Enterprise breadth is selective, not uniform',
-    classification:'ETR interpretation', direction:'Mixed', confidence:'Medium — cohort N missing',
-    body:function(){
-      return 'Global 2000 Net Score 42.61 and Fortune 500 42.68 exceed the '+n2(CP.netScore.value)+
-        ' overall reading, while Large Organizations sit below it at 35.82. The workbook states the '+
-        'enterprise evidence is selective rather than uniform. No cut carries an N.';
-    },
-    evidence:['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE'],
-    counter:['CE-001','CE-006'], kpi:'KPI-006', questions:['OQ-014','OQ-008'] },
-  { key:'arr', title:'Company outcomes moved in the same direction, separately sourced',
-    classification:'Hypothesis', direction:'Improving', confidence:'Medium',
-    body:function(){
-      return 'Company-reported net new ARR, ending ARR and RPO are recorded in the company lane and move '+
-        'in the same direction as the demand reading over the same window. XL-01 classifies this as '+
-        'parallel evidence; R-015 permits directional consistency and prohibits causal assertion.';
-    },
-    evidence:['REF-E-F04','REF-E-F03','REF-E-F08','XL-01'],
-    counter:['CE-009','CE-010'], kpi:'KPI-003', questions:['OQ-007','OQ-006'] }
-];
-function driverCard(d){
-  var h = ['<div class="card" style="border-top:3px solid var(--navy)">'];
-  h.push('<div class="row" style="margin-bottom:5px">'+tag(d.classification)+
-    '<span class="pill">Direction: '+esc(d.direction)+'</span>'+
-    '<span class="pill">Confidence: '+esc(d.confidence)+'</span></div>');
-  h.push('<h3>'+esc(d.title)+'</h3>');
-  h.push('<p class="note" style="color:var(--ink);font-size:12.5px;margin-top:5px">'+esc(d.body())+'</p>');
-  h.push('<div class="sep"></div>');
-  h.push('<div class="mini">Evidence</div>'+oids(d.evidence));
-  h.push('<div class="mini" style="margin-top:6px">Counter-evidence</div>'+oids(d.counter));
-  h.push('<div class="mini" style="margin-top:6px">Related KPI</div>'+oids([d.kpi]));
-  h.push('<div class="mini" style="margin-top:6px">Open questions</div>'+oids(d.questions));
-  h.push('</div>');
-  return h.join('');
-}
 
 /* ─────────────────────────────────────────────────────── SVG chartlets ── */
 /** Horizontal bar list. Values are workbook values; nothing is interpolated. */
@@ -885,33 +1086,6 @@ function barChart(rows, opts){
            '" height="'+(rowH-6)+'" fill="'+(r.color||(r.value<0?'#C00000':'#17365D'))+'"/>');
     s.push('<text x="'+(x1+bw+4).toFixed(1)+'" y="'+(y+13)+'" font-size="10" '+
            'font-family="monospace" fill="#595959">'+esc(n2(r.value))+'</text>');
-  });
-  s.push('</svg>');
-  return s.join('');
-}
-/** Line series over labelled periods. Only supplied points are plotted. */
-function lineChart(points, opts){
-  opts = opts||{};
-  var w=560,h=150,l=34,b=24,t=10,r=26;
-  var vals = points.map(function(p){return p.value;});
-  var max = Math.max.apply(null,vals), min = Math.min.apply(null,vals);
-  var pad = (max-min)*0.15 || 1; max+=pad; min-=pad;
-  var X = function(i){ return l + i*(w-l-r)/Math.max(points.length-1,1); };
-  var Y = function(v){ return t + (max-v)/(max-min)*(h-t-b); };
-  var s = ['<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(opts.label||'series')+'">'];
-  s.push('<line x1="'+l+'" y1="'+(h-b)+'" x2="'+(w-r)+'" y2="'+(h-b)+'" stroke="#D8DEE6"/>');
-  s.push('<polyline fill="none" stroke="'+(opts.color||'#17365D')+'" stroke-width="2" points="'+
-    points.map(function(p,i){return X(i).toFixed(1)+','+Y(p.value).toFixed(1);}).join(' ')+'"/>');
-  points.forEach(function(p,i){
-    var last = i===points.length-1;
-    s.push('<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.value).toFixed(1)+'" r="'+(last?4:2.6)+
-      '" fill="'+(last?'#F16A20':(opts.color||'#17365D'))+'"/>');
-    if (last || i===0 || i===points.length-4)
-      s.push('<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.value)-7).toFixed(1)+
-        '" font-size="9.5" font-family="monospace" text-anchor="middle" fill="#1B2430">'+n2(p.value)+'</text>');
-    if (i%2===0 || last)
-      s.push('<text x="'+X(i).toFixed(1)+'" y="'+(h-8)+'" font-size="8.5" text-anchor="middle" fill="#595959">'+
-        esc(p.label)+'</text>');
   });
   s.push('</svg>');
   return s.join('');
@@ -957,7 +1131,7 @@ RENDER.narrative = function(){
   /* ── 03 the signal ──────────────────────────────────────────────────── */
   h.push(nsec('signal', '03', 'The signal'));
   var sig = OBJ[CALL.primarySignalId] || {};
-  h.push('<p>' + esc(sig.statement || CALL.primarySignalText) + ' That is the recorded reading for ' +
+  h.push('<p>' + esc(sigStatement(sig) || CALL.primarySignalText) + ' That is the recorded reading for ' +
     oid(CALL.primarySignalId) + ', whose reviewer status is <strong>' +
     esc(sig.workflowStatus || 'Source Needed') + '</strong>. The prior call was ' +
     esc(CALL.prior.value) + ' in July 2026; under the current-period promotion rule that reading is ' +
@@ -1012,17 +1186,23 @@ RENDER.narrative = function(){
     'ranking the segments.</p>');
   /* the named enterprise cohorts, in the order the story uses them, plus the
      all-respondent row so the comparison has something to be a comparison to */
-  var WANT = ['All Respondents','Global 2000','Fortune 500','Large Organizations',
+  /* The subsample export carries its own All Respondents line, which is the
+     archived October reading. The comparison line here is the canonical
+     observation instead; the export's own line is kept in the Archive. */
+  var WANT = ['Global 2000','Fortune 500','Large Organizations',
               'Midsize Organizations','Small Organizations'];
   var picked = WANT.map(function(name){
     return cuts.filter(function(r){ return r.Category === name; })[0];
   }).filter(Boolean);
   if (picked.length) h.push(miniTable(
     ['Cut', 'Net Score', 'Pervasion', 'Citation base'],
-    picked.map(function(r){
-      return [r.Category, n2(Number(r['Net Score'])), r.Pervasion ? n2(Number(r.Pervasion)) : '—',
-              '<span class="needed">SOURCE NEEDED</span>'];
-    })));
+    [['<strong>All Respondents</strong> <span class="pill">canonical</span>',
+      n2(CP.netScore.value), n2(CP.pervasion.value), esc(String(CP.n))]].concat(
+      picked.map(function(r){
+        return [r.Category, n2(Number(r['Net Score'])), r.Pervasion ? n2(Number(r.Pervasion)) : '—',
+                '<span class="needed">SOURCE NEEDED</span>'];
+      }))));
+  h.push(canonNote());
   var regions = NREGION();
   if (regions.length) h.push('<p>Geographically the October cuts run wide — from ' +
     esc(regions[0].k + ' at ' + n2(regions[0].v)) + ' down to ' +
@@ -1135,9 +1315,6 @@ RENDER.narrative = function(){
   }
 };
 
-function nblock(cls,tagLabel,title,body){
-  return '<div class="nblock '+cls+'">'+tag(tagLabel)+'<h3>'+esc(title)+'</h3>'+body+'</div>';
-}
 
 /* Scorecard rows: reading, direction word, both confidences, evidence, and the
    sentence a reader actually needs. */
@@ -1173,51 +1350,15 @@ var SCORECARD = [
 ];
 
 /* ───────────────────────────────────── shared panels used by many views ── */
-/* The rules that governed a block, named at the point of use. Reading the
-   claim and reading the rule that bounded it should not be separate errands. */
-function ruleRow(ids){
-  return '<div class="rulerow"><span class="k">Rules applied</span>'+oids(ids)+'</div>';
-}
-
-function zPanel(){
-  var z = CP.zScore;
-  return '<div class="card" style="border-left:4px solid var(--teal)">'+
-    '<div class="row"><span class="lane lane-zscore">Survey Z-Score</span>'+tag('Client-provided fact')+
-    oid('ETR-OCT26-ZS')+'</div>'+
-    '<div class="strip" style="margin:9px 0">'+
-      ztile('Metric value', n2(z.metricValue))+ztile('Q/Q change', n2(z.qqChange,8))+
-      ztile('Y/Y change', n2(z.yyChange,8))+ztile('Q/Q Z-Score', n2(z.qqZ,9))+
-      ztile('Y/Y Z-Score', n2(z.yyZ,9))+ztile('N', n2(z.citations,0))+'</div>'+
-    '<div class="zbox"><strong>'+esc(z.bandNote)+'</strong></div>'+
-    '<dl class="kv" style="margin-top:8px">'+
-      '<dt>Permitted reading</dt><dd>Q/Q Z-Score is positive. Y/Y Z-Score is positive. Y/Y is higher than '+
-        'Q/Q, which is consistent with the larger Y/Y base-metric change. Z-Score supplies deviation or '+
-        'unusualness context; Net Score determines directional spending intent.</dd>'+
-      '<dt>Interpretive role</dt><dd>Deviation / inflection modifier. It never creates or changes the '+
-        'Current Call.</dd>'+
-      '<dt>Required before band use</dt><dd>Formula, sign convention, lookback, normalization population '+
-        'and approved thresholds — all '+needed()+' '+oids(['OQ-005','R-007'])+'</dd>'+
-      '<dt>Prohibited</dt><dd>Never written anywhere in this application, and never inferred from the '+
-        'raw values: statistically significant · extreme · strong or weak Z-Score · high probability · '+
-        'predicts revenue · proves a beat · validates the vendor call · greater or less than one '+
-        'standard deviation · anomaly band.</dd>'+
-      '<dt>Forecaster</dt><dd>'+needed()+' — no frozen vintage, target or horizon is supplied '+
-        oids(['OQ-004','R-017','R-018'])+'</dd>'+
-    '</dl>'+ruleRow(['R-006','R-007','R-026','CTX-004','CTX-013'])+'</div>';
-  function ztile(k,v){
-    return '<div class="metric"><span class="k">'+esc(k)+'</span><span class="v" style="font-size:15px">'+
-      esc(v)+'</span></div>';
-  }
-}
-
 function bridgePanel(sid,kid){
   var b = OBJ['BRIDGE-'+sid+'-'+kid];
   if (!b) return '<div class="warnbox">No workbook relationship exists for '+esc(sid)+' → '+esc(kid)+'.</div>';
-  var hyp = b.validationStatus.indexOf('Hypothesis')===0;
+  var vs = b.validationStatus || b.linkageType || 'Hypothesized';
+  var hyp = /^hypothes/i.test(vs);
   var h=['<div>'];
   if (hyp) h.push('<div class="hyp-bar">Hypothesis — Backtest Required</div>');
   else h.push('<div class="hyp-bar" style="background:var(--lgreen);border-color:var(--green);color:#3D6B24">'+
-    esc(b.validationStatus)+'</div>');
+    esc(vs)+'</div>');
   h.push('<div class="card" style="border-top:none">');
   /* visual flow: Signal → Mechanism → Lag → KPI */
   h.push('<svg viewBox="0 0 760 74" role="img" aria-label="Signal to KPI flow" style="max-width:760px">'+
@@ -1307,7 +1448,7 @@ function evidenceTable(list, compact){
   list.forEach(function(e){
     h.push('<tr class="click" data-oid="'+esc(e.id)+'"><td>'+oid(e.id)+'<br>'+periodChip(e)+'</td>'+
       '<td>'+tag(e.classification)+'</td>'+
-      '<td>'+esc(e.statement||e.title)+'</td>'+
+      '<td>'+escProv(e.statement||e.title)+'</td>'+
       '<td class="note">'+orNeeded(e.period)+'</td>'+
       '<td class="note">'+orNeeded(e.metric)+'</td>'+
       '<td class="num">'+orNeeded(e.value)+'</td>'+
@@ -1460,25 +1601,6 @@ function signalRules(sid){
   if (sid==='SIG-03' || sid==='SIG-06') out = out.concat(['R-014','R-015']);
   return unique(out);
 }
-function signalCard(s,m){
-  m = m || signalMetrics(s);
-  return '<div class="card click" tabindex="0" role="button" data-goto="#signal/'+esc(s.id)+'">'+
-    '<div class="row" style="margin-bottom:4px">'+oid(s.id)+
-      '<span class="pill">'+esc(m.direction)+'</span>'+
-      '<span class="pill">Confidence: '+esc(s.confidence||'—')+'</span>'+
-      tag(s.workflowStatus==='Pending Review'?'Open question':'ETR interpretation')+'</div>'+
-    '<h3>'+esc(s.title)+'</h3>'+
-    '<p class="note" style="margin-top:4px">'+esc((s.statement||'').slice(0,230))+'</p>'+
-    '<div class="row" style="margin-top:7px">'+
-      pill('Current evidence', m.current)+pill('Historical', m.historical)+
-      pill('Contradictions', m.contradicting.length)+pill('KPIs', m.kpis.length)+
-      pill('Open questions', m.questions.length)+pill('Rules', m.rules.length)+
-      pill('Source Needed', (s.sourceNeededFields||[]).length)+'</div>'+
-    '<div class="note" style="margin-top:6px"><strong>Evidence strength.</strong> '+
-      esc((s.verificationStatus||'').slice(0,150))+'</div>'+
-    '</div>';
-  function pill(k,v){ return '<span class="pill">'+esc(k)+': <strong>'+v+'</strong></span>'; }
-}
 
 function renderSignalWorkspace(sid){
   var s = OBJ[sid], m = signalMetrics(s);
@@ -1512,10 +1634,11 @@ function renderSignalWorkspace(sid){
           kv('Signal ID', oid(sid))+kv('Confidence', esc(s.confidence))+
           kv('Direction', esc(m.direction)+' <span class="note">(application reading of the supplied '+
             'evidence; the workbook records no direction field on the Canvas)</span>')+
-          kv('Evidence strength', esc(s.verificationStatus))+
+          kv('Evidence strength', esc(s.evidenceStrength || s.verificationStatus))+
           kv('Reviewer decision', esc(s.workflowStatus))+
           kv('Source gaps', orNeeded(s.caveat))+
-          kv('Human review', esc(s.recommendedNextAction||'Yes'))+
+          kv('Human review', esc(D.reviewStatus || 'Human Review Required'))+
+          kv('Lineage status', esc(s.lineageStatus || 'Not specified'))+
           '</dl></div>');
         o.push('<div class="card"><h4>Counts under the current source controls</h4>'+
           '<div class="balance">'+
@@ -1532,7 +1655,7 @@ function renderSignalWorkspace(sid){
       case 2:
         var ints = (D.interpretations||[]).filter(function(x){
           return x.supportingIds.some(function(e){return m.supporting.indexOf(e)>=0;});});
-        if (!ints.length) o.push('<div class="callout">No V3.5 interpretation object cites this signal’s '+
+        if (!ints.length) o.push('<div class="callout">No interpretation object in this workbook cites this signal’s '+
           'evidence directly.</div>');
         ints.forEach(function(x){
           o.push('<div class="card" style="margin-bottom:9px;border-left:4px solid var(--purple)">'+
@@ -1597,23 +1720,77 @@ function ruleCard(r){
 }
 
 /* ═══════════════════════════════════════════ VIEW: Evidence Explorer ════ */
-var evFilter = {q:'', quick:[], mode:'list'};   /* list first; cards and table on request */
+var evFilter = {q:'', quick:[], mode:'list', dims:{}};  /* list first; cards and table on request */
 var EV_QUICK = [
-  ['cur','Current October 2026', function(e){return e.currentOrHistorical==='current';}],
-  ['jul','Historical July 2026', function(e){return /JUL26|Jul 2026/i.test(e.period||'');}],
-  ['oct25','Historical October 2025', function(e){return /Oct 2025|OCT25/i.test((e.period||'')+(e.comparisonValue||''));}],
-  ['quant','ETR quantitative', function(e){return /ETR quantitative|Client-provided fact/i.test(e.classification||'') && /^ETR-/.test(e.id);}],
-  ['zs','Z-Score', function(e){return laneOf(e)==='zscore';}],
-  ['cohort','Cohort', function(e){return laneOf(e)==='cohort';}],
-  ['region','Regional', function(e){return laneOf(e)==='region';}],
-  ['adopt','Adoption reasons', function(e){return laneOf(e)==='adoption';}],
-  ['comp','Respondent composition', function(e){return laneOf(e)==='composition';}],
-  ['co','Company / external', function(e){return laneOf(e)==='company';}],
+  ['cur','Current', function(e){return e.currentOrHistorical==='current';}],
+  ['hist','Historical', function(e){return e.currentOrHistorical!=='current';}],
   ['sup','Supporting', function(e){return stateTagsOf(e).indexOf('Supporting')>=0;}],
   ['con','Contradictory', function(e){return stateTagsOf(e).indexOf('Contradictory')>=0;}],
   ['ctx','Contextual', function(e){return stateTagsOf(e).indexOf('Contextual')>=0;}],
   ['sn','Source Needed', function(e){return (e.sourceNeededFields||[]).length>0;}]
 ];
+
+/* The eleven structured filters, each built from the values this workbook
+   actually carries. A dimension with one value is still shown, so the reader
+   can see that the workbook offers no choice there. */
+var EV_DIMS = [
+  ['dataset',   'Dataset family',      function(){ return DATASETS; },
+                function(e){ return e.dataset; }],
+  ['lane',      'Source lane',         function(){ return LANES.map(function(l){return l[0];}); },
+                function(e){ return e.sourceLane; }],
+  ['class',     'Evidence class',      function(){ return CLASSES; },
+                function(e){ return e.classification; }],
+  ['theme',     'Theme',               function(){ return THEMES; },
+                function(e){ return e.theme; }],
+  ['period',    'Period',              function(){ return PERIODS; },
+                function(e){ return e.period; }],
+  ['verif',     'Verification status', function(){ return VERIFICATIONS; },
+                function(e){ return e.verificationStatus; }],
+  ['conf',      'Confidence',          function(){ return CONFS; },
+                function(e){ return e.confidence; }],
+  ['importance','Importance',          function(){ return IMPORTANCES; },
+                function(e){ return e.importance; }],
+  ['curhist',   'Current / historical',function(){ return ['current','historical']; },
+                function(e){ return e.currentOrHistorical; }],
+  ['signal',    'Related signal',      function(){
+                  return distinct(D.evidence, function(e){
+                    return (e.relatedSignalIds||[]).join('|'); })
+                    .join('|').split('|').filter(function(v,i,a){
+                      return v && a.indexOf(v)===i; }).sort(); },
+                function(e){ return (e.relatedSignalIds||[]).join(' '); }],
+  ['kpi',       'Related KPI',         function(){
+                  return distinct(D.evidence, function(e){
+                    return (e.relatedKpiIds||[]).join('|'); })
+                    .join('|').split('|').filter(function(v,i,a){
+                      return v && a.indexOf(v)===i; }).sort(); },
+                function(e){ return (e.relatedKpiIds||[]).join(' '); }]
+];
+
+function evDimsBar(){
+  return '<div class="fgrp dimbar">' + EV_DIMS.map(function(d){
+    var opts = d[2]();
+    if (!opts.length) return '';
+    var sel = evFilter.dims[d[0]] || '';
+    return '<label class="dim"><span class="mini">' + esc(d[1]) + '</span>' +
+      '<select data-evdim="' + d[0] + '" aria-label="' + esc(d[1]) + '">' +
+      '<option value="">all (' + opts.length + ')</option>' +
+      opts.map(function(o){
+        return '<option value="' + esc(o) + '"' + (o === sel ? ' selected' : '') + '>' +
+          esc(String(o).slice(0, 42)) + '</option>'; }).join('') +
+      '</select></label>';
+  }).join('') + '</div>';
+}
+
+function evDimsPass(e){
+  return EV_DIMS.every(function(d){
+    var want = evFilter.dims[d[0]];
+    if (!want) return true;
+    var have = d[3](e) || '';
+    return d[0] === 'signal' || d[0] === 'kpi'
+      ? String(have).split(/\s+/).indexOf(want) >= 0
+      : String(have) === want;
+  });
+}
 
 RENDER.evidence = function(route){
   /* This workbook records its counter-evidence as CE-* Risk objects rather than as evidence rows.
@@ -1630,6 +1807,7 @@ RENDER.evidence = function(route){
                  e.period,e.confidence].join(' ').toLowerCase();
       if (hay.indexOf(evFilter.q.toLowerCase())<0) return false;
     }
+    if (!evDimsPass(e)) return false;
     return evFilter.quick.every(function(k){
       if (k==='con') return stateTagsOf(e).indexOf('Contradictory')>=0;
       var f = EV_QUICK.filter(function(x){return x[0]===k;})[0];
@@ -1655,7 +1833,7 @@ RENDER.evidence = function(route){
     EV_QUICK.map(function(q){
       return '<button class="fbtn'+(evFilter.quick.indexOf(q[0])>=0?' on':'')+'" data-evq="'+q[0]+
         '" aria-pressed="'+(evFilter.quick.indexOf(q[0])>=0)+'">'+esc(q[1])+'</button>';}).join('')+
-    '</div></div>');
+    '</div>'+ evDimsBar() +'</div>');
 
   if (state.compare.length){
     h.push('<div class="cmp-wrap"><div class="row" style="justify-content:space-between">'+
@@ -1675,7 +1853,7 @@ RENDER.evidence = function(route){
         .map(function(x){return x.to;}).filter(function(i){return /^SIG-/.test(i);})[0];
       h.push('<button type="button" class="evrow'+(state.compare.indexOf(e.id)>=0?' picked':'')+
         '" data-oid="'+esc(e.id)+'">'+
-        '<span class="ev-st">'+esc(e.statement||e.title||'')+'</span>'+
+        '<span class="ev-st">'+escProv(e.statement||e.title||'')+'</span>'+
         '<span class="ev-meta">'+
           '<span class="ev-f"><i>Period</i>'+esc(e.period||'—')+'</span>'+
           '<span class="ev-f"><i>Lane</i>'+esc((LANES.filter(function(l){return l[0]===laneOf(e);})[0]||['','—'])[1])+'</span>'+
@@ -1692,7 +1870,7 @@ RENDER.evidence = function(route){
       h.push('<div class="card'+(picked?'':'')+'" style="'+(picked?'border-color:var(--orange);border-width:2px':'')+'">'+
         '<div class="row" style="margin-bottom:4px">'+oid(e.id)+tag(e.classification)+periodChip(e)+
           laneChip(laneOf(e))+'</div>'+
-        '<p style="font-size:12.5px;margin:0 0 6px">'+esc(e.statement||e.title)+'</p>'+
+        '<p style="font-size:12.5px;margin:0 0 6px">'+escProv(e.statement||e.title)+'</p>'+
         '<dl class="kv" style="font-size:11.5px">'+
           kvr('Theme', e.theme)+kvr('Metric', e.metric)+kvr('Value', e.value)+
           kvr('Comparison', e.comparisonValue)+kvr('N / base', e.nBase)+
@@ -1765,9 +1943,7 @@ var LIN = {focus:'SIG-02', depth:'2', orient:'horizontal', selected:null,
            collapsed:{}, zoom:1, showSupport:true, showContra:true, mode:'path'};
 /* The default lineage is the proof-case path, not the whole neighbourhood: a 2-hop graph
    around SIG-02 is 60 nodes and reads as a hairball. Full graph stays one click away. */
-var PROOF_PATH = ['RAW-VENDOR-VIEW','SRC-OCT26-38','ETR-OCT26-NS','ETR-OCT26-ZS','SIG-02',
-  'BRIDGE-SIG-02-KPI-003','KPI-003','R-021','R-026','BT-CRWD-OCT26',
-  'OUT-BRIEF','OUT-SUNDAY','OUT-EMAIL'];
+var PROOF_PATH = (D.proofPath && D.proofPath.length) ? D.proofPath.slice() : [];
 
 RENDER.lineage = function(route){
   if (route && route.arg && OBJ[route.arg]){
@@ -2199,46 +2375,68 @@ RENDER.cohorts = function(){
     '<th class="num">Net Score</th><th class="num">Pervasion</th><th class="num">Adoption %</th>'+
     '<th class="num">Increase %</th><th class="num">Flat %</th><th class="num">Decrease %</th>'+
     '<th class="num">Replacing %</th><th>N</th><th>Evidence</th></tr></thead><tbody>');
-  cuts.filter(function(r){return named.indexOf(r.Category)>=0;})
+  /* The export's own All Respondents line is the archived October reading, so
+     the comparison row here is the canonical observation; everything else is
+     shown exactly as the export supplies it. */
+  h.push('<tr style="background:var(--lblue)"><td><strong>All Respondents</strong> '+
+    '<span class="pill">canonical</span></td>'+
+    '<td class="num">'+n2(CP.netScore.value)+'</td><td class="num">'+n2(CP.pervasion.value)+'</td>'+
+    '<td class="num">'+needed()+'</td><td class="num">'+needed()+'</td>'+
+    '<td class="num">'+needed()+'</td><td class="num">'+needed()+'</td>'+
+    '<td class="num">'+needed()+'</td><td>'+esc(String(CP.n))+'</td><td>'+oid('ETR-OCT26-NS')+'</td></tr>');
+  cuts.filter(function(r){return named.indexOf(r.Category)>=0 && r.Category!=='All Respondents';})
       .sort(function(a,b){return Number(b['Net Score'])-Number(a['Net Score']);})
       .forEach(function(r){
     var eid = {'Global 2000':'ETR-OCT26-G2K','Fortune 500':'ETR-OCT26-F500',
-               'Large Organizations':'ETR-OCT26-LARGE','All Respondents':'ETR-OCT26-INTENT'}[r.Category];
-    h.push('<tr'+(r.Category==='All Respondents'?' style="background:var(--lblue)"':'')+
-      '><td><strong>'+esc(r.Category)+'</strong></td>'+
+               'Large Organizations':'ETR-OCT26-LARGE'}[r.Category];
+    h.push('<tr><td><strong>'+esc(r.Category)+'</strong></td>'+
       ['Net Score','Pervasion','Adoption %','Increase %','Flat %','Decrease %','Replacing %']
         .map(function(c){return '<td class="num">'+n2(Number(r[c]))+'</td>';}).join('')+
       '<td>'+needed()+'</td><td>'+(eid?oid(eid):'<span class="note">raw cut</span>')+'</td></tr>');
   });
   h.push('</tbody></table></div>');
+  h.push('<div class="lead-acts no-print"><button type="button" class="btn" data-csv="cuts">' +
+    'Download cohort CSV</button></div>');
+  h.push(canonNote());
   h.push('<div class="callout">'+tag('ETR interpretation')+' Global 2000 and Fortune 500 sit above '+
     'the All Respondents reading of '+n2(CP.netScore.value)+', while Large Organizations sit below it. '+
     'The workbook records this as enterprise evidence that is <em>selective, not uniform</em>. '+
     'Without cut-level N, R-010 caps what any of these can carry. '+
     oids(['ETR-OCT26-G2K','ETR-OCT26-F500','ETR-OCT26-LARGE','SIG-05','OQ-014'])+'</div>');
-  h.push('<details class="filters"><summary class="mini" style="cursor:pointer">All '+cuts.length+
-    ' supplied cuts (raw worksheet)</summary>'+
+  h.push('<details class="filters" data-prov="raw-export"><summary class="mini" style="cursor:pointer">All '+
+    cuts.length+' supplied cuts (raw worksheet, as exported)</summary>'+
+    '<p class="note" style="margin-top:8px">This is the subsample export exactly as supplied, '+
+    'including its own All Respondents line. That line belongs to the earlier October snapshot and '+
+    'is archived; the canonical October observation is '+esc(CANON_LINE)+'.</p>'+
     '<div class="tw" style="margin-top:8px"><table><thead><tr><th>Cut</th><th class="num">Net Score</th>'+
     '<th class="num">Pervasion</th><th class="num">Adoption</th><th class="num">Increase</th>'+
     '<th class="num">Flat</th><th class="num">Decrease</th><th class="num">Replacing</th></tr></thead><tbody>'+
     cuts.map(function(r){ return '<tr><td>'+esc(r.Category)+'</td>'+
       ['Net Score','Pervasion','Adoption %','Increase %','Flat %','Decrease %','Replacing %']
-        .map(function(c){return '<td class="num">'+n2(Number(r[c]))+'</td>';}).join('')+'</tr>';}).join('')+
+        .map(function(c){return '<td class="num">'+provMark(n2(Number(r[c])))+'</td>';}).join('')+'</tr>';}).join('')+
     '</tbody></table></div></details>');
 
   h.push('<h4 style="margin-top:18px">B · Regions</h4>');
-  h.push('<div class="grid g2"><div class="card">'+barChart(region.map(function(r){
+  h.push('<div class="grid g2"><div class="card" data-prov="cut-value">'+barChart(region.map(function(r){
       return {label:r.Category, value:Number(r['Oct 2026'])};}), {label:'Regional Net Score Oct 2026'})+
-    '<p class="note">October 2026 regional Net Score. '+oid('ETR-OCT26-REGION')+'</p></div>');
+    '<p class="note">October 2026 regional Net Score, each cut as supplied. A regional cut is not '+
+    'the October headline reading, which is '+esc(CANON_LINE)+'. '+oid('ETR-OCT26-REGION')+'</p></div>');
   h.push('<div class="card"><div class="tw"><table><thead><tr><th>Region</th>'+
     '<th class="num">Oct 2026</th><th class="num">Jul 2026</th><th class="num">Oct 2025</th>'+
     '<th class="num">Q/Q</th><th>N</th></tr></thead><tbody>'+
     region.map(function(r){
       var a=Number(r['Oct 2026']), b=Number(r['Jul 2026']), d=a-b;
-      return '<tr><td>'+esc(r.Category)+'</td><td class="num"><strong>'+n2(a)+'</strong></td>'+
-        '<td class="num">'+n2(b)+'</td><td class="num">'+n2(Number(r['Oct 2025']))+'</td>'+
+      var why = 'This is the ' + r.Category + ' cut\u2019s own supplied Net Score. It is not the ' +
+                'October 2026 headline reading, which was canonicalised as: ' + CANON_LINE;
+      return '<tr><td>'+esc(r.Category)+'</td><td class="num"><strong>'+provMark(n2(a), why)+'</strong></td>'+
+        '<td class="num">'+provMark(n2(b), why)+'</td><td class="num">'+provMark(n2(Number(r['Oct 2025'])), why)+'</td>'+
         '<td class="num '+(d>0?'up':(d<0?'dn':'flat'))+'">'+sign(d)+'</td><td>'+needed()+'</td></tr>';
-    }).join('')+'</tbody></table></div></div></div>');
+    }).join('')+'</tbody></table>'+
+    '<div class="lead-acts no-print"><button type="button" class="btn" data-csv="region">'+
+    'Download regional CSV</button></div>'+
+    '<p class="note" data-prov="cut-value">Regional figures are each cut\u2019s own supplied value. '+
+    'Where one of them coincides with an archived October reading it is marked in place; the '+
+    'October headline reading is '+esc(CANON_LINE)+'.</p></div></div></div>');
   h.push('<div class="warnbox">'+tag('Open question')+' Regional N is not supplied for any cut. '+
     'Latin America moves from 75 in Jul 2026 to 50 in Oct 2026 on an unknown base — a movement that '+
     'cannot be read without it. Do not link a regional survey cut to regional revenue. '+
@@ -2280,16 +2478,22 @@ RENDER.cohorts = function(){
   var peers = D.rawTables.peerTrends.rows.filter(function(r){return r['Oct 2026']!=null;})
     .sort(function(a,b){return Number(b['Oct 2026'])-Number(a['Oct 2026']);});
   var crwd = peers.filter(function(r){return /CrowdStrike/i.test(r.Category);});
-  h.push('<div class="callout">The peer export supplies '+peers.length+' vendors with an October value. '+
-    'CrowdStrike '+(crwd.length?'appears in it at '+n2(Number(crwd[0]['Oct 2026'])):'does not appear in this export')+
-    '. Peer values are displayed as supplied; no ranking claim is made and no peer N is provided.</div>');
-  h.push('<details class="filters"><summary class="mini" style="cursor:pointer">Peer trend rows ('+
+  var peerWhy = 'The peer export carries its own CrowdStrike line. Where it coincides with an ' +
+    'archived October reading it is marked here; the canonical October observation is: ' + CANON_LINE;
+  h.push('<div class="callout" data-prov="peer-export">The peer export supplies '+peers.length+
+    ' vendors with an October value. '+
+    'CrowdStrike '+(crwd.length?'appears in it at '+provMark(n2(Number(crwd[0]['Oct 2026'])), peerWhy)
+                              :'does not appear in this export')+
+    '. Peer values are displayed as supplied; no ranking claim is made and no peer N is provided. '+
+    'The CrowdStrike line in this export is not the canonical October observation, which reads '+
+    esc(CANON_LINE)+'.</div>');
+  h.push('<details class="filters" data-prov="peer-export"><summary class="mini" style="cursor:pointer">Peer trend rows ('+
     peers.length+')</summary><div class="tw" style="margin-top:8px"><table><thead><tr><th>Vendor</th>'+
     '<th class="num">Oct 2026</th><th class="num">Jul 2026</th><th class="num">Oct 2025</th></tr></thead><tbody>'+
     peers.map(function(r){return '<tr'+(/CrowdStrike/i.test(r.Category)?' style="background:var(--lblue)"':'')+
-      '><td>'+esc(r.Category)+'</td><td class="num">'+n2(Number(r['Oct 2026']))+'</td>'+
-      '<td class="num">'+(r['Jul 2026']!=null?n2(Number(r['Jul 2026'])):needed())+'</td>'+
-      '<td class="num">'+(r['Oct 2025']!=null?n2(Number(r['Oct 2025'])):needed())+'</td></tr>';}).join('')+
+      '><td>'+esc(r.Category)+'</td><td class="num">'+provMark(n2(Number(r['Oct 2026'])), peerWhy)+'</td>'+
+      '<td class="num">'+(r['Jul 2026']!=null?provMark(n2(Number(r['Jul 2026'])), peerWhy):needed())+'</td>'+
+      '<td class="num">'+(r['Oct 2025']!=null?provMark(n2(Number(r['Oct 2025'])), peerWhy):needed())+'</td></tr>';}).join('')+
     '</tbody></table></div></details>');
 
   el('view-cohorts').innerHTML = h.join('');
@@ -2633,9 +2837,18 @@ RENDER.sources = function(){
       '<th style="width:13%">Publisher</th><th style="width:8%">Date</th>'+
       '<th style="width:13%">Dataset</th><th style="width:8%">Access</th>'+
       '<th style="width:8%">URL</th></tr></thead><tbody>'+list.map(function(s){
-        return '<tr class="click" data-oid="'+esc(s.id)+'"><td>'+oid(s.id)+'</td>'+
+        /* The register describes what each source contains. Where a source is the
+           one whose October reading was superseded, the row says so and its
+           description is marked in place rather than edited. */
+        var sup = ARCHIVED_OBS && s.id === ARCHIVED_OBS.source;
+        return '<tr class="click"'+(sup?' data-prov="superseded-source"':'')+
+          ' data-oid="'+esc(s.id)+'"><td>'+oid(s.id)+
+          (sup?' <span class="pill p-sup">superseded reading</span>':'')+'</td>'+
           '<td>'+esc(s.sourceName)+'</td><td class="note">'+orNeeded(s.sourceType)+'</td>'+
-          '<td class="note">'+orNeeded(s.description)+'</td><td class="note">'+orNeeded(s.period)+'</td>'+
+          '<td class="note">'+provMark(orNeeded(s.description),
+            sup ? 'This is the register\u2019s description of the archived October snapshot. The '+
+                  'canonical October 2026 observation is: '+CANON_LINE : null)+
+          '</td><td class="note">'+orNeeded(s.period)+'</td>'+
           '<td class="note">'+orNeeded(s.dataset)+'</td><td class="note">'+orNeeded(s.verificationStatus)+'</td>'+
           '<td>'+((s.sourceNeededFields||[]).indexOf('URL')>=0?needed('NO URL'):'<span class="note">recorded</span>')+
           '</td></tr>';}).join('')+'</tbody></table></div>';
@@ -2846,6 +3059,7 @@ function claim(outputType, text, classification, evidenceIds, objectIds, ruleIds
   return c;
 }
 function mkClaim(outputType, text, classification, evidenceIds, objectIds, ruleIds, confidence, caveat, sn){
+  evidenceIds = canonIds(evidenceIds); objectIds = canonIds(objectIds);
   return {
     claimId: outputType.toUpperCase().replace(/[^A-Z]/g,'').slice(0,3)+'-'+String(CLAIM_SEQ).padStart(3,'0'),
     outputType: outputType, text: text, classification: classification,
@@ -2880,7 +3094,6 @@ function buildSunday(){
   var ev = selectedList(state.genEvidence);
   var counter = selectedList(state.genCounter);
   var qs = selectedList(state.genQuestion);
-  var aud = AUDIENCES.filter(function(a){return a.id===g.audience;})[0] || AUDIENCES[4];
   var brief = (g.length==='short'), extended = (g.length==='extended');
   var S = [];
   CLAIM_SEQ = 0;
@@ -3274,7 +3487,6 @@ RENDER['gen-email'] = function(){
   var structured = (fmt === 'structured');
   var E = structured ? null : buildCleanEmail();
   var built = structured ? structuredEmail() : null;
-  var N = state.emailNotes || {};
   var pool = (D.evidence || []).filter(function(e){ return e.currentOrHistorical === 'current'; });
   var h = [];
 
@@ -3564,7 +3776,7 @@ function buildBrief(){
     'Direction only. No company outcome is implied.', []);
 
   var primarySignal = claim('brief',
-    (sig.statement || CALL.primarySignalText || '') + ' Reviewer status: ' +
+    (sigStatement(sig) || CALL.primarySignalText || '') + ' Reviewer status: ' +
     (sig.workflowStatus || 'Pending Review') + '.',
     'Client-provided fact', [], [sig.id || 'SIG-02'], ['R-002'],
     sig.confidence || 'Medium-High', sig.caveat || null, []);
@@ -3765,11 +3977,17 @@ function runRuntimeChecks(){
   RUNTIME_CHECKS = [];
   runtimeCheck('V-16','Current-period filters affect evidence and lineage', function(){
     var keep = state.lanes.slice(), keepFocus = LIN.focus, keepDepth = LIN.depth;
-    var before = visibleEvidence().filter(function(e){return laneOf(e)==='oct26';}).length;
     LIN.focus = 'SIG-02'; LIN.depth = 'full';
+    /* Use a lane that is actually represented in the focused graph, so the
+       check measures filtering rather than an empty intersection. */
+    var graphLanes = {};
+    lineageGraph().nodes.forEach(function(i){
+      if (OBJ[i] && OBJ[i].objectType === 'Evidence') graphLanes[laneOf(OBJ[i])] = 1; });
+    var lane0 = Object.keys(graphLanes)[0] || (LANES[0] || [''])[0];
+    var before = visibleEvidence().filter(function(e){return laneOf(e)===lane0;}).length;
     var gBefore = lineageGraph().nodes.filter(function(i){
-      return OBJ[i] && laneOf(OBJ[i])==='oct26'; }).length;
-    state.lanes = keep.filter(function(l){ return l!=='oct26'; });
+      return OBJ[i] && laneOf(OBJ[i])===lane0; }).length;
+    state.lanes = keep.filter(function(l){ return l!==lane0; });
     var after = visibleEvidence().filter(function(e){return laneOf(e)==='oct26';}).length;
     var gAfter = lineageGraph().nodes.filter(function(i){
       return OBJ[i] && laneOf(OBJ[i])==='oct26'; }).length;
@@ -3777,7 +3995,7 @@ function runRuntimeChecks(){
     return {ok: before>0 && after===0 && gBefore>0 && gAfter===0,
       detail: 'October-lane evidence '+before+' → '+after+
         '; October-lane lineage nodes '+gBefore+' → '+gAfter+
-        ' (Z-Score, cohort, regional, adoption and composition are separate lanes and stay on)'};
+        ' (each workbook lane filters independently)'};
   });
   runtimeCheck('V-17','The Current Call does not change when filters change', function(){
     var a = CALL.current.value;
@@ -3799,30 +4017,33 @@ function runRuntimeChecks(){
       '#generator/sunday-signal','#generator/update-email','#generator/executive-brief',
       '#methodology','#index','#signals','#evidence'];
     var bad = routes.filter(function(r){
-      var save0 = location.hash; var p; 
-      p = (function(h){ var old=location.hash; var res;
-        var tmp = h.replace(/^#/,'').split('/');
-        return parseHashFrom(h); })(r);
-      return VIEWS.indexOf(p.view)<0;
+      return VIEWS.indexOf(parseHashFrom(r).view) < 0;
     });
     return {ok: !bad.length, detail: routes.length+' routes resolve to a view'+(bad.length?': '+bad.join(', '):'')};
   });
   runtimeCheck('V-20','Drawers work', function(){
-    var ids = ['ETR-OCT26-NS','SIG-02','KPI-003','R-026','OQ-014','CE-002','SRC-OCT26-34',
-               'BRIDGE-SIG-02-KPI-003','XL-01','BT-CRWD-OCT26'];
+    var first = function(coll){ return ((D[coll]||[])[0]||{}).id; };
+    var ids = [first('evidence'), first('signals'), first('kpis'), first('rules'),
+               first('openQuestions'), first('sources'), first('bridges'),
+               first('outputs')].filter(Boolean);
     var missing = ids.filter(function(i){return !OBJ[i];});
     return {ok: !missing.length, detail: ids.length+' drawer targets resolve'+
       (missing.length?'; missing '+missing.join(', '):'')};
   });
   runtimeCheck('V-21','Lineage traversal works forward and backward', function(){
-    var fwd = walk('RAW-VENDOR-VIEW','down',6);
-    var back = walk('OUT-BRIEF','up',6);
-    var hasChain = fwd.indexOf('ETR-OCT26-NS')>=0 && fwd.indexOf('SIG-02')>=0 &&
-                   fwd.indexOf('BRIDGE-SIG-02-KPI-003')>=0 && fwd.indexOf('KPI-003')>=0;
-    var hasBack = back.indexOf('SIG-02')>=0 && back.indexOf('ETR-OCT26-NS')>=0;
+    /* Walk the recorded chain from the registered source at one end to a draft
+       at the other, using the path the workbook itself supplies. */
+    var path = PROOF_PATH.slice();
+    var startId = path[0], endId = path[path.length-1];
+    var sigId = path.filter(function(i){ return /^SIG-/.test(i); })[0];
+    var kpiId = path.filter(function(i){ return /^KPI-/.test(i); })[0];
+    var fwd = startId ? walk(startId,'down',6) : [];
+    var back = endId ? walk(endId,'up',6) : [];
+    var hasChain = !!sigId && fwd.indexOf(sigId)>=0 && (!kpiId || fwd.indexOf(kpiId)>=0);
+    var hasBack = !!sigId && back.indexOf(sigId)>=0;
     return {ok: hasChain && hasBack,
-      detail:'forward Source→Evidence→Signal→Bridge→KPI→Output reachable ('+fwd.length+
-             ' nodes); reverse from OUT-BRIEF reaches '+back.length+' nodes'};
+      detail:'forward from '+startId+' reaches '+fwd.length+' nodes including '+sigId+
+             (kpiId?' and '+kpiId:'')+'; reverse from '+endId+' reaches '+back.length+' nodes'};
   });
   runtimeCheck('V-22','Sunday Signal Generator works', function(){
     var s = buildSunday();
@@ -3925,8 +4146,6 @@ function runRuntimeChecks(){
   return RUNTIME_CHECKS;
 }
 function parseHashFrom(h){
-  var old = location.hash;
-  var fake = {hash:h};
   var p = h.replace(/^#/,'').split('/');
   var r = {view:'company'};
   var map = {'':'company','index':'company','company':'company','brief':'narrative',
@@ -3997,7 +4216,7 @@ RENDER.methodology = function(){
       'aria-controls="uxTable">Show all '+ux.length+' checks</button>');
     h.push('<div class="xpanel" id="uxTable" hidden>'+ckTable(ux)+'</div>');
   }
-  h.push('<h4 style="margin-top:14px">Workbook self-validation (V3.5 Validation sheet)</h4>'+
+  h.push('<h4 style="margin-top:14px">Workbook self-validation</h4>'+
     '<div class="tw"><table><thead><tr><th>ID</th><th>Check</th><th>Result</th><th>Note</th>'+
     '</tr></thead><tbody>'+(D.workbookValidation||[]).map(function(c){
       return '<tr><td>'+esc(c.id)+'</td><td>'+esc(c.check)+'</td><td>'+esc(c.result)+
@@ -4030,16 +4249,706 @@ RENDER.methodology = function(){
 
   function ct(k,v2){ return '<div class="metric"><span class="k">'+esc(k)+'</span>'+
     '<span class="v" style="font-size:14px">'+esc(v2)+'</span></div>'; }
+  /* The validation record is the audit trail for canonicalisation, so it names
+     both readings on purpose; each archived value is marked as audit detail. */
   function ckTable(list){
-    return '<div class="tw"><table><thead><tr><th style="width:7%">ID</th><th style="width:8%">Result</th>'+
+    return '<div class="tw" data-prov="validation-record"><table><thead><tr><th style="width:7%">ID</th><th style="width:8%">Result</th>'+
       '<th style="width:34%">Check</th><th style="width:51%">Detail</th></tr></thead><tbody>'+
       list.map(function(c){
         return '<tr><td>'+esc(c.id)+'</td><td>'+(c.result==='PASS'
           ? '<span class="up">PASS</span>' : (c.result==='FAIL'
           ? '<span class="dn">FAIL</span>' : '<span class="note">'+esc(c.result)+'</span>'))+'</td>'+
-          '<td>'+esc(c.check)+'</td><td class="note">'+esc(c.detail||'')+'</td></tr>';}).join('')+
+          '<td>'+esc(c.check)+'</td><td class="note">'+provMark(esc(c.detail||''),
+            'Audit detail from the build record. It names the archived reading on purpose; the '+
+            'canonical October 2026 observation is: '+CANON_LINE)+'</td></tr>';}).join('')+
       '</tbody></table></div>';
   }
+};
+
+/* ═════════════════════════════════════════ VIEW: CrowdStrike Charlotte AI ═
+   The ETR AI Product Series, one panel per registered metric group. Every
+   value, response category, period and base is the workbook's. A group that
+   the workbook registers as a source but supplies no rows for says exactly
+   that — no figure is carried over from another period or another group.
+   ══════════════════════════════════════════════════════════════════════════ */
+function aiGroups(){ return D.aiProductSeries || []; }
+
+function aiGroupCsv(groupId){
+  var g = aiGroups().filter(function(x){ return x.groupId === groupId; })[0];
+  if (!g) return '';
+  var q = function(v){ var s = (v == null ? '' : String(v));
+                       return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  var lines = ['Metric group,Respondent cut,Response category,Survey period,Value,Unit,' +
+               'N / base,Verification,Source ID'];
+  var base = (g.evidence[0] || {});
+  g.categories.forEach(function(c){
+    lines.push([g.group, g.respondentCut, c.category, c.period, c.value, c.unit,
+                base.nBase || 'Not supplied', base.verification || '', g.sourceId].map(q).join(','));
+  });
+  if (!g.categories.length){
+    lines.push([g.group, g.respondentCut, 'No row-level values supplied in this workbook',
+                (g.periods || []).join(' / '), '', '', 'Not supplied', 'Source registered only',
+                g.sourceId].map(q).join(','));
+  }
+  return lines.join('\n') + '\n';
+}
+
+/** The subsample and regional exports, exactly as the tables show them. The
+    canonical October observation is carried in the header rows so the file
+    cannot be read without its provenance, and the export's own All Respondents
+    line is labelled as the archived reading rather than dropped. */
+function cutsCsv(kind){
+  var q = function(v){ var x = (v == null ? '' : String(v));
+                       return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  var head = ['# CrowdStrike REVEAL Company Explorer — ' +
+              (kind === 'region' ? 'regional cuts' : 'subsample cuts') + ', as supplied',
+              '# Canonical October 2026 observation: ' + CANON_LINE,
+              '# Cut-level citation bases are not supplied in this workbook.'];
+  if (kind === 'region'){
+    var rows = D.rawTables.region.rows;
+    head.push('Region,Oct 2026,Jul 2026,Oct 2025,Q/Q change,N / base,Note');
+    rows.forEach(function(r){
+      var a = Number(r['Oct 2026']), b = Number(r['Jul 2026']);
+      head.push([r.Category, n2(a), n2(b), n2(Number(r['Oct 2025'])), sign(a - b), 'Not supplied',
+                 'Cut value as supplied; not the October headline reading'].map(q).join(','));
+    });
+  } else {
+    var cuts = D.rawTables.subsampleCuts.rows;
+    head.push('Cut,Net Score,Pervasion,Adoption %,Increase %,Flat %,Decrease %,Replacing %,' +
+              'N / base,Note');
+    head.push(['All Respondents (canonical observation)', n2(CP.netScore.value),
+               n2(CP.pervasion.value), 'Not supplied', 'Not supplied', 'Not supplied',
+               'Not supplied', 'Not supplied', String(CP.n),
+               'Canonical October 2026 observation'].map(q).join(','));
+    cuts.forEach(function(r){
+      var archived = ARCHIVED_OBS && r.Category === 'All Respondents';
+      head.push([r.Category].concat(
+        ['Net Score','Pervasion','Adoption %','Increase %','Flat %','Decrease %','Replacing %']
+          .map(function(c){ return n2(Number(r[c])); }))
+        .concat(['Not supplied', archived
+          ? 'Export’s own All Respondents line — the archived October reading, superseded by ' +
+            ARCHIVED_OBS.supersededBy
+          : 'Cut value as supplied']).map(q).join(','));
+    });
+  }
+  return head.join('\n') + '\n';
+}
+
+/* ── Charlotte AI charts ───────────────────────────────────────────────────
+   Restrained, and drawn only from supplied readings. One line per response
+   category, one point per supplied period, nothing between or beyond them.
+   The table under each chart stays the source of record. */
+var AI_SERIES_COLOR = ['#17365D', '#0F6E66', '#B4470F', '#6E5A96', '#5C6B7A'];
+
+function aiChart(g){
+  var cats = [], periods = [];
+  g.categories.forEach(function(c){
+    if (cats.indexOf(c.category) < 0) cats.push(c.category);
+    if (periods.indexOf(c.period) < 0) periods.push(c.period);
+  });
+  if (!cats.length || periods.length < 2) return '';
+  /* Period order is the order the source reports them in, oldest first. */
+  var ORDER = ['Jul 2025', 'Jan 2026', 'Jul 2026'];
+  periods.sort(function(a, b){
+    var ia = ORDER.indexOf(a), ib = ORDER.indexOf(b);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  });
+  var byKey = {};
+  g.categories.forEach(function(c){ byKey[c.category + '||' + c.period] = c.value; });
+
+  var vals = g.categories.map(function(c){ return c.value; });
+  /* Round the scale to whole tens so the gridline labels read as round
+     percentages rather than as artefacts of the data range. */
+  var lo = Math.max(0, Math.floor(Math.min.apply(null, vals) / 10) * 10);
+  var hi = Math.ceil(Math.max.apply(null, vals) / 10) * 10;
+  if (hi - lo < 20) hi = lo + 20;
+  var TICKS = 4;
+  var W = 660, H = 250, L = 44, R = 20, T = 18, B = 42;
+  var X = function(i){ return L + i * (W - L - R) / (periods.length - 1); };
+  var Y = function(v){ return T + (hi - v) / (hi - lo) * (H - T - B); };
+  var uid = 'aic-' + g.groupId;
+  var ev0 = g.evidence[0] || {};
+
+  var svg = ['<svg viewBox="0 0 ' + W + ' ' + H + '" class="aisvg" role="img" ' +
+    'aria-labelledby="' + uid + 't ' + uid + 'd">' +
+    '<title id="' + uid + 't">' + esc(g.group) + ' by response category</title>' +
+    '<desc id="' + uid + 'd">' + cats.map(function(c){
+      return esc(c) + ': ' + periods.map(function(p){
+        var v = byKey[c + '||' + p];
+        return esc(p) + ' ' + (v == null ? 'not supplied' : n2(v, 1) + '%');
+      }).join(', ');
+    }).join('. ') + '. Respondent cut ' + esc(g.respondentCut) + ', N ' +
+    esc(String(ev0.nBase || 'Not supplied')) + '.</desc>'];
+
+  for (var k = 0; k <= TICKS; k++){
+    var gv = lo + (hi - lo) * k / TICKS;
+    svg.push('<line x1="' + L + '" y1="' + Y(gv).toFixed(1) + '" x2="' + (W - R) + '" y2="' +
+      Y(gv).toFixed(1) + '" stroke="#E7E2D9"/>' +
+      '<text x="' + (L - 8) + '" y="' + (Y(gv) + 3.5).toFixed(1) + '" font-size="10" ' +
+      'text-anchor="end" fill="#8A8478">' + gv.toFixed(0) + '%</text>');
+  }
+  cats.forEach(function(c, ci){
+    var colour = AI_SERIES_COLOR[ci % AI_SERIES_COLOR.length];
+    var pts = periods.map(function(p, i){
+      var v = byKey[c + '||' + p];
+      return v == null ? null : {i: i, v: v};
+    }).filter(Boolean);
+    /* A segment is drawn only between two consecutively supplied periods. */
+    for (var j = 0; j < pts.length - 1; j++){
+      if (pts[j + 1].i !== pts[j].i + 1) continue;
+      svg.push('<line x1="' + X(pts[j].i).toFixed(1) + '" y1="' + Y(pts[j].v).toFixed(1) +
+        '" x2="' + X(pts[j + 1].i).toFixed(1) + '" y2="' + Y(pts[j + 1].v).toFixed(1) +
+        '" stroke="' + colour + '" stroke-width="2.2"/>');
+    }
+    pts.forEach(function(pt){
+      svg.push('<circle class="pt" tabindex="0" role="button" data-oid="' +
+        esc(ev0.evidenceId || '') + '" ' +
+        'aria-label="' + esc(c) + ', ' + esc(periods[pt.i]) + ': ' + n2(pt.v, 1) + ' percent, ' +
+        esc(g.respondentCut) + ', N ' + esc(String(ev0.nBase || 'Not supplied')) + '" ' +
+        'data-tip="' + esc(c) + ' · ' + esc(periods[pt.i]) + ' · ' + n2(pt.v, 1) + '% · N ' +
+        esc(String(ev0.nBase || 'Not supplied')) + '" cx="' + X(pt.i).toFixed(1) + '" cy="' +
+        Y(pt.v).toFixed(1) + '" r="4" fill="' + colour + '"/>');
+      svg.push('<text x="' + X(pt.i).toFixed(1) + '" y="' + (Y(pt.v) - 9).toFixed(1) +
+        '" font-size="9.5" text-anchor="middle" fill="' + colour + '" font-weight="700">' +
+        n2(pt.v, 1) + '%</text>');
+    });
+  });
+  periods.forEach(function(p, i){
+    svg.push('<text x="' + X(i).toFixed(1) + '" y="' + (H - 20) + '" font-size="10.5" ' +
+      'text-anchor="middle" fill="#8A8478">' + esc(p) + '</text>');
+  });
+  svg.push('</svg>');
+
+  return '<figure class="aifig">' +
+    '<figcaption><div class="ai-ct">' + esc(AI_CHART_TITLE[g.groupId] || g.group) + '</div>' +
+    '<p class="note">' + esc(g.respondentCut) + ' · N ' +
+      esc(String(ev0.nBase || 'Not supplied')) + ' (citations, not unique respondents) · ' +
+      esc(ev0.verification || 'Not specified') + ' · source ' + esc(g.sourceId) + '</p>' +
+    '</figcaption>' +
+    '<div class="ai-legend">' + cats.map(function(c, ci){
+      return '<span class="lg"><i class="sw" style="background:' +
+        AI_SERIES_COLOR[ci % AI_SERIES_COLOR.length] + '"></i>' + esc(c) + '</span>';
+    }).join('') + '</div>' +
+    '<div class="lead-plot ai-plot" data-plot="1">' + svg.join('') +
+      '<div class="charttip" hidden></div></div>' +
+    (AI_CHART_NOTE[g.groupId] ? '<p class="ai-annot">' + esc(AI_CHART_NOTE[g.groupId]) + '</p>' : '') +
+    (AI_CHART_CAVEAT[g.groupId] ? '<p class="ai-caveat">' + esc(AI_CHART_CAVEAT[g.groupId]) +
+      '</p>' : '') +
+    '<div class="lead-acts no-print">' +
+      '<button type="button" class="btn" data-scroll="aitbl-' + esc(g.groupId) +
+        '">View source table</button>' +
+      '<button type="button" class="btn" data-csv="ai:' + esc(g.groupId) + '">Download CSV</button>' +
+      '<button type="button" class="btn" data-oid="' + esc(ev0.evidenceId || '') +
+        '">Trace this claim</button>' +
+    '</div></figure>';
+}
+
+var AI_CHART_TITLE = {
+  'AIPS-WIDGET-USAGE': 'Charlotte AI adoption status over time',
+  'AIPS-WIDGET-VALUE': 'Perceived feature value among current users',
+  'AIPS-WIDGET-IMPACT': 'Reported impact on continued usage',
+  'AIPS-WIDGET-WTP': 'Willingness to pay among current users'
+};
+var AI_CHART_NOTE = {
+  'AIPS-WIDGET-USAGE': 'Evaluation increased to 27.0% in Jul 2026, while rolled-out usage ' +
+    'measured 24.2%. This is a description of the supplied readings, not a claim about cause ' +
+    'or about future adoption.'
+};
+var AI_CHART_CAVEAT = {
+  'AIPS-WIDGET-VALUE': 'Jul 2026 base is 42 current users; this is a survey rating, not usage, ' +
+    'renewal, or a financial outcome.',
+  'AIPS-WIDGET-IMPACT': 'This is a respondent-reported rating and does not establish retention ' +
+    'or renewal.',
+  'AIPS-WIDGET-WTP': 'Stated willingness to pay on a base of 42 current users. It is not agreed ' +
+    'pricing, realised revenue, or a booked uplift.'
+};
+
+RENDER.charlotte = function(){
+  var groups = aiGroups();
+  var h = ['<div class="vhead"><div class="eyebrow">AI Product Series</div>' +
+    '<h2>CrowdStrike Charlotte AI</h2>' +
+    '<p>ETR’s AI Product Series for CrowdStrike, as supplied in the V5 workbook. Each panel ' +
+    'is one registered metric group with its own respondent cut and citation base. Response ' +
+    'categories are reproduced exactly as the source states them; combined categories such as ' +
+    '“Extremely + Very Valuable” are the workbook’s own summary wording and are ' +
+    'labelled as such.</p></div>'];
+
+  var anyMissing = groups.filter(function(g){ return !g.rowLevelSupplied; });
+  h.push('<div class="ai-summary">' + groups.map(function(g){
+    var pts = g.categories.length;
+    return '<button type="button" class="ai-tile" data-scroll="ai-' + esc(g.groupId) + '">' +
+      '<span class="k">' + esc(g.group) + '</span>' +
+      '<span class="v">' + (pts ? pts : '—') + '</span>' +
+      '<span class="s">' + (pts ? 'category readings' : 'no row-level values supplied') + '</span>' +
+      '</button>';
+  }).join('') + '</div>');
+
+  if (anyMissing.length) h.push('<div class="callout">' + anyMissing.length + ' registered group' +
+    (anyMissing.length === 1 ? '' : 's') + ' — ' +
+    anyMissing.map(function(g){ return esc(g.group); }).join(', ') +
+    ' — ' + (anyMissing.length === 1 ? 'is' : 'are') + ' present in the source register but ' +
+    'carries no row-level values in this workbook. The panel below shows what is registered and ' +
+    'what is missing rather than an estimate.</div>');
+
+  groups.forEach(function(g){
+    var periods = [];
+    g.categories.forEach(function(c){ if (periods.indexOf(c.period) < 0) periods.push(c.period); });
+    if (!periods.length) periods = g.periods || [];
+    var cats = [];
+    g.categories.forEach(function(c){ if (cats.indexOf(c.category) < 0) cats.push(c.category); });
+    var byKey = {};
+    g.categories.forEach(function(c){ byKey[c.category + '||' + c.period] = c; });
+    var ev0 = g.evidence[0] || {};
+
+    h.push('<section class="ai-group" id="ai-' + esc(g.groupId) + '">');
+    h.push('<div class="ai-head"><h3>' + esc(g.group) + '</h3>' +
+      '<div class="ai-meta">' +
+        '<span><span class="k">Respondent cut</span>' + esc(g.respondentCut) + '</span>' +
+        '<span><span class="k">Survey periods</span>' + esc((g.periods || []).join(' · ') || 'Not specified') + '</span>' +
+        '<span><span class="k">N / base</span>' + esc(String(ev0.nBase || 'Not supplied')) + '</span>' +
+        '<span><span class="k">Verification</span>' + esc(ev0.verification || 'Not specified') + '</span>' +
+      '</div></div>');
+
+    if (ev0.statement) h.push('<p class="ai-statement">' + esc(ev0.statement) + '</p>');
+
+    if (cats.length) h.push(aiChart(g));
+
+    if (cats.length){
+      h.push('<div class="tw" id="aitbl-' + esc(g.groupId) + '"><table><caption class="sr">' + esc(g.group) +
+        ' by response category and survey period</caption><thead><tr><th>Response category</th>' +
+        periods.map(function(p){ return '<th>' + esc(p) + '</th>'; }).join('') +
+        '</tr></thead><tbody>');
+      cats.forEach(function(cat){
+        h.push('<tr><td>' + esc(cat) + '</td>' + periods.map(function(p){
+          var c = byKey[cat + '||' + p];
+          return '<td>' + (c ? n2(c.value) + '%' : '<span class="note">not supplied</span>') + '</td>';
+        }).join('') + '</tr>');
+      });
+      h.push('</tbody></table></div>');
+      h.push('<p class="note">Category labels are reproduced from the source. Any label combining ' +
+        'two response options is the workbook’s own summary of them, not a calculation made ' +
+        'here.</p>');
+    } else {
+      h.push('<div class="missing"><div class="ms-head">Data not supplied</div>' +
+        '<p class="ms-lead">The metric group is registered, but the workbook contains no ' +
+        'row-level values. No chart is drawn and no value is estimated.</p>' +
+        '<div class="ms-tags"><span class="tag t-open">Open question</span>' +
+        '<span class="pill">Source Needed</span></div>' +
+        '<dl class="ms-kv">' +
+        '<dt>Status</dt><dd>Data not supplied</dd>' +
+        '<dt>Recommended action</dt><dd>Obtain row-level source data before analysis or ' +
+        'visualisation.</dd>' +
+        '<dt>Registered source</dt><dd>' + esc(g.sourceId) + '</dd>' +
+        '<dt>What the register records</dt><dd>' + esc(g.registeredRows || 'Not specified') + '</dd>' +
+        '<dt>Survey periods</dt><dd>' + esc((g.periods || []).join(' · ') || 'Not specified') + '</dd>' +
+        '<dt>Access status</dt><dd>' + esc(g.accessStatus || 'Not specified') + '</dd>' +
+        '</dl><p class="note">The rows exist in the ETR source but are not carried into this ' +
+        'workbook, so no values are shown. Nothing is estimated to fill the gap.</p></div>');
+    }
+
+    if (g.evidence.length) h.push('<div class="ai-ev">' + g.evidence.map(function(e){
+      return '<div class="ai-evrow"><div class="ai-evtop">' + oid(e.evidenceId) +
+        '<span class="pill">' + esc(e.confidence || 'Source Needed') + '</span>' +
+        '<span class="pill">' + esc(e.verification || '') + '</span></div>' +
+        '<p><span class="k">Supporting data</span>' + esc(e.supportingData || 'Not supplied') + '</p>' +
+        (e.trend ? '<p><span class="k">Trend</span>' + esc(e.trend) + '</p>' : '') +
+        (e.caveat ? '<p><span class="k">Caveat</span>' + esc(e.caveat) + '</p>' : '') +
+        (e.relatedSignals && e.relatedSignals.length
+          ? '<p><span class="k">Related signal</span>' + oids(e.relatedSignals) + '</p>' : '') +
+        '</div>';
+    }).join('') + '</div>');
+
+    h.push('<div class="measures"><div><h4>What this measures</h4><p>' +
+      esc(AI_MEASURES[g.groupId] || 'Survey responses from the stated respondent cut, in the ' +
+          'periods listed, on the citation base shown.') + '</p></div>' +
+      '<div><h4>What this does not prove</h4><p>' +
+      esc(AI_NOT_PROVE[g.groupId] || 'Stated survey responses are not observed behaviour, ' +
+          'revenue, or a company outcome.') + '</p></div></div>');
+
+    h.push('<div class="lead-acts no-print">' +
+      '<button type="button" class="btn" data-csv="ai:' + esc(g.groupId) + '">Download CSV</button>' +
+      (g.sourceLocation ? '<span class="note src-loc">Source: ' + esc(g.sourceId) + '</span>' : '') +
+      '</div>');
+    h.push('</section>');
+  });
+
+  el('view-charlotte').innerHTML = h.join('');
+  wireChart();
+};
+
+var AI_MEASURES = {
+  'AIPS-WIDGET-USAGE': 'The share of surveyed CrowdStrike customers reporting each stage of ' +
+    'Charlotte AI adoption — rolled out, evaluating or piloting, and planning to evaluate — in ' +
+    'each survey period.',
+  'AIPS-WIDGET-VALUE': 'How current users rate the value of the AI features they use, by response ' +
+    'category, in each survey period.',
+  'AIPS-WIDGET-IMPACT': 'How current users describe the effect of the AI features on their ' +
+    'continued use of the platform, by response category. “Continual usage” is the source’s own ' +
+    'label and is kept in the table.',
+  'AIPS-WIDGET-WTP': 'What proportion of additional spend current users say they would accept for ' +
+    'the AI capability, by band.',
+  'AIPS-WIDGET-COST': 'The portion of cost respondents attribute to consumption, for the single ' +
+    'period the source covers.'
+};
+var AI_NOT_PROVE = {
+  'AIPS-WIDGET-USAGE': 'Rollout share is not licence count, seat count, revenue or market share, ' +
+    'and the cut covers CrowdStrike customers rather than the general market.',
+  'AIPS-WIDGET-VALUE': 'A value rating is an opinion recorded in a survey. It is not usage, not ' +
+    'renewal, and not a financial result.',
+  'AIPS-WIDGET-IMPACT': 'Stated impact on continued usage is not observed retention. No churn, ' +
+    'renewal or dollar-based retention figure follows from it.',
+  'AIPS-WIDGET-WTP': 'Stated willingness to pay is not realised revenue, pricing power, or an ' +
+    'agreed uplift. Nothing here says a customer paid more.',
+  'AIPS-WIDGET-COST': 'A consumption share for one period is not a trend, and no earlier period ' +
+    'is reconstructed for comparison.'
+};
+
+/* ════════════════════════════════════ VIEW: How the Research Works ═══════
+   One worked example, straight from the workbook, showing that the path from
+   a raw source to a published line runs through six named stages — and that no
+   stage is allowed to skip to a conclusion.
+   ══════════════════════════════════════════════════════════════════════════ */
+RENDER.how = function(){
+  var T = D.researchTrace || {};
+  var stages = T.stages || [];
+  var h = ['<div class="vhead"><div class="eyebrow">Methodology</div>' +
+    '<h2>How the Research Works</h2>' +
+    '<p>One example, carried end to end: the ' + esc(T.example || 'current reading') +
+    '. Each stage below shows the exact content the workbook holds, the object it is held as, ' +
+    'what the stage did to the material it received, and — just as importantly — what that stage ' +
+    'still does not prove.</p>' +
+    '<p class="lede-strong">This workflow is designed to stop a sourced observation from becoming ' +
+    'a business conclusion without the evidence required to support that transition.</p></div>'];
+
+  /* The progression, always in view, with the kind of each transition named. */
+  var RIBBON = [
+    ['Source', 'evidence'], ['Observation', 'evidence'], ['Evidence', 'evidence'],
+    ['Signal', 'review'], ['Interpretation', 'review'], ['Output', 'review']
+  ];
+  h.push('<nav class="ribbon" aria-label="Research progression">' +
+    RIBBON.map(function(r, i){
+      return (i ? '<span class="rb-arrow t-' + RIBBON[i-1][1] + '" aria-hidden="true">→</span>' : '') +
+        '<button type="button" class="rb-step" data-scroll="stage-' + i + '">' +
+        '<span class="rb-n">' + (i + 1) + '</span>' + esc(r[0]) + '</button>';
+    }).join('') +
+    '<span class="rb-arrow t-blocked" aria-hidden="true">→</span>' +
+    '<span class="rb-end rb-blocked" aria-label="KPI conclusion: blocked, not validated">' +
+    '<span class="rb-n">⛔</span>KPI conclusion</span></nav>' +
+    '<div class="rb-key"><span><i class="rk rk-evidence"></i>Evidence-backed transition</span>' +
+    '<span><i class="rk rk-review"></i>Human-review transition</span>' +
+    '<span><i class="rk rk-blocked"></i>Blocked — evidence does not support it</span></div>');
+
+  h.push('<ol class="stages">');
+  stages.forEach(function(s, i){
+    h.push('<li class="stage" id="stage-' + i + '">' +
+      '<div class="st-num" aria-hidden="true">' + (i + 1) + '</div>' +
+      '<div class="st-body">' +
+        '<div class="st-head"><h3>' + esc(s.stage.replace(/^\d+\.\s*/, '')) + '</h3>' +
+          (s.objectId ? '<span class="st-id">' + oid(s.objectId) + '</span>' : '') +
+          '<span class="tag ' + tagClass(s.classification) + '">' +
+            esc(s.classification || 'Not classified') + '</span></div>' +
+        '<p class="st-content">' + esc(s.content || 'Not supplied') + '</p>' +
+        (s.detail ? '<p class="st-detail">' + esc(s.detail) + '</p>' : '') +
+        '<dl class="st-kv">' +
+          '<dt>What this stage did</dt><dd>' + esc(s.transformation || 'Not specified') + '</dd>' +
+          '<dt>What it does not prove</dt><dd>' + esc(s.doesNotProve || 'Not specified') + '</dd>' +
+        '</dl>' +
+        gateRow(i, s) +
+      '</div></li>');
+  });
+  h.push('</ol>');
+
+  h.push(kpiBridgePanel());
+
+  h.push('<div class="class-key"><h4>The five classifications used throughout</h4><ul>' +
+    CLAIM_CLASSES.map(function(c){
+      return '<li><span class="tag ' + tagClass(c) + '">' + esc(c) + '</span>' +
+        '<span class="note">' + esc(CLASS_MEANING[c] || '') + '</span></li>';
+    }).join('') + '</ul></div>');
+
+  el('view-how').innerHTML = h.join('');
+};
+
+/** The four-column status strip under each stage: what came in, what was done
+    to it, where it stands with a reviewer, and what is still missing. */
+function gateRow(i, st){
+  var G = [
+    ['Raw source retrieved and registered', 'Registered in the source register',
+     'Source accepted', 'Nothing — the source is supplied'],
+    ['One survey period from the registered source', 'Recorded exactly as supplied, with base and cut',
+     'Verified', 'Nothing for this period'],
+    ['The recorded observation', 'Qualified: ID, confidence, verification, caveat',
+     'Verified', 'Cohort and regional bases remain unsupplied'],
+    ['Qualified evidence objects', 'Assembled into a reviewable signal candidate',
+     'Pending Review', 'Approved Z-Score method bands; current-period outlook'],
+    ['The signal and the rules that govern it', 'A reviewer states what the evidence shows',
+     'Pending Review', 'Nothing blocks the reading; it is bounded, not complete'],
+    ['Reviewed research', 'Drafted into an external-facing piece',
+     'Human Review Required', 'Reviewer approval before any distribution']
+  ][i] || ['Not specified', 'Not specified', 'Not specified', 'Not specified'];
+  return '<div class="gates"><div><span class="g-k">Inputs received</span>' + esc(G[0]) + '</div>' +
+    '<div><span class="g-k">Transformation performed</span>' + esc(G[1]) + '</div>' +
+    '<div><span class="g-k">Review state</span><span class="pill">' + esc(G[2]) + '</span></div>' +
+    '<div><span class="g-k">Evidence still needed</span>' + esc(G[3]) + '</div></div>';
+}
+
+/** Why the chain stops before a KPI conclusion. Every gate below is a condition
+    the workbook records as unmet; none of them is a product failure. */
+function kpiBridgePanel(){
+  var K = D.kpiGate || {};
+  var gates = K.gates || [];
+  var h = ['<section class="kpigate" id="kpi-gate">'];
+  h.push('<div class="kg-head"><div class="eyebrow">KPI bridge decision</div>' +
+    '<h2>Why this signal stops before a KPI conclusion</h2>' +
+    '<div class="kg-status"><span class="tag t-hyp">Hypothesis</span>' +
+    '<strong>' + esc(K.decision || 'Not validated — KPI bridge remains a hypothesis') + '</strong>' +
+    '</div></div>');
+
+  /* the blocked bridge, drawn */
+  h.push('<div class="bridge" role="img" aria-label="TSIS signal, then a candidate KPI bridge ' +
+    'marked not validated, then Net New ARR. The bridge is blocked.">' +
+    '<div class="br-node">TSIS Signal<span class="br-sub">' + esc(K.signalId || 'SIG-02') + '</span></div>' +
+    '<div class="br-arrow" aria-hidden="true">↓</div>' +
+    '<div class="br-node br-block"><span class="br-stop" aria-hidden="true">⛔</span>' +
+    'Candidate KPI bridge<span class="br-sub">Not validated · ' +
+    esc(K.linkageType || 'Hypothesized') + '</span></div>' +
+    '<div class="br-arrow br-dash" aria-hidden="true">↓</div>' +
+    '<div class="br-node br-far">' + esc(K.kpiName || 'Net New ARR') +
+    '<span class="br-sub">' + esc(K.kpiId || 'KPI-003') + '</span></div></div>');
+
+  h.push('<div class="kg-grid">');
+  h.push('<section class="kg-sec"><h3>A · Candidate relationship</h3>' +
+    '<p>' + esc(K.candidate || '') + '</p>' +
+    '<span class="tag t-hyp">Hypothesis</span></section>');
+
+  h.push('<section class="kg-sec"><h3>B · What prevented a KPI pairing</h3>' +
+    '<ul class="gatelist">' + gates.map(function(g, i){
+      return '<li><span class="gl-n">' + (i + 1) + '</span>' +
+        '<div><div class="gl-top"><strong>' + esc(g.gate) + '</strong>' +
+        '<span class="gl-state">' + esc(g.state) + '</span></div>' +
+        '<p>' + esc(g.detail) + '</p></div></li>';
+    }).join('') + '</ul></section>');
+
+  h.push('<section class="kg-sec"><h3>C · What the research can say now</h3>' +
+    (K.canSayNow || []).map(function(c){
+      var cls = /not supported/i.test(c.classification) ? 't-block' : tagClass(c.classification);
+      return '<div class="say"><span class="tag ' + cls + '">' + esc(c.classification) + '</span>' +
+        '<p>' + esc(c.text) + '</p></div>';
+    }).join('') + '</section>');
+
+  h.push('<section class="kg-sec"><h3>D · What would unlock the bridge</h3>' +
+    '<span class="tag t-act">Recommended action</span>' +
+    '<ol class="unlock">' + (K.unlock || []).map(function(u){
+      return '<li>' + esc(u) + '</li>'; }).join('') + '</ol>' +
+    '<div class="no-print" style="margin-top:12px">' +
+      '<button type="button" class="btn pri" data-goto="#kpiplan">Open KPI bridge research plan</button>' +
+      '<button type="button" class="btn" data-goto="#kpis">All KPI bridges</button>' +
+      '<button type="button" class="btn" data-oid="' + esc(K.signalId || 'SIG-02') +
+        '">Trace this claim</button>' +
+    '</div></section>');
+  h.push('</div>');
+
+  h.push('<p class="kg-callout">The absence of a KPI conclusion is a research result: the Explorer ' +
+    'shows exactly where the available evidence stops.</p>');
+  h.push('</section>');
+  return h.join('');
+}
+
+/* ═══════════════════════════════════════ VIEW: KPI bridge research plan ══ */
+RENDER.kpiplan = function(){
+  var K = D.kpiGate || {}, P = K.plan || {};
+  var missing = (P.missingEvidence || []);
+  var h = ['<div class="vhead"><div class="eyebrow">KPI bridge · research plan</div>' +
+    '<h2>' + esc(K.kpiName || 'Candidate KPI') + ' — what would have to be true</h2>' +
+    '<p>A plan, not a finding. Nothing on this page is filled in with a result, a confidence, an ' +
+    'owner or a threshold that the workbook does not supply.</p></div>'];
+  h.push('<dl class="plankv">' +
+    row('Candidate KPI', (K.kpiName || 'Not supplied') + ' · ' + oid(K.kpiId || '')) +
+    row('Source signal', oid(K.signalId || 'SIG-02')) +
+    row('Linkage type', K.linkageType || 'Not supplied') +
+    row('Hypothesis statement', P.hypothesis || 'Not supplied') +
+    row('Required time lag', K.requiredTimeLag || 'Not supplied') +
+    row('Lag supported', K.lagSupported || 'Not supplied') +
+    row('Missing evidence', missing.length ? missing.join('; ') : 'Not supplied') +
+    row('Known confounders', P.confounders || K.confounders || 'Not supplied') +
+    row('Proposed test', P.proposedTest || 'Not supplied') +
+    row('Acceptance criteria', P.acceptanceCriteria || 'Not supplied') +
+    row('Owner', P.owner || 'Not supplied') +
+    row('Review status', P.reviewStatus || 'Pending Review') +
+    '</dl>');
+  h.push('<div class="callout">Acceptance criteria, owner and test results are deliberately empty. ' +
+    'Pre-filling them would present a research plan as though it had already been carried out.</div>');
+  h.push('<div class="no-print" style="margin-top:14px">' +
+    btn('Back to How the Research Works', '#how', 'pri') + btn('KPI bridges', '#kpis') + '</div>');
+  el('view-kpiplan').innerHTML = h.join('');
+  function row(k, v){
+    return '<dt>' + esc(k) + '</dt><dd>' + (/<[a-z]/.test(String(v)) ? v : esc(String(v))) + '</dd>';
+  }
+};
+
+/* ════════════════════════════════════════════════════ VIEW: the archive ══ */
+RENDER.archive = function(){
+  var obs = ARCHIVE.supersededObservations || [], objs = ARCHIVE.supersededObjects || [];
+  var h = ['<div class="vhead"><div class="eyebrow">Archive</div>' +
+    '<h2>Superseded records</h2>' +
+    '<p>Kept for audit and never edited. Nothing here is active. It is not plotted, counted, ' +
+    'searchable as current evidence, or selectable when assembling an output. This is a resolved ' +
+    'provenance record, not an open analytical conflict.</p></div>'];
+
+  (D.provenanceResolutions || []).forEach(function(r){
+    h.push('<section class="card resolved"><h3>' + esc(r.period) + ' · ' + esc(r.metricFamily) +
+      '</h3><dl class="kv">' +
+      '<dt>Active</dt><dd><strong>' + esc(r.activeValue) + '</strong> · ' + esc(r.activeSource) + '</dd>' +
+      '<dt>Superseded</dt><dd>' + esc(r.supersededValue) + ' · ' + esc(r.supersededSource) + '</dd>' +
+      '<dt>Reason</dt><dd>' + esc(r.reason) + '</dd>' +
+      '<dt>Rule applied</dt><dd>' + esc(r.resolvedBy) + '</dd>' +
+      '<dt>Status</dt><dd><span class="pill">' + esc(r.status) + '</span></dd>' +
+      '</dl></section>');
+  });
+
+  if (obs.length){
+    h.push('<h3 class="tbl-h">Superseded observations</h3>');
+    h.push('<div class="tw"><table><thead><tr><th>Period</th><th>Net Score</th>' +
+      '<th>Deployment Breadth</th><th>N</th><th>Respondent cut</th><th>Source</th>' +
+      '<th>Status</th><th>Superseded by</th></tr></thead><tbody>' +
+      obs.map(function(o){
+        return '<tr><td>' + esc(o.period) + '</td><td>' + n2(o.netScore) + '</td><td>' +
+          n2(o.pervasion) + '</td><td>' + esc(String(o.nBase)) + '</td><td>' +
+          esc(o.respondentCut) + '</td><td>' + esc(o.source) + '</td><td><span class="pill">' +
+          esc(o.status) + '</span></td><td>' + esc(o.supersededBy) + '</td></tr>';
+      }).join('') + '</tbody></table></div>');
+  }
+
+  if (objs.length){
+    h.push('<h3 class="tbl-h">Objects authored against the superseded reading</h3>');
+    h.push('<p class="note">Their wording is preserved exactly as the workbook records it. They ' +
+      'are inactive because they quote a reading that no longer stands, not because the text was ' +
+      'wrong when it was written.</p>');
+    h.push('<div class="tw"><table><thead><tr><th>ID</th><th>Type</th><th>Title</th>' +
+      '<th>Recorded text</th></tr></thead><tbody>' +
+      objs.map(function(o){
+        return '<tr><td>' + esc(o.id) + '</td><td>' + esc(o.type) + '</td><td>' +
+          esc(o.title || '') + '</td><td class="note">' + esc((o.text || '').slice(0, 220)) +
+          '</td></tr>';
+      }).join('') + '</tbody></table></div>');
+  }
+  h.push('<div class="no-print" style="margin-top:16px">' +
+    btn('Back to Company', '#company', 'pri') + btn('How the Research Works', '#how') + '</div>');
+  el('view-archive').innerHTML = h.join('');
+};
+
+var CLASS_MEANING = {
+  'Client-provided fact': 'A value the source supplied. Reproduced exactly, with its base.',
+  'ETR interpretation': 'A reviewer’s reading of what supplied values show, under named rules.',
+  'Hypothesis': 'A candidate relationship that has not been validated. Held until backtested.',
+  'Open question': 'A gap the research knows about and has not closed.',
+  'Recommended action': 'What a reviewer is asked to decide or do next.'
+};
+
+/* ══════════════════════════════════════ lineage as a plain stepper ═══════ */
+function lineageSteps(signalId){
+  var rows = (D.lineage || []).filter(function(l){
+    return signalId ? l.signalId === signalId : true; });
+  return rows;
+}
+
+function lineageStepper(signalId){
+  var sig = OBJ[signalId] || {};
+  var rows = lineageSteps(signalId);
+  var resolved = rows.filter(function(l){ return !!OBJ[l.evidenceId]; });
+  var migrated = rows.filter(function(l){ return !OBJ[l.evidenceId]; });
+  var bridges = (D.bridges || []).filter(function(b){
+    return (b.relatedSignalIds || []).indexOf(signalId) >= 0; });
+  var outs = (D.outputs || []);
+
+  var h = ['<div class="stepper">'];
+  h.push('<div class="step"><div class="step-k">Evidence</div><div class="step-b">' +
+    (resolved.length
+      ? '<ul class="step-list">' + resolved.slice(0, 8).map(function(l){
+          var e = OBJ[l.evidenceId] || {};
+          return '<li>' + oid(l.evidenceId) + ' <span class="note">' +
+            esc((e.statement || l.notes || '').slice(0, 96)) + '</span>' +
+            '<span class="pill">' + esc(l.relationshipType || 'Supporting') + '</span></li>';
+        }).join('') + '</ul>' +
+        (resolved.length > 8 ? '<p class="note">' + (resolved.length - 8) + ' more in the table below.</p>' : '')
+      : '<p class="note">No evidence in this workbook is linked to this signal yet.</p>') +
+    '</div></div>');
+  h.push('<div class="step-arrow" aria-hidden="true">→</div>');
+  h.push('<div class="step"><div class="step-k">Signal</div><div class="step-b">' +
+    '<p><strong>' + esc(sig.title || signalId) + '</strong></p>' +
+    '<p class="note">' + esc((sig.statement || '').slice(0, 200)) + '</p>' +
+    '<p><span class="pill">' + esc(sig.confidence || 'Source Needed') + '</span>' +
+    '<span class="pill">' + esc(sig.reviewerDecision || 'Pending Review') + '</span></p>' +
+    '</div></div>');
+  h.push('<div class="step-arrow" aria-hidden="true">→</div>');
+  h.push('<div class="step"><div class="step-k">KPI candidate</div><div class="step-b">' +
+    (bridges.length
+      ? '<ul class="step-list">' + bridges.map(function(b){
+          return '<li>' + oids(b.relatedKpiIds) + ' <span class="note">' +
+            esc(b.kpiName || '') + '</span><span class="pill">' +
+            esc(b.linkageType || 'Hypothesized') + '</span>' +
+            '<span class="pill">lag ' + esc(b.lagSupported || 'Not established') + '</span></li>';
+        }).join('') + '</ul>'
+      : '<p class="note">No KPI bridge is recorded for this signal.</p>') +
+    '</div></div>');
+  h.push('<div class="step-arrow" aria-hidden="true">→</div>');
+  h.push('<div class="step"><div class="step-k">Output</div><div class="step-b">' +
+    '<ul class="step-list">' + outs.map(function(o){
+      return '<li>' + esc(o.title) + '<span class="pill">Human Review Required</span></li>';
+    }).join('') + '</ul>' +
+    '<p class="note">Outputs are drafts. R-020 makes reviewer approval a precondition of ' +
+    'distribution.</p></div></div>');
+  h.push('</div>');
+
+  if (migrated.length) h.push('<div class="callout">' + migrated.length + ' lineage row' +
+    (migrated.length === 1 ? '' : 's') + ' for this signal name evidence under the pre-V5 ID ' +
+    'convention, which does not resolve to an object in this workbook. They are shown in the ' +
+    'table below with their recorded review status rather than being re-pointed at a V5 object, ' +
+    'because matching them is a research decision, not a display one.</div>');
+
+  return h.join('');
+}
+
+RENDER.trace = function(route){
+  var sigs = (D.signals || []);
+  var current = (route && route.arg) || (sigs.filter(function(s){
+    return lineageSteps(s.id).length; })[0] || sigs[0] || {}).id;
+  var rows = lineageSteps(current);
+  var h = ['<div class="vhead"><div class="eyebrow">Research lineage</div>' +
+    '<h2>Evidence → Signal → KPI candidate → Output</h2>' +
+    '<p>The recorded path for one signal, in the order the research takes it. Every row is a ' +
+    'relationship the workbook states; nothing is inferred from proximity or wording.</p></div>'];
+
+  h.push('<div class="segbar seg-wide no-print" role="group" aria-label="Signal">' +
+    sigs.map(function(s){
+      return '<button type="button" class="seg' + (s.id === current ? ' on' : '') +
+        '" data-goto="#trace/' + esc(s.id) + '" aria-pressed="' + (s.id === current) + '">' +
+        esc(s.id) + '</button>';
+    }).join('') + '</div>');
+
+  h.push(lineageStepper(current));
+
+  h.push('<h3 class="tbl-h">Every recorded lineage row for ' + esc(current) + '</h3>');
+  h.push('<div class="tw"><table><thead><tr><th>Lineage ID</th><th>Evidence</th>' +
+    '<th>Relationship</th><th>Signal</th><th>Related KPIs</th><th>Review status</th>' +
+    '<th>Note</th></tr></thead><tbody>' +
+    (rows.length ? rows.map(function(l){
+      var known = !!OBJ[l.evidenceId];
+      return '<tr><td>' + esc(l.id) + '</td><td>' +
+        (known ? oid(l.evidenceId) : esc(l.evidenceId) +
+          ' <span class="note">(pre-V5 ID, unresolved)</span>') +
+        '</td><td>' + esc(l.relationshipType || '') + '</td><td>' + esc(l.signalId || '—') +
+        '</td><td>' + (l.relatedKpiIds.length ? esc(l.relatedKpiIds.join('; ')) : '—') +
+        '</td><td>' + esc(l.reviewStatus || '') + '</td><td class="note">' +
+        esc(l.notes || '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="note">No lineage rows recorded for this signal.</td></tr>') +
+    '</tbody></table></div>');
+
+  h.push('<div class="no-print" style="margin-top:14px">' +
+    btn('See the full lineage graph', '#lineage') +
+    btn('How the research works', '#how', 'pri') + '</div>');
+
+  el('view-trace').innerHTML = h.join('');
 };
 
 /* ══════════════════════════════════════════════════════ object drawer ══ */
@@ -4086,9 +4995,12 @@ function paintDrawer(){
         (o.sourceLane?laneChip(laneOf(o)):'')+(o.currentOrHistorical?periodChip(o):'')+
         '<button class="btn" data-goto="#lineage/'+esc(o.id)+'">Open in lineage</button></div>');
       h.push('<h3>'+esc(o.title||o.id)+'</h3>');
-      if (o.statement && o.statement!==o.title) h.push('<p style="margin-top:6px">'+esc(o.statement)+'</p>');
+      if (o.statement && o.statement!==o.title) h.push('<p style="margin-top:6px">'+escProv(o.statement)+'</p>');
       h.push('<dl class="kv" style="margin-top:9px">'+
         row('Object type',o.objectType)+row('Original ID',o.originalId)+row('Theme',o.theme)+
+        row('Statement',o.statement)+row('Supporting data',o.description)+
+        row('Source',o.sourceName)+row('Dataset',o.dataset)+
+        row('Source location',o.sourceLocation||o.sourceFile)+
         row('Metric',o.metric)+row('Value',o.value)+row('Prior value',o.priorValue)+
         row('Comparison',o.comparisonValue)+row('Trend',o.trend)+row('N / base',o.nBase)+
         row('Period',o.period)+row('Current / historical',o.currentOrHistorical)+
@@ -4100,6 +5012,9 @@ function paintDrawer(){
         (o.validationStatus?row('Validation status',o.validationStatus):'')+
         (o.ruleStatus?row('Rule status',o.ruleStatus):'')+
         (o.enforcement?row('Enforcement',o.enforcement):'')+
+        row('Caveat',o.caveat)+row('Next action',o.recommendedNextAction)+
+        ((o.relatedSignalIds||[]).length?row('Related signals',o.relatedSignalIds.join('; ')):'')+
+        ((o.relatedKpiIds||[]).length?row('Related KPIs',o.relatedKpiIds.join('; ')):'')+
         '</dl>');
       if (laneOf(o)==='zscore')
         h.push('<div class="zbox" style="margin-top:9px"><strong>'+esc(CP.zScore.bandNote)+'</strong> '+
@@ -4183,7 +5098,9 @@ function paintDrawer(){
       break;
   }
   b.innerHTML = h.join('');
-  function row(k,v){ return (v==null||v==='') ? '' : '<dt>'+esc(k)+'</dt><dd>'+orNeeded(v)+'</dd>'; }
+  /* Drawer fields come straight from the workbook row, so any archived October
+     value they carry is marked in place rather than removed. */
+  function row(k,v){ return (v==null||v==='') ? '' : '<dt>'+esc(k)+'</dt><dd>'+provMark(orNeeded(v))+'</dd>'; }
   function rowIds(k,v){ return (!v||!v.length) ? '' : '<dt>'+esc(k)+'</dt><dd>'+oids(v)+'</dd>'; }
   function edgeList(list,side){
     if (!list.length) return '<span class="note">No edge recorded in the workbook.</span>';
@@ -4207,7 +5124,10 @@ function searchAll(q){
     'caveat','sourceName','sourceWorksheet','recommendedNextAction','prohibitedConclusions',
     'confidence','permitted','prohibited','triggerCondition','mechanism'];
   COLLECTIONS.forEach(function(c){
-    (D[c]||[]).forEach(function(o){
+    /* Superseded records are not returned as current evidence. They remain
+       reachable from the archive and from a direct link, so the audit trail is
+       intact without a stale reading turning up in a search for the period. */
+    activeOnly(D[c]).forEach(function(o){
       var hit=null;
       for (var i=0;i<FIELDS.length;i++){
         var v = o[FIELDS[i]];
@@ -4224,6 +5144,14 @@ function searchAll(q){
       add('Generated claims', {o:{id:c.claimId, title:c.text.slice(0,90), objectType:'Claim',
         classification:c.classification}, hit:{field:'text', value:c.text}});
   });
+  /* The active current-period observation leads its group, so a search for the
+     period answers with the reading that is actually in force. */
+  var curEv = ((D.tsisHistory||[]).slice(-1)[0]||{}).evidenceId;
+  Object.keys(groups).forEach(function(g){
+    groups[g].sort(function(a, b){
+      return (b.o.id === curEv ? 1 : 0) - (a.o.id === curEv ? 1 : 0);
+    });
+  });
   return {groups:groups, total:total};
   function labelFor(c){
     return {evidence:'Evidence', signals:'Signals', kpis:'KPIs', bridges:'KPI bridges', risks:'Risks',
@@ -4239,6 +5167,18 @@ function showSearch(q){
   if (!q.trim()){ panel.hidden = true; return; }
   el('searchHeading').textContent = r.total+' result'+(r.total===1?'':'s')+' for “'+q+'”';
   var h=[];
+  /* Searching an archived October value is a reasonable thing to do — it is
+     printed on the source snapshot. The answer leads with the reading that is
+     actually in force, and says where the archived one lives. */
+  if (SUPERSEDED_RE){
+    SUPERSEDED_RE.lastIndex = 0;
+    if (SUPERSEDED_RE.test(q.trim()))
+      h.push('<div class="callout" data-prov="archived-query" id="srArchived">' +
+        '<strong>That is an archived October 2026 reading.</strong> It was superseded at build ' +
+        'time and is not the current reading. The canonical October 2026 observation is ' +
+        esc(CANON_LINE) + '. Results below are active objects only; the archived record is kept ' +
+        'in the <a href="#archive">Archive</a>.</div>');
+  }
   if (!r.total) h.push('<div class="callout">Nothing in the authorized worksheets matches that term.</div>');
   Object.keys(r.groups).forEach(function(g){
     h.push('<div class="sr-grp"><h4>'+esc(g)+' ('+r.groups[g].length+')</h4>');
@@ -4262,9 +5202,24 @@ function showSearch(q){
   panel.hidden = false;
 }
 
+/** Every source control back on. One function, so the panel button, the notice
+    link and the quick control cannot drift apart. */
+function resetSourceControls(){
+  state.lanes   = LANES.map(function(l){ return l[0]; });
+  state.classes = CLASSES.slice();
+  state.states  = STATES.slice();
+  state.confs   = CONFS.slice();
+  state.sourceControlVersion = DEFAULT_STATE.sourceControlVersion;
+  save();
+  announce('All source controls restored.');
+}
+
 /* ══════════════════════════════════════════════════ source control pane ═ */
 function renderSourcePane(){
   var h=[];
+  h.push('<div class="scp-reset"><button class="btn pri" id="scpReset" style="width:100%">' +
+    'Reset to all sources</button><p class="note">Every control starts enabled. Resetting clears ' +
+    'any exclusions and restores the full evidence set.</p></div>');
   h.push('<h4>Quick controls</h4><div class="quick">'+
     [['all','All sources'],['cur','Current October only'],['etr','ETR only'],['co','Company only'],
      ['etrco','ETR + Company'],['contra','Contradictions only'],['sn','Source Needed only'],
@@ -4309,14 +5264,13 @@ function applyQuick(k){
     case 'etrco': L(['oct26','jul26','historical','zscore','cohort','region','adoption','composition','peer','company']); break;
     case 'contra': state.states=['Contradictory']; break;
     case 'sn': state.states=['Source Needed']; break;
-    case 'reset': state.lanes = LANES.map(function(l){return l[0];});
-      state.classes=CLASSES.slice(); state.states=STATES.slice(); state.confs=CONFS.slice(); break;
+    case 'reset': resetSourceControls(); break;
   }
   save(); renderSourcePane(); render();
 }
 
 /* ═══════════════════════════════════════════════════════ event wiring ══ */
-/* The print menu. Six named surfaces, each with its own print styling, plus
+/* The print menu. Named surfaces, each with its own print styling, plus
    whatever the reader is currently looking at. */
 var PRINT_TARGETS = [
   ['pmCompany',   'Company profile'],
@@ -4326,6 +5280,9 @@ var PRINT_TARGETS = [
   ['pmEmail',     'Update email'],
   ['pmLineage',   'Lineage'],
   ['pmEvidence',  'Evidence comparison'],
+  ['pmCharlotte', 'Charlotte AI'],
+  ['pmHow',       'How the Research Works'],
+  ['pmArchive',   'Archive of superseded records'],
   ['pmCurrent',   'This page']
 ];
 function togglePrintMenu(){
@@ -4403,7 +5360,26 @@ document.addEventListener('click', function(ev){
     '[data-evq],[data-evmode],[data-cmp],[data-rtab],[data-dtab],[data-tab],[data-aud],[data-lin],'+
     '[data-ntype],[data-etype],[data-rstatus],[data-rfam],[data-renf],[data-claim],[data-linfocus],'+
     '[data-scroll],[data-rscope],[data-rkview],[data-note],[data-emfmt],[data-ssty],[data-sslen],'+
-    '[data-expand],[data-handoff],[data-sub],[data-copyreq],[data-create]') : null;
+    '[data-expand],[data-handoff],[data-sub],[data-copyreq],[data-create],[data-csv]') : null;
+
+  /* CSV downloads carry exactly the rows the table above them shows */
+  if (t && t.hasAttribute('data-csv')){
+    ev.preventDefault();
+    var csvKind = t.getAttribute('data-csv');
+    if (csvKind === 'tsis'){
+      download('crowdstrike-tsis-spending-intent-deployment-breadth.csv', tsisCsv(), 'text/csv');
+      announce('TSIS series downloaded as CSV.');
+    } else if (csvKind === 'cuts' || csvKind === 'region'){
+      download('crowdstrike-oct-2026-' + csvKind + '.csv', cutsCsv(csvKind), 'text/csv');
+      announce((csvKind === 'region' ? 'Regional cuts' : 'Subsample cuts') +
+               ' downloaded as CSV, with the canonical observation in the header.');
+    } else if (csvKind.indexOf('ai:') === 0){
+      var gid = csvKind.slice(3);
+      download('crowdstrike-charlotte-ai-' + gid.toLowerCase() + '.csv', aiGroupCsv(gid), 'text/csv');
+      announce('Charlotte AI group downloaded as CSV.');
+    }
+    return;
+  }
 
   if (t && t.hasAttribute('data-rscope')){
     ev.preventDefault(); ruleFilter.scope = t.getAttribute('data-rscope'); RENDER.rules({}); return;
@@ -4597,6 +5573,12 @@ document.addEventListener('change', function(ev){
     else { GEN.sunday.edited=null; save(); RENDER['gen-sunday']({}); }
     return;
   }
+  if (t.hasAttribute && t.hasAttribute('data-evdim')){
+    var dk = t.getAttribute('data-evdim');
+    if (t.value) evFilter.dims[dk] = t.value; else delete evFilter.dims[dk];
+    RENDER.evidence({});
+    return;
+  }
   switch(t.id){
     case 'linFocus': LIN.focus = t.value; LIN.selected=null; LIN.collapsed={}; LIN.mode='graph';
       RENDER.lineage({}); break;
@@ -4667,6 +5649,8 @@ document.addEventListener('click', function(ev){
   var id = ev.target.id;
   if (!id) return;
   switch(id){
+    case 'scpReset':
+    case 'fwReset': resetSourceControls(); renderSourcePane(); render(); break;
     case 'btnSources':
       var p = el('sourcePane'); p.hidden = !p.hidden;
       el('btnSources').setAttribute('aria-expanded', String(!p.hidden));
@@ -4684,11 +5668,14 @@ document.addEventListener('click', function(ev){
     case 'pmEmail':     printScoped('view-gen-email'); break;
     case 'pmLineage':   printScoped('view-lineage'); break;
     case 'pmEvidence':  printScoped('view-evidence'); break;
+    case 'pmCharlotte': printScoped('view-charlotte'); break;
+    case 'pmHow':       printScoped('view-how'); break;
+    case 'pmArchive':   printScoped('view-archive'); break;
     case 'pmCurrent':   printScoped('view-'+state.view); break;
     case 'printBrief':  printScoped('view-narrative'); break;
     case 'cmpPrint': printScoped('view-evidence'); break;
     case 'cmpClear': state.compare=[]; save(); RENDER.evidence(); break;
-    case 'evClear': evFilter={q:'',quick:[],mode:evFilter.mode}; RENDER.evidence(); break;
+    case 'evClear': evFilter={q:'',quick:[],mode:evFilter.mode,dims:{}}; RENDER.evidence(); break;
     case 'evCsv': download('crowdstrike-evidence-filtered.csv', evidenceCsv(), 'text/csv'); break;
     case 'sigClear': signalFilter={q:'',theme:'',direction:'',confidence:'',period:'',review:''};
       RENDER.signals({}); break;

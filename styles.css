@@ -105,6 +105,9 @@ main{grid-area:main;overflow-y:auto;padding:26px var(--content-gutter, 32px) 80p
 .card.click:hover{border-color:var(--navy);box-shadow:0 1px 4px rgba(23,54,93,.13)}
 .card.click:focus-visible{border-color:var(--orange)}
 .grid{display:grid;gap:11px}
+/* Grid items default to min-width:auto, which lets a wide table or chart push the
+   column past the viewport instead of scrolling inside its own container. */
+.grid>*{min-width:0}
 .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
 .row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
@@ -616,7 +619,11 @@ body.print-scope .view.print-target{display:block !important}
 /* ── company hero ───────────────────────────────────────────────────────── */
 .chero{padding:6px 0 30px;border-bottom:1px solid var(--line);
   margin-bottom:clamp(28px, 3vw, 40px);max-width:none}
-.chero-logo{height:20px;max-height:20px;width:auto;object-fit:contain;display:block;margin-bottom:10px}
+/* The company page opens with the wordmark at reading size — large enough to
+   read as the brand mark, not as a favicon beside the name. */
+.chero-logo{height:auto;max-height:34px;max-width:190px;width:auto;object-fit:contain;
+  display:block;margin:0 0 16px}
+@media (max-width:820px){.chero-logo{max-height:28px;max-width:158px;margin-bottom:13px}}
 .chero-eyebrow{font:700 10px/1 var(--ui);letter-spacing:.15em;text-transform:uppercase;
   color:var(--orange);margin-bottom:14px}
 .chero-id{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
@@ -1068,3 +1075,225 @@ body.print-scope .view.print-target{display:block !important}
 .am-list li:before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;
   border-radius:50%;background:var(--orange)}
 .am-counter .am-list li:before{background:var(--red)}
+
+/* ═══════════════════════════════════════════════ V5 REBUILD LAYER ═══════
+   Chart conflict markers, the Charlotte AI panels, the six-stage
+   methodology walkthrough, and the Evidence → Signal → KPI → Output stepper.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* the chart's third legend key: a preserved, unplotted snapshot */
+.sw-cf{background:transparent;border:1.6px dashed var(--graphite);height:11px;width:11px;
+  border-radius:50%}
+.conflict-row td{background:#FDF6EC}
+.conflict-note{border-left:3px solid var(--orange);background:#FFF8F3;padding:11px 15px;
+  margin:14px 0 0;font-size:13px;line-height:1.62;border-radius:0 var(--r) var(--r) 0}
+
+/* "what this measures" / "what this does not prove", side by side */
+.measures{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;
+  margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--line2)}
+.measures h4{margin:0 0 5px;text-transform:none;letter-spacing:normal;font-size:12.5px;
+  font-weight:700;color:var(--navy)}
+.measures p{margin:0;font-size:13px;line-height:1.62;color:var(--graphite);
+  max-width:var(--prose-max-width)}
+.src-loc{align-self:center;margin-left:4px}
+
+/* Charlotte AI */
+.ai-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;
+  margin:0 0 26px}
+.ai-tile{display:flex;flex-direction:column;gap:3px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;text-align:left;
+  cursor:pointer;transition:border-color .12s,box-shadow .12s}
+.ai-tile:hover{border-color:var(--navy);box-shadow:var(--shadow)}
+.ai-tile .k{font-size:11.5px;font-weight:700;color:var(--navy);line-height:1.35}
+.ai-tile .v{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink)}
+.ai-tile .s{font-size:10.5px;color:var(--graphite)}
+.ai-group{border-top:1px solid var(--line);padding:26px 0 30px}
+.ai-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:10px}
+.ai-head h3{font-family:var(--serif);font-size:19px;color:var(--navy);text-transform:none;
+  letter-spacing:normal}
+.ai-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:11.5px;color:var(--graphite)}
+.ai-meta .k{display:block;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;
+  font-weight:700;color:var(--graphite)}
+.ai-statement{font:400 14.5px/1.66 var(--serif);color:var(--ink);max-width:var(--prose-max-width);
+  margin:0 0 14px}
+.ai-ev{display:grid;gap:10px;margin:14px 0 0}
+.ai-evrow{background:var(--lgray);border:1px solid var(--line2);border-radius:var(--r);
+  padding:11px 14px}
+.ai-evtop{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:6px}
+.ai-evrow p{margin:0 0 4px;font-size:12.5px;line-height:1.6}
+.ai-evrow .k{display:inline-block;min-width:118px;font-size:8.5px;text-transform:uppercase;
+  letter-spacing:.09em;font-weight:700;color:var(--graphite)}
+.missing{border:1px solid #E3D6B7;background:var(--lamber);border-radius:var(--r);
+  padding:14px 16px;margin:8px 0 0}
+.ms-head{font-weight:700;color:var(--amber);font-size:13px;margin-bottom:7px}
+.ms-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 8px;font-size:12.5px}
+.ms-kv dt{font-weight:600;color:var(--graphite)} .ms-kv dd{margin:0}
+
+/* How the Research Works */
+.stages{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:14px;
+  max-width:var(--narrative-max-width)}
+.stage{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 18px}
+.st-num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;
+  font:700 14px/30px var(--ui);text-align:center}
+.st-body{min-width:0;flex:1}
+.st-head{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:7px}
+.st-head h3{font-family:var(--serif);font-size:17px;color:var(--navy);text-transform:none;
+  letter-spacing:normal}
+.st-content{font:400 14.5px/1.66 var(--serif);color:var(--ink);margin:0 0 6px;
+  max-width:var(--prose-max-width)}
+.st-detail{font-size:12px;color:var(--graphite);margin:0 0 8px}
+.st-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:12.5px;
+  border-top:1px solid var(--line2);padding-top:8px}
+.st-kv dt{font-weight:600;color:var(--graphite);white-space:nowrap}
+.st-kv dd{margin:0;color:var(--ink)}
+.kpi-stop{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;max-width:var(--prose-max-width)}
+.class-key{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.class-key h4{text-transform:none;letter-spacing:normal;font-size:13px;color:var(--navy);
+  margin-bottom:9px}
+.class-key ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.class-key li{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-size:12.5px}
+
+/* Evidence → Signal → KPI candidate → Output */
+.stepper{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;
+  gap:10px;margin:0 0 22px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;
+  min-width:0}
+.step-k{font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;
+  color:var(--orange);margin-bottom:8px}
+.step-b p{margin:0 0 6px;font-size:12.5px;line-height:1.6}
+.step-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.step-list li{font-size:12px;line-height:1.55;display:flex;flex-wrap:wrap;gap:6px;
+  align-items:baseline}
+.step-arrow{align-self:center;color:var(--graphite);font-size:17px}
+.seg-wide{flex-wrap:wrap;margin-bottom:18px}
+.tbl-h{font-family:var(--serif);font-size:17px;color:var(--navy);text-transform:none;
+  letter-spacing:normal;margin:24px 0 10px}
+
+@media (max-width:1080px){
+  .stepper{grid-template-columns:1fr}
+  .step-arrow{transform:rotate(90deg);justify-self:center}
+}
+.dimbar{display:flex;flex-wrap:wrap;gap:9px;margin-top:9px;padding-top:9px;
+  border-top:1px solid var(--line2)}
+.dim{display:flex;flex-direction:column;gap:2px}
+.dim .mini{font-size:8.5px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;
+  color:var(--graphite)}
+.dim select{max-width:190px;padding:3px 6px;border:1px solid var(--line);border-radius:3px;
+  font:inherit;font-size:11.5px;background:var(--card)}
+
+/* ── filtered view: informational, never an error ───────────────────────── */
+.filtered-warn{background:var(--lamber);border:1px solid #E3D6B7;color:#6A5410;
+  border-radius:var(--r);padding:9px 14px;margin:0 0 16px;font-size:12.5px;line-height:1.6}
+.filtered-warn .fw-k{display:inline-block;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;font-size:9.5px;color:var(--amber);margin-right:8px}
+.filtered-warn.fw-strong{border-color:#D9BE7A}
+.filtered-warn .lnk{margin-left:6px}
+.scp-reset{margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--line2)}
+.scp-reset .note{margin:6px 0 0}
+.badge-count[hidden]{display:none !important}
+
+/* ── resolved provenance, and the archive ──────────────────────────────── */
+.prov-note{margin:12px 0 0;font-size:12px;line-height:1.6;color:var(--graphite);
+  border-left:2px solid var(--line);padding-left:12px}
+.prov-note .pn-k{display:inline-block;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;font-size:9px;color:var(--slate);margin-right:8px}
+.mtile .trace{display:none;font-size:9.5px;color:var(--orange);font-weight:600;margin-top:5px}
+.mtile:hover .trace,.mtile:focus-visible .trace{display:block}
+.mtile .v.neutral{color:var(--ink)}
+.z-tile .s{color:var(--amber)}
+
+/* ── How the Research Works: ribbon and per-stage gates ─────────────────── */
+.lede-strong{font:600 14.5px/1.6 var(--sans);color:var(--navy);max-width:var(--prose-max-width);
+  border-left:3px solid var(--orange);padding-left:14px;margin:12px 0 0}
+.ribbon{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;padding:12px 0}
+.rb-step,.rb-end{display:inline-flex;align-items:center;gap:7px;background:var(--card);
+  border:1px solid var(--line);border-radius:20px;padding:5px 13px;font-size:12px;
+  font-weight:600;color:var(--navy);cursor:pointer}
+.rb-step:hover{border-color:var(--navy)}
+.rb-n{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
+  border-radius:50%;background:var(--lgray);font-size:10px;font-weight:700}
+.rb-blocked{background:var(--lred);border-color:#E3B7B3;color:var(--red);cursor:default}
+.rb-blocked .rb-n{background:transparent}
+.rb-arrow{font-size:14px;color:var(--green)}
+.rb-arrow.t-review{color:var(--purple)} .rb-arrow.t-blocked{color:var(--red)}
+.rb-key{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--graphite);
+  margin:0 0 22px}
+.rb-key i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;
+  vertical-align:middle}
+.rk-evidence{background:var(--green)} .rk-review{background:var(--purple)}
+.rk-blocked{background:var(--red)}
+.gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;
+  margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:11.5px;
+  line-height:1.55;color:var(--ink)}
+.g-k{display:block;font-size:8.5px;text-transform:uppercase;letter-spacing:.09em;
+  font-weight:700;color:var(--graphite);margin-bottom:3px}
+
+/* ── KPI bridge decision ───────────────────────────────────────────────── */
+.kpigate{border:1px solid var(--line);background:var(--card);border-radius:var(--r);
+  padding:22px 24px;margin:26px 0 0}
+.kg-head h2{margin:2px 0 9px}
+.kg-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;
+  color:var(--red)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;margin:20px 0 24px;
+  padding:18px;background:var(--lgray);border-radius:var(--r)}
+.br-node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:9px 18px;font-weight:600;font-size:13px;text-align:center;min-width:210px}
+.br-sub{display:block;font-weight:400;font-size:10.5px;color:var(--graphite);margin-top:2px}
+.br-block{border:2px solid var(--red);background:var(--lred);color:var(--red)}
+.br-stop{margin-right:6px}
+.br-far{opacity:.62}
+.br-arrow{color:var(--graphite);font-size:15px;line-height:1}
+.br-dash{opacity:.45}
+.kg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.kg-sec h3{font-family:var(--serif);font-size:15.5px;color:var(--navy);text-transform:none;
+  letter-spacing:normal;margin-bottom:8px}
+.kg-sec p{font-size:13px;line-height:1.62;max-width:var(--prose-max-width)}
+.gatelist{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.gatelist li{display:flex;gap:10px}
+.gl-n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--lred);color:var(--red);
+  font:700 10.5px/20px var(--ui);text-align:center}
+.gl-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:9px}
+.gl-state{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--red);background:var(--lred);border-radius:10px;padding:1px 8px}
+.gatelist p{margin:2px 0 0;font-size:12px;color:var(--graphite)}
+.say{margin-bottom:11px}
+.say p{margin:4px 0 0}
+.t-block{background:var(--lred);border-color:#E3B7B3;color:var(--red)}
+.unlock{margin:8px 0 0;padding-left:20px;font-size:12.5px;line-height:1.7}
+.kg-callout{margin:22px 0 0;padding:12px 16px;background:var(--lgreen);border-radius:var(--r);
+  font-size:13px;color:#3B6B2C;border:1px solid #C3DAB4}
+.plankv{display:grid;grid-template-columns:auto 1fr;gap:7px 18px;font-size:13px;
+  max-width:var(--narrative-max-width)}
+.plankv dt{font-weight:600;color:var(--graphite)} .plankv dd{margin:0}
+.resolved{border-left:3px solid var(--green)}
+
+/* ── Charlotte AI charts ───────────────────────────────────────────────── */
+.aifig{margin:0 0 18px;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 18px}
+.aifig figcaption{margin-bottom:8px}
+.ai-ct{font-family:var(--serif);font-size:15.5px;font-weight:700;color:var(--navy)}
+.ai-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--graphite);
+  margin:0 0 6px}
+.ai-legend .sw{width:14px;height:3px;border-radius:2px;display:inline-block;margin-right:6px;
+  vertical-align:middle}
+.ai-plot{position:relative}
+.aisvg{width:100%;height:auto;display:block}
+.ai-annot{font-size:12.5px;line-height:1.6;color:var(--ink);margin:8px 0 0;
+  max-width:var(--prose-max-width)}
+.ai-caveat{font-size:12px;line-height:1.6;color:var(--amber);background:var(--lamber);
+  border-radius:var(--r);padding:8px 12px;margin:9px 0 0;max-width:var(--prose-max-width)}
+.ms-lead{font-size:12.5px;line-height:1.6;margin:0 0 8px;color:var(--ink)}
+.ms-tags{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 9px}
+
+/* ── provenance marking ───────────────────────────────────────────────────
+   A value from the archived October reading is never removed from a source
+   row; it is marked in place so the reader can see, without leaving the page,
+   why the number is there and what the canonical reading is. */
+.provval{border-bottom:1px dotted var(--amber,#B4470F);cursor:help;
+  background:rgba(180,71,15,.07);border-radius:2px;padding:0 1px}
+.provval:focus{outline:2px solid var(--navy);outline-offset:1px}
+.pill.p-sup{background:rgba(180,71,15,.10);color:#8A3A0C;border-color:#E0C4AE}
+[data-prov="raw-export"] > summary,[data-prov="peer-export"] > summary{color:var(--ink)}
+.chero-trace{display:flex;align-items:center;gap:9px;margin:8px 0 0}

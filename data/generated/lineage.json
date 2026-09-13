@@ -1,0 +1,1581 @@
+[
+ {
+  "id": "RL-0001",
+  "evidenceId": "NS-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002",
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR",
+   "KPI-NRR"
+  ],
+  "notes": "Pre-outage baseline for Net Score recovery measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 14
+ },
+ {
+  "id": "RL-0002",
+  "evidenceId": "NS-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002",
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR",
+   "KPI-NRR"
+  ],
+  "notes": "Pre-outage baseline for Net Score recovery measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 15
+ },
+ {
+  "id": "RL-0003",
+  "evidenceId": "NS-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-002",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-001",
+   "OI-001",
+   "OI-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR",
+   "KPI-Churn"
+  ],
+  "notes": "Post-outage trough measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 16
+ },
+ {
+  "id": "RL-0004",
+  "evidenceId": "NS-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-001",
+   "OI-001",
+   "OI-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR",
+   "KPI-Churn"
+  ],
+  "notes": "Post-outage trough measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 17
+ },
+ {
+  "id": "RL-0005",
+  "evidenceId": "NS-003",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Historical peak reference",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 18
+ },
+ {
+  "id": "RL-0006",
+  "evidenceId": "NS-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Pre-outage confirmed elevation",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 19
+ },
+ {
+  "id": "RL-0007",
+  "evidenceId": "NS-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-002",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn",
+   "KPI-NRR"
+  ],
+  "notes": "Granular Net Score decomposition",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 20
+ },
+ {
+  "id": "RL-0008",
+  "evidenceId": "NS-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn",
+   "KPI-NRR"
+  ],
+  "notes": "Granular Net Score decomposition",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 21
+ },
+ {
+  "id": "RL-0009",
+  "evidenceId": "NS-006",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "EPP-specific Net Score",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 22
+ },
+ {
+  "id": "RL-0010",
+  "evidenceId": "NS-007",
+  "evidenceType": "INTP",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-001",
+   "NS-002",
+   "NS-005"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR"
+  ],
+  "notes": "Trajectory interpretation",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 23
+ },
+ {
+  "id": "RL-0011",
+  "evidenceId": "PV-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-CustomerCount"
+  ],
+  "notes": "Pervasion rank baseline",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 24
+ },
+ {
+  "id": "RL-0012",
+  "evidenceId": "PV-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-CustomerCount"
+  ],
+  "notes": "Post-outage Pervasion recovery",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 25
+ },
+ {
+  "id": "RL-0013",
+  "evidenceId": "PV-003",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PV-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-CustomerCount"
+  ],
+  "notes": "Pervasion milestone",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 26
+ },
+ {
+  "id": "RL-0014",
+  "evidenceId": "PV-004",
+  "evidenceType": "OQ",
+  "signalId": "",
+  "relationshipType": "Open Question",
+  "relatedEvidenceIds": [
+   "PV-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-CustomerCount"
+  ],
+  "notes": "Current Pervasion unknown",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 27
+ },
+ {
+  "id": "RL-0015",
+  "evidenceId": "SI-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR"
+  ],
+  "notes": "Increase spend rate",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 28
+ },
+ {
+  "id": "RL-0016",
+  "evidenceId": "SI-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-004",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR"
+  ],
+  "notes": "DBNR measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 29
+ },
+ {
+  "id": "RL-0017",
+  "evidenceId": "SI-003",
+  "evidenceType": "EV",
+  "signalId": "SIG-002",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "SI-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR"
+  ],
+  "notes": "DBNR trough measurement",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 30
+ },
+ {
+  "id": "RL-0018",
+  "evidenceId": "SI-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn"
+  ],
+  "notes": "Post-outage retention",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 31
+ },
+ {
+  "id": "RL-0019",
+  "evidenceId": "SI-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "SI-004"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn"
+  ],
+  "notes": "Sustained retention",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 32
+ },
+ {
+  "id": "RL-0020",
+  "evidenceId": "EC-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-005",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-004"
+  ],
+  "relatedKpiIds": [
+   "KPI-LargeCustomerGrowth"
+  ],
+  "notes": "G2000 Net Score premium",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 33
+ },
+ {
+  "id": "RL-0021",
+  "evidenceId": "EC-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-005",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "EC-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-LargeCustomerGrowth"
+  ],
+  "notes": "G2000 Pervasion trend",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 34
+ },
+ {
+  "id": "RL-0022",
+  "evidenceId": "EC-003",
+  "evidenceType": "EV",
+  "signalId": "",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001"
+  ],
+  "relatedKpiIds": [],
+  "notes": "Flash survey sample composition",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 35
+ },
+ {
+  "id": "RL-0023",
+  "evidenceId": "EC-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-005",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "EC-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-LargeCustomerGrowth"
+  ],
+  "notes": "Fortune 1000 penetration",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 36
+ },
+ {
+  "id": "RL-0024",
+  "evidenceId": "EC-005",
+  "evidenceType": "EV",
+  "signalId": "",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Cultural/talent signal",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 37
+ },
+ {
+  "id": "RL-0025",
+  "evidenceId": "EC-006",
+  "evidenceType": "EV",
+  "signalId": "",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Observatory sample composition",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 38
+ },
+ {
+  "id": "RL-0026",
+  "evidenceId": "SA-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Shared accounts cross-vendor overlap",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 39
+ },
+ {
+  "id": "RL-0027",
+  "evidenceId": "SA-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-006",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Shared accounts cross-vendor overlap",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 40
+ },
+ {
+  "id": "RL-0028",
+  "evidenceId": "SA-002",
+  "evidenceType": "OQ",
+  "signalId": "",
+  "relationshipType": "Open Question",
+  "relatedEvidenceIds": [
+   "SA-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Updated shared accounts needed",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 41
+ },
+ {
+  "id": "RL-0029",
+  "evidenceId": "CP-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "PANW competitive weakness",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 42
+ },
+ {
+  "id": "RL-0030",
+  "evidenceId": "CP-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "PANW positioning assessment",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 43
+ },
+ {
+  "id": "RL-0031",
+  "evidenceId": "CP-003",
+  "evidenceType": "INTP",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "CP-001"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Market structure interpretation",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 44
+ },
+ {
+  "id": "RL-0032",
+  "evidenceId": "CP-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-008",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Microsoft competitive threat post-outage",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 45
+ },
+ {
+  "id": "RL-0033",
+  "evidenceId": "CP-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-008",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "CP-004"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Microsoft E5 value proposition",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 46
+ },
+ {
+  "id": "RL-0034",
+  "evidenceId": "CP-006",
+  "evidenceType": "EV",
+  "signalId": "SIG-008",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-006"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Microsoft EPP standing",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 47
+ },
+ {
+  "id": "RL-0035",
+  "evidenceId": "CP-007",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "SentinelOne Net Score gap",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 48
+ },
+ {
+  "id": "RL-0036",
+  "evidenceId": "CP-008",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PV-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-CustomerCount"
+  ],
+  "notes": "SentinelOne Pervasion gap",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 49
+ },
+ {
+  "id": "RL-0037",
+  "evidenceId": "CP-009",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "CP-008"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "SentinelOne advancing status",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 50
+ },
+ {
+  "id": "RL-0038",
+  "evidenceId": "CP-010",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Zscaler competitive benchmark",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 51
+ },
+ {
+  "id": "RL-0039",
+  "evidenceId": "CP-011",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Zscaler momentum benchmark",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 52
+ },
+ {
+  "id": "RL-0040",
+  "evidenceId": "CP-012",
+  "evidenceType": "EV",
+  "signalId": "SIG-007",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Private competitor positioning",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 53
+ },
+ {
+  "id": "RL-0041",
+  "evidenceId": "PP-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-004",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-ModuleAdoption"
+  ],
+  "notes": "Module adoption latest",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 54
+ },
+ {
+  "id": "RL-0042",
+  "evidenceId": "PP-002",
+  "evidenceType": "EV",
+  "signalId": "SIG-004",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-001"
+  ],
+  "relatedKpiIds": [
+   "KPI-ModuleAdoption"
+  ],
+  "notes": "Module adoption trajectory",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 55
+ },
+ {
+  "id": "RL-0043",
+  "evidenceId": "PP-003",
+  "evidenceType": "EV",
+  "signalId": "SIG-009",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-004",
+   "PP-005"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR",
+   "KPI-NRR"
+  ],
+  "notes": "Flex ARR latest",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 56
+ },
+ {
+  "id": "RL-0044",
+  "evidenceId": "PP-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-009",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Flex ARR trajectory",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 57
+ },
+ {
+  "id": "RL-0045",
+  "evidenceId": "PP-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-009",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-NRR",
+   "KPI-ARR"
+  ],
+  "notes": "Flex economics",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 58
+ },
+ {
+  "id": "RL-0046",
+  "evidenceId": "PP-006",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-006"
+  ],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "EPP Observatory leadership",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 59
+ },
+ {
+  "id": "RL-0047",
+  "evidenceId": "PP-007",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-ARR (Cloud)"
+  ],
+  "notes": "Cloud ARR",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 60
+ },
+ {
+  "id": "RL-0048",
+  "evidenceId": "PP-008",
+  "evidenceType": "INTP",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Cloud perception weakness",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 61
+ },
+ {
+  "id": "RL-0049",
+  "evidenceId": "PP-009",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-ARR (Identity)"
+  ],
+  "notes": "Identity ARR",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 62
+ },
+ {
+  "id": "RL-0050",
+  "evidenceId": "PP-010",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-009"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Identity product launch",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 63
+ },
+ {
+  "id": "RL-0051",
+  "evidenceId": "PP-011",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-ARR (SIEM)"
+  ],
+  "notes": "SIEM ARR",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 64
+ },
+ {
+  "id": "RL-0052",
+  "evidenceId": "PP-012",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-011"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR (SIEM)"
+  ],
+  "notes": "SIEM competitive wins",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 65
+ },
+ {
+  "id": "RL-0053",
+  "evidenceId": "PP-013",
+  "evidenceType": "EV",
+  "signalId": "SIG-010",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "SIEM qualitative concern",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 66
+ },
+ {
+  "id": "RL-0054",
+  "evidenceId": "PP-014",
+  "evidenceType": "EV",
+  "signalId": "SIG-011",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-015"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR (AIDR)"
+  ],
+  "notes": "AIDR growth",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 67
+ },
+ {
+  "id": "RL-0055",
+  "evidenceId": "PP-015",
+  "evidenceType": "EV",
+  "signalId": "SIG-011",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-014"
+  ],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "AIDR product launches",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 68
+ },
+ {
+  "id": "RL-0056",
+  "evidenceId": "PP-016",
+  "evidenceType": "EV",
+  "signalId": "SIG-011",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "PP-014"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Mythos demand catalyst",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 69
+ },
+ {
+  "id": "RL-0057",
+  "evidenceId": "OA-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-001",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-003",
+   "NS-004"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Pre-outage positive outlook",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 70
+ },
+ {
+  "id": "RL-0058",
+  "evidenceId": "OA-002",
+  "evidenceType": "SIG",
+  "signalId": "SIG-002",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001",
+   "OI-002",
+   "NS-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn"
+  ],
+  "notes": "Negative inflection signal",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 71
+ },
+ {
+  "id": "RL-0059",
+  "evidenceId": "OA-002",
+  "evidenceType": "SIG",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001",
+   "OI-002",
+   "NS-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-Churn"
+  ],
+  "notes": "Negative inflection signal",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 72
+ },
+ {
+  "id": "RL-0060",
+  "evidenceId": "OA-003",
+  "evidenceType": "INTP",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "NS-002",
+   "SI-002",
+   "PP-003"
+  ],
+  "relatedKpiIds": [
+   "KPI-ARR"
+  ],
+  "notes": "Recovery assessment",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 73
+ },
+ {
+  "id": "RL-0061",
+  "evidenceId": "OA-004",
+  "evidenceType": "OQ",
+  "signalId": "",
+  "relationshipType": "Open Question",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Current outlook unknown",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 74
+ },
+ {
+  "id": "RL-0062",
+  "evidenceId": "OA-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-003",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "OI-001",
+   "OI-002"
+  ],
+  "relatedKpiIds": [
+   "KPI-Revenue"
+  ],
+  "notes": "CCP financial impact",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 75
+ },
+ {
+  "id": "RL-0063",
+  "evidenceId": "CE-001",
+  "evidenceType": "RISK",
+  "signalId": "SIG-02",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [
+   "EC-003"
+  ],
+  "relatedKpiIds": [],
+  "notes": "Outage severity peak",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 76
+ },
+ {
+  "id": "RL-0064",
+  "evidenceId": "CE-001",
+  "evidenceType": "RISK",
+  "signalId": "SIG-06",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [
+   "EC-003"
+  ],
+  "relatedKpiIds": [],
+  "notes": "Outage severity peak",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 77
+ },
+ {
+  "id": "RL-0065",
+  "evidenceId": "CE-002",
+  "evidenceType": "RISK",
+  "signalId": "SIG-02",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Residual replacement intent",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 78
+ },
+ {
+  "id": "RL-0066",
+  "evidenceId": "CE-002",
+  "evidenceType": "RISK",
+  "signalId": "SIG-06",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Residual replacement intent",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 79
+ },
+ {
+  "id": "RL-0067",
+  "evidenceId": "CE-003",
+  "evidenceType": "RISK",
+  "signalId": "SIG-01",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-MarketShare"
+  ],
+  "notes": "Microsoft competitive gains",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 80
+ },
+ {
+  "id": "RL-0068",
+  "evidenceId": "CE-004",
+  "evidenceType": "RISK",
+  "signalId": "PP-007",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Cloud perception gap",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 81
+ },
+ {
+  "id": "RL-0069",
+  "evidenceId": "CE-005",
+  "evidenceType": "RISK",
+  "signalId": "PP-011",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "SIEM scope concern",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 82
+ },
+ {
+  "id": "RL-0070",
+  "evidenceId": "CE-006",
+  "evidenceType": "RISK",
+  "signalId": "SIG-01",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Pricing pressure",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 83
+ },
+ {
+  "id": "RL-0071",
+  "evidenceId": "CE-006",
+  "evidenceType": "RISK",
+  "signalId": "SIG-05",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Pricing pressure",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 84
+ },
+ {
+  "id": "RL-0072",
+  "evidenceId": "CE-007",
+  "evidenceType": "RISK",
+  "signalId": "SIG-03",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Valuation risk",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 85
+ },
+ {
+  "id": "RL-0073",
+  "evidenceId": "CE-007",
+  "evidenceType": "RISK",
+  "signalId": "SIG-04",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Valuation risk",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 86
+ },
+ {
+  "id": "RL-0074",
+  "evidenceId": "CE-008",
+  "evidenceType": "RISK",
+  "signalId": "SIG-01",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Blast radius risk",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 87
+ },
+ {
+  "id": "RL-0075",
+  "evidenceId": "CE-008",
+  "evidenceType": "RISK",
+  "signalId": "SIG-04",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "Blast radius risk",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 88
+ },
+ {
+  "id": "RL-0076",
+  "evidenceId": "CE-009",
+  "evidenceType": "RISK",
+  "signalId": "SIG-03",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "GAAP vs Non-GAAP disconnect",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 89
+ },
+ {
+  "id": "RL-0077",
+  "evidenceId": "CE-010",
+  "evidenceType": "RISK",
+  "signalId": "SIG-03",
+  "relationshipType": "Contradicting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "—"
+  ],
+  "notes": "FY2026 guidance miss",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 90
+ },
+ {
+  "id": "RL-0078",
+  "evidenceId": "ETR-OCT26-NS",
+  "evidenceType": "EV",
+  "signalId": "SIG-02",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-ZS",
+   "ETR-OCT26-PV"
+  ],
+  "relatedKpiIds": [
+   "KPI-003",
+   "KPI-005"
+  ],
+  "notes": "Primary OCT26 demand evidence",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 91
+ },
+ {
+  "id": "RL-0079",
+  "evidenceId": "ETR-OCT26-NS",
+  "evidenceType": "EV",
+  "signalId": "SIG-03",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-ZS",
+   "ETR-OCT26-PV"
+  ],
+  "relatedKpiIds": [
+   "KPI-003",
+   "KPI-005"
+  ],
+  "notes": "Primary OCT26 demand evidence",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 92
+ },
+ {
+  "id": "RL-0080",
+  "evidenceId": "ETR-OCT26-PV",
+  "evidenceType": "EV",
+  "signalId": "SIG-02",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-NS"
+  ],
+  "relatedKpiIds": [
+   "KPI-009"
+  ],
+  "notes": "Primary OCT26 breadth evidence",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 93
+ },
+ {
+  "id": "RL-0081",
+  "evidenceId": "ETR-OCT26-PV",
+  "evidenceType": "EV",
+  "signalId": "SIG-05",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-NS"
+  ],
+  "relatedKpiIds": [
+   "KPI-009"
+  ],
+  "notes": "Primary OCT26 breadth evidence",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 94
+ },
+ {
+  "id": "RL-0082",
+  "evidenceId": "ETR-OCT26-ZS",
+  "evidenceType": "EV",
+  "signalId": "SIG-02",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-NS"
+  ],
+  "relatedKpiIds": [
+   "KPI-001",
+   "KPI-003"
+  ],
+  "notes": "Actual positive Q/Q/Y/Y Z-Scores; strength bands unresolved",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 95
+ },
+ {
+  "id": "RL-0083",
+  "evidenceId": "ETR-OCT26-ZS",
+  "evidenceType": "EV",
+  "signalId": "SIG-03",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-NS"
+  ],
+  "relatedKpiIds": [
+   "KPI-001",
+   "KPI-003"
+  ],
+  "notes": "Actual positive Q/Q/Y/Y Z-Scores; strength bands unresolved",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 96
+ },
+ {
+  "id": "RL-0084",
+  "evidenceId": "ETR-OCT26-G2K",
+  "evidenceType": "EV",
+  "signalId": "SIG-05",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-F500",
+   "ETR-OCT26-LARGE"
+  ],
+  "relatedKpiIds": [
+   "KPI-006",
+   "KPI-009"
+  ],
+  "notes": "Select enterprise cohort premium",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 97
+ },
+ {
+  "id": "RL-0085",
+  "evidenceId": "ETR-OCT26-REGION",
+  "evidenceType": "EV",
+  "signalId": "SIG-07",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [
+   "KPI-001"
+  ],
+  "notes": "Regional divergence; N and KPI mapping needed",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 98
+ },
+ {
+  "id": "RL-0086",
+  "evidenceId": "ETR-OCT26-ADOPT",
+  "evidenceType": "EV",
+  "signalId": "SIG-02",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [
+   "ETR-OCT26-INTENT"
+  ],
+  "relatedKpiIds": [],
+  "notes": "Adoption reasons; not causal explanation",
+  "reviewStatus": "Migrated — Review",
+  "owner": "",
+  "migratedFrom": "_Legacy Research Lineage",
+  "sourceRow": 99
+ },
+ {
+  "id": "RL-V5-001",
+  "evidenceId": "EV-001",
+  "evidenceType": "EV",
+  "signalId": "SIG-02",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Corrected TSIS recovery series",
+  "reviewStatus": "Pending Review",
+  "owner": "",
+  "migratedFrom": "V5",
+  "sourceRow": 200
+ },
+ {
+  "id": "RL-V5-002",
+  "evidenceId": "EV-003",
+  "evidenceType": "EV",
+  "signalId": "SIG-12",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Charlotte adoption evidence",
+  "reviewStatus": "Pending Review",
+  "owner": "",
+  "migratedFrom": "V5",
+  "sourceRow": 201
+ },
+ {
+  "id": "RL-V5-003",
+  "evidenceId": "EV-004",
+  "evidenceType": "EV",
+  "signalId": "SIG-12",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Charlotte value evidence",
+  "reviewStatus": "Pending Review",
+  "owner": "",
+  "migratedFrom": "V5",
+  "sourceRow": 202
+ },
+ {
+  "id": "RL-V5-004",
+  "evidenceId": "EV-005",
+  "evidenceType": "EV",
+  "signalId": "SIG-12",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Charlotte WTP evidence",
+  "reviewStatus": "Pending Review",
+  "owner": "",
+  "migratedFrom": "V5",
+  "sourceRow": 203
+ },
+ {
+  "id": "RL-V5-005",
+  "evidenceId": "EV-006",
+  "evidenceType": "EV",
+  "signalId": "SIG-13",
+  "relationshipType": "Supporting",
+  "relatedEvidenceIds": [],
+  "relatedKpiIds": [],
+  "notes": "Charlotte usage impact evidence",
+  "reviewStatus": "Pending Review",
+  "owner": "",
+  "migratedFrom": "V5",
+  "sourceRow": 204
+ }
+]
